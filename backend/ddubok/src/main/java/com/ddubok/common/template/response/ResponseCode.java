@@ -7,9 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseCode {
 
-    // 2000 - 성공
+    // 200 - 성공
     OK("200", "성공"),
-    CREATED("201", "생성됨");
+    CREATED("201", "생성됨"),
+    DELETED("202", "삭제됨");
 
     private String code;
     private String message;
