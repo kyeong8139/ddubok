@@ -14,7 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -77,4 +79,48 @@ public class Card {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "season_id", nullable = false)
     private Season season;
+
+    /**
+     * 카드 객체를 생성하는 생성자
+     * <p>
+     * 기본 생성자이며, 카드의 오픈일자를 시즌의 카드 오픈일자로 지정하고, 상태를 {@code State.READY}로 설정
+     * </p>
+     *
+     * @param memberOpt  카드를 받을 유저의 고유 id
+     * @param content    카드의 내용
+     * @param path       카드 이미지 url
+     * @param writerName 카드를 보낸 사람 닉네임
+     * @param season     카드의 시즌 정보
+     */
+    @Builder
+    public Card(Optional<Member> memberOpt, String content, String path, String writerName,
+        Season season) {
+        this(memberOpt.orElse(null), content, season.getOpenedAt(), path, State.READY, writerName,
+            season);
+    }
+
+    /**
+     * 카드 객체를 생성하는 프라이빗 생성자
+     * <p>
+     * 모든 필드를 초기화
+     * </p>
+     *
+     * @param member     카드를 받을 유저의 고유 id
+     * @param content    카드의 내용
+     * @param openedAt   카드가 오픈될 예정일
+     * @param path       카드 이미지 url
+     * @param state      카드의 상태
+     * @param writerName 카드를 보낸 사람 닉네임
+     * @param season     카드의 시즌 정보
+     */
+    private Card(Member member, String content, LocalDateTime openedAt, String path, State state,
+        String writerName, Season season) {
+        this.member = member;
+        this.content = content;
+        this.openedAt = openedAt;
+        this.path = path;
+        this.state = state;
+        this.writerName = writerName;
+        this.season = season;
+    }
 }
