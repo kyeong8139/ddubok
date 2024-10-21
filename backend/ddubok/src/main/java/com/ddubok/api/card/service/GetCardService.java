@@ -21,7 +21,7 @@ public interface GetCardService {
      * @param req 시즌별 카드를 조회하기 위한 정보
      * @return 시즌별로 조회된 카드의 정보를 반환한다.
      */
-    List<GetCardDetailRes> getCardDetailsBySeason(GetCardListBySeasonReq req);
+    List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req);
 
     /**
      * 보유한 모든 카드 정보를 조회한다.
