@@ -1,12 +1,10 @@
 package com.ddubok.common.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.s3.exception.S3Exception;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -26,13 +24,34 @@ public class S3ImageServiceImpl implements S3ImageService {
     private String bucket;
 
     private final String CARD_IMG_DIR = "card/";
+    private final String BANNER_IMG_DIR = "banner/";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public FileMetaInfo uploadCardImg(MultipartFile file, long memberId) {
-        String url = upload(file, CARD_IMG_DIR, memberId);
+    public FileMetaInfo uploadCardImg(MultipartFile file, long seasonId) {
+        return getFileMetaInfo(file, seasonId, CARD_IMG_DIR);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public FileMetaInfo uploadBannerImg(MultipartFile file, long seasonId) {
+        return getFileMetaInfo(file, seasonId, BANNER_IMG_DIR);
+    }
+
+    /**
+     * FileMetaInfo를 생성한다.
+     *
+     * @param file     업로드할 파일
+     * @param seasonId 해당하는 season 고유 id
+     * @param ImgDir   업로드할 이미지의 디렉토리
+     * @return 이미지의 정보 반환
+     */
+    private FileMetaInfo getFileMetaInfo(MultipartFile file, long seasonId, String ImgDir) {
+        String url = upload(file, ImgDir, seasonId);
         String name = file.getOriginalFilename();
         String format = getFileExtension(name);
         long size = file.getSize();
@@ -60,25 +79,11 @@ public class S3ImageServiceImpl implements S3ImageService {
         try (InputStream inputStream = file.getInputStream()) {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new S3Exception("error: MultipartFile -> S3 upload fail");
         }
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    /**
-     * S3로 업로드 요청 후 url 반환
-     *
-     * @param uploadFile 파일
-     * @param fileName   파일명
-     * @return 이미지 url
-     */
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(
-            CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 }
