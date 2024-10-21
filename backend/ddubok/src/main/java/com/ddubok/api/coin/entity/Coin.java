@@ -27,7 +27,8 @@ public class Coin {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long coinId;
+    @Column(name = "coin_id")
+    private Long id;
     /**
      * 코인에 대한 잔고
      */

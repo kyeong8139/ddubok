@@ -30,7 +30,8 @@ public class Card {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardId;
+    @Column(name = "card_id")
+    private Long id;
     /**
      * 카드를 받는 사용자의 아이디
      */

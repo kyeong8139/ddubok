@@ -25,7 +25,8 @@ public class Season {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seasonId;
+    @Column(name = "season_id")
+    private Long id;
     /**
      * 시즌의 이름
      */

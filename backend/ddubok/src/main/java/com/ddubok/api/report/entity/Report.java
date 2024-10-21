@@ -32,7 +32,8 @@ public class Report {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reportId;
+    @Column(name = "report_id")
+    private Long id;
     /**
      * 신고에 대한 사유
      */

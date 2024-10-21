@@ -24,7 +24,8 @@ public class Fortune {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long fortuneId;
+    @Column(name = "fortune_id")
+    private Long id;
     /**
      * 운세의 내용
      */

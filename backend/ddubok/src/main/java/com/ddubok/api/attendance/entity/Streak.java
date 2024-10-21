@@ -29,7 +29,8 @@ public class Streak {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long streakId;
+    @Column(name = "streak_id")
+    private Long id;
     /**
      * 현재 출석 스트릭 일자
      */
@@ -46,9 +47,4 @@ public class Streak {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    /**
-     * 출석 일자 및 시간
-     */
-    @Column(nullable = false)
-    private LocalDateTime date;
 }
