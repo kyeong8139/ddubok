@@ -40,7 +40,7 @@ public class Streak {
      * 출석 스트릭 변경 일자
      */
     @Column(nullable = false)
-    private LocalDateTime processedAt;
+    private LocalDateTime updatedAt;
     /**
      * 출석자의 멤버 id
      */
