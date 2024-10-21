@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +31,10 @@ public class CardController {
     @PostMapping
     public ResponseEntity<BaseResponse<?>> createCard(
         @RequestPart(name = "image", required = false) MultipartFile image,
-        @RequestBody CreateCardReq req) {
-        String imgUrl = uploadCustomPlanetImg(image, req.getSeasonId());
+        @RequestPart CreateCardReq req) {
         cardService.createCard(CreateCardReqDto.builder().receiveMemberId(req.getReceiveMemberId())
-            .content(req.getContent()).seasonId(req.getSeasonId()).path(imgUrl).isCustom(true)
+            .content(req.getContent()).seasonId(req.getSeasonId())
+            .path(uploadCustomPlanetImg(image, req.getSeasonId())).isCustom(true)
             .writerName(req.getWriterName()).build());
         return ResponseEntity.ok(BaseResponse.ofSuccess(ResponseCode.CREATED));
     }
