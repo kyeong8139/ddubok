@@ -1,6 +1,6 @@
 package com.ddubok.api.card.service;
 
-import com.ddubok.api.card.dto.request.CreateCardReq;
+import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
 
 public interface CardService {
@@ -10,7 +10,7 @@ public interface CardService {
      *
      * @param req 카드를 생성하는데 필요한 정보
      */
-    void createCard(CreateCardReq req);
+    void createCard(CreateCardReqDto req);
 
     /**
      * 카드를 삭제한다.
