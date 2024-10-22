@@ -20,6 +20,14 @@ spring:
     redis:
       host: localhost
       port: 6379
+  social:
+    kakao-id: ${KAKAO_ID}
+    naver-id: ${NAVER_ID}
+    naver-secret: ${NAVER_SECRET}
+    meta-id: ${META_ID}
+    meta-secret: ${META_SECRET}
+    google-id: ${GOOGLE_ID}
+    google-secret: ${GOOGLE_SECRET}
 
 #swagger : account ?? ???? ??
 springdoc:
@@ -38,3 +46,4 @@ cloud:
       auto: false
     stack:
       auto: false
+

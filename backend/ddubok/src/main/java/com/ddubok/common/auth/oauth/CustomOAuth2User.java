@@ -1,12 +1,17 @@
 package com.ddubok.common.auth.oauth;
 
+import com.ddubok.common.auth.dto.MemberAuthDto;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public class CustomOAuth2User implements OAuth2User {
+@RequiredArgsConstructor
+public class CustomOAuth2User implements OAuth2User, CustomUser {
+
+    private final MemberAuthDto memberAuthDto;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -15,11 +20,31 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return memberAuthDto.getRole();
+            }
+        });
+
+        return collection;
     }
 
     @Override
     public String getName() {
-        return "";
+        return memberAuthDto.getNickname();
+    }
+
+    @Override
+    public String getRole() {
+        return memberAuthDto.getRole();
+    }
+
+    @Override
+    public Long getId() {
+        return memberAuthDto.getMemberId();
     }
 }

@@ -7,33 +7,29 @@ import com.ddubok.common.auth.dto.MemberAuthDto;
 import com.ddubok.common.auth.dto.OAuth2Response;
 import com.ddubok.common.auth.service.NicknameService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOidcUserService extends OidcUserService {
 
     private final OAuth2ResponseFactory oAuth2ResponseFactory;
     private final MemberRepository memberRepository;
     private final NicknameService nicknameService;
-    private final OidcUserService delegate = new OidcUserService();
 
     @Override
-    @Transactional
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = super.loadUser(userRequest);
+    public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+        OidcUser oidcUser = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = oAuth2ResponseFactory.getOAuth2UserInfo(registrationId,
-            oauth2User.getAttributes());
+            oidcUser.getAttributes());
         MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response);
 
-        return new CustomOAuth2User(memberAuthDto);
+        return new CustomOidcUser(memberAuthDto, oidcUser.getIdToken(), oidcUser.getUserInfo());
     }
 
     private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response) {
