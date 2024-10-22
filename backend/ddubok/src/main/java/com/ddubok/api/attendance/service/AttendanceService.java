@@ -1,15 +1,14 @@
 package com.ddubok.api.attendance.service;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.ddubok.api.attendance.dto.response.AttendanceHistoryRes;
 
 public interface AttendanceService {
 
     /**
-     * 특정 유저가 이번달에 출석한 일자의 리스트를 반환함
+     * 특정 유저의 이번달 출석 기록을 반환함
      *
-     * @param memberId 유저의 id
-     * @return 유저가 이번달에 출석한 일자의 리스트
+     * @param memberId 유저의 id값
+     * @return 유저의 이번달 출석 기록 객체
      */
-    List<LocalDate> getAttendanceList(Long memberId);
+    AttendanceHistoryRes getAttendanceHistoryThisMonth(Long memberId);
 }
