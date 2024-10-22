@@ -23,6 +23,7 @@ public enum ResponseCode {
 
     // 600 - card
     CARD_NOT_FOUND("600", "카드를 찾을 수 없음"),
+    CARD_ALREADY_DELETED("601", "이미 삭제된 카드"),
 
     // 700 - album
     ALBUM_NOT_FOUND("700", "앨범을 찾을 수 없음"),
