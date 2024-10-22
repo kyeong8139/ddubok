@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CommonExceptionHandler {
 
     @ExceptionHandler({
+        /*
+         * todo : CommonException를 상속받은 class로 변경
+         */
         CommonException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
