@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public class CreateCardReq {
 
-    private Long receiveMemberId;
     private String content;
     private String writerName;
     private Long seasonId;

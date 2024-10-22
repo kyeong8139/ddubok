@@ -1,7 +1,6 @@
 package com.ddubok.api.card.entity;
 
 import com.ddubok.api.admin.entity.Season;
-import com.ddubok.api.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,11 +13,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * 카드 정보에 관련된 엔티티 클래스
@@ -37,12 +36,6 @@ public class Card {
     @Column(name = "card_id")
     private Long id;
     /**
-     * 카드를 받는 사용자의 아이디
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = true)
-    private Member member;
-    /**
      * 카드의 내용
      */
     @Column(nullable = false)
@@ -50,6 +43,7 @@ public class Card {
     /**
      * 카드 생성 일자
      */
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
     /**
@@ -86,16 +80,15 @@ public class Card {
      * 기본 생성자이며, 카드의 오픈일자를 시즌의 카드 오픈일자로 지정하고, 상태를 {@code State.READY}로 설정
      * </p>
      *
-     * @param memberOpt  카드를 받을 유저의 고유 id
      * @param content    카드의 내용
      * @param path       카드 이미지 url
      * @param writerName 카드를 보낸 사람 닉네임
      * @param season     카드의 시즌 정보
      */
     @Builder
-    public Card(Optional<Member> memberOpt, String content, String path, String writerName,
+    public Card(String content, String path, String writerName,
         Season season) {
-        this(memberOpt.orElse(null), content, season.getOpenedAt(), path, State.READY, writerName,
+        this(content, season.getOpenedAt(), path, State.READY, writerName,
             season);
     }
 
@@ -105,7 +98,6 @@ public class Card {
      * 모든 필드를 초기화
      * </p>
      *
-     * @param member     카드를 받을 유저의 고유 id
      * @param content    카드의 내용
      * @param openedAt   카드가 오픈될 예정일
      * @param path       카드 이미지 url
@@ -113,9 +105,8 @@ public class Card {
      * @param writerName 카드를 보낸 사람 닉네임
      * @param season     카드의 시즌 정보
      */
-    private Card(Member member, String content, LocalDateTime openedAt, String path, State state,
+    private Card(String content, LocalDateTime openedAt, String path, State state,
         String writerName, Season season) {
-        this.member = member;
         this.content = content;
         this.openedAt = openedAt;
         this.path = path;

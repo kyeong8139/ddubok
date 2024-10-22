@@ -8,14 +8,15 @@ public interface CardService {
     /**
      * 카드를 생성한다.
      *
-     * @param req 카드를 생성하는데 필요한 정보
+     * @param dto 카드를 생성하는데 필요한 정보
+     * @return 생성된 카드의 고유 id
      */
-    void createCard(CreateCardReqDto req);
+    Long createCard(CreateCardReqDto dto);
 
     /**
      * 카드를 삭제한다.
      *
-     * @param req 카드를 삭제하는데 필요한 정보
+     * @param dto 카드를 삭제하는데 필요한 정보
      */
-    void deleteCard(DeleteCardReq req);
+    void deleteCard(DeleteCardReq dto);
 }

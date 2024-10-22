@@ -29,19 +29,22 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<?>> createCard(
+    public BaseResponse<?> createCard(
         @RequestPart(name = "image", required = false) MultipartFile image,
         @RequestPart CreateCardReq req) {
-        cardService.createCard(CreateCardReqDto.builder().receiveMemberId(req.getReceiveMemberId())
-            .content(req.getContent()).seasonId(req.getSeasonId())
-            .path(uploadCustomPlanetImg(image, req.getSeasonId())).isCustom(true)
-            .writerName(req.getWriterName()).build());
-        return ResponseEntity.ok(BaseResponse.ofSuccess(ResponseCode.CREATED));
+        Long cardId = cardService.createCard(CreateCardReqDto.builder()
+            .content(req.getContent())
+            .seasonId(req.getSeasonId())
+            .path(uploadCustomPlanetImg(image, req.getSeasonId()))
+            .isCustom(true)
+            .writerName(req.getWriterName())
+            .build());
+        return BaseResponse.ofSuccess(cardId);
     }
 
     @DeleteMapping("/{cardId}")
-    public ResponseEntity<BaseResponse<?>> deleteCard(@PathVariable String cardId) {
-        return ResponseEntity.ok(BaseResponse.ofSuccess(ResponseCode.DELETED));
+    public BaseResponse<?> deleteCard(@PathVariable String cardId) {
+        return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
 
     @GetMapping
