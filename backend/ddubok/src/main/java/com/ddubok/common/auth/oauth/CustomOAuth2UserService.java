@@ -37,7 +37,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response) {
-        System.out.println(oAuth2Response);
         String id = oAuth2Response.getProviderId();
         String socialProvider = oAuth2Response.getProvider();
 

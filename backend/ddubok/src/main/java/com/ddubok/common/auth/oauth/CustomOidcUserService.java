@@ -36,7 +36,6 @@ public class CustomOidcUserService extends OidcUserService {
         String id = oAuth2Response.getProviderId();
         String socialProvider = oAuth2Response.getProvider();
 
-        System.out.println("OICD : " + id + " " + socialProvider);
         Member member = memberRepository.findBySocialId(id)
             .orElseGet(() -> {
                 Member newMember = Member.builder()

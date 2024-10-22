@@ -1,16 +1,30 @@
 package com.ddubok.common.auth.registration;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.stereotype.Component;
 
 @Component
+@Setter
+@Getter
+@ConfigurationProperties(prefix = "spring.social")
 public class SocialClientRegistration {
+
+    private String kakaoId;
+    private String naverId;
+    private String naverSecret;
+    private String metaId;
+    private String metaSecret;
+    private String googleId;
+    private String googleSecret;
 
     public ClientRegistration kakaoClientRegistration() {
         return ClientRegistration.withRegistrationId("kakao")
-            .clientId("6a7ddc490e7bc00b00cc66c5241048ed")
+            .clientId(kakaoId)
             .redirectUri("http://localhost:8080/api/login/oauth2/code/kakao")
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .scope()
@@ -23,8 +37,8 @@ public class SocialClientRegistration {
 
     public ClientRegistration naverClientRegistration() {
         return ClientRegistration.withRegistrationId("naver")
-            .clientId("pB4sVsA3vzTtTc85_65u")
-            .clientSecret("byi9Wst3A_")
+            .clientId(naverId)
+            .clientSecret(naverSecret)
             .redirectUri("http://localhost:8080/api/login/oauth2/code/naver")
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .scope()
@@ -37,8 +51,8 @@ public class SocialClientRegistration {
 
     public ClientRegistration metaClientRegistration() {
         return ClientRegistration.withRegistrationId("facebook")
-            .clientId("1198754194560080")
-            .clientSecret("7788fda0c1b01f0aa711f6b24743285c")
+            .clientId(metaId)
+            .clientSecret(metaSecret)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("http://localhost:8080/api/login/oauth2/code/facebook")
             .scope()
@@ -51,8 +65,8 @@ public class SocialClientRegistration {
 
     public ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
-            .clientId("1052542036504-i8etlisvr1r6g3iah11vo4dpc6qgn8l7.apps.googleusercontent.com")
-            .clientSecret("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")
+            .clientId(googleId)
+            .clientSecret(googleSecret)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("http://localhost:8080/api/login/oauth2/code/google")
             .scope("openid")
