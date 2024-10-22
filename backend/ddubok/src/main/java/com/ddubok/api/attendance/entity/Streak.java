@@ -37,6 +37,11 @@ public class Streak {
     @Column(nullable = false)
     private Integer currentStreak;
     /**
+     * 이번달 최장 출석 스트릭 일자
+     */
+    @Column(nullable = false)
+    private Integer maxStreak;
+    /**
      * 출석 스트릭 변경 일자
      */
     @Column(nullable = false)

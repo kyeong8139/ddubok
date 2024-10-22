@@ -1,6 +1,9 @@
 package com.ddubok.api.attendance.repository;
 
-import org.springframework.stereotype.Repository;
+import com.ddubok.api.attendance.entity.Streak;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface StreakRepository {}
+public interface StreakRepository extends JpaRepository<Streak, Long> {
+
+    Streak findByMemberId(Long memberId);
+}
