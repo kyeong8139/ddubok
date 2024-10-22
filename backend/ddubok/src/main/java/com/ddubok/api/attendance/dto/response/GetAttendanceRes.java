@@ -11,6 +11,6 @@ import lombok.Getter;
 public class GetAttendanceRes {
 
     List<LocalDate> attendanceList;
-    int attendanceCount;
-    int maxAttendanceStreak;
+    Integer attendanceCount;
+    Integer maxAttendanceStreak;
 }

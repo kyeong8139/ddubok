@@ -20,13 +20,13 @@ public class AttendanceController {
 
     final private AttendanceService attendanceService;
 
-    @GetMapping("")
+    @GetMapping
     public BaseResponse<GetAttendanceRes> getAttendance() {
 
         /*
          * todo memberId를 실제 데이터로 변경
          */
-        Long memberId = 1L;
+        Long memberId = 2L;
 
         /*
          * todo maxAttendanceStreak 관련 로직 작성
