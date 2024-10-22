@@ -38,7 +38,7 @@ public class AttendanceServiceImpl implements AttendanceService {
      * @param memberId 유저의 id
      * @return 유저가 이번달에 출석한 일자의 리스트
      */
-    public List<LocalDate> getAttendanceList(Long memberId) {
+    private List<LocalDate> getAttendanceList(Long memberId) {
         int month = LocalDate.now().getMonthValue();
         return attendanceRepository.getDateByMemberIdAndMonth(memberId, month);
     }
@@ -50,7 +50,7 @@ public class AttendanceServiceImpl implements AttendanceService {
      * @param attendanceList 이번달 출석 기록
      * @return 이번달 최장 연속 출석 기간
      */
-    public int getMaxAttendanceStreak(Long memberId, List<LocalDate> attendanceList) {
+    private int getMaxAttendanceStreak(Long memberId, List<LocalDate> attendanceList) {
 
         /*
          *  if      출석 기록 < 2
