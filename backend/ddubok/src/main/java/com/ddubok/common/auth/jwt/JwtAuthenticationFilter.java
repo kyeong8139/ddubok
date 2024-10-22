@@ -20,7 +20,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
         String requestUri = request.getRequestURI();
         if (requestUri.startsWith("/api/auth") || requestUri.startsWith("/oauth")) {
             filterChain.doFilter(request, response);
@@ -39,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         accessToken = jwtTokenUtil.extractToken(accessToken);
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-        if(jwtTokenUtil.isExpired(accessToken)) {
+        if (jwtTokenUtil.isExpired(accessToken)) {
             String message = "AccessToken is Expired";
             sendErrorResponse(response, message, HttpServletResponse.SC_UNAUTHORIZED);
             return;
@@ -66,13 +67,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(member);
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null,
+            customOAuth2User.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }
 
-    private void sendErrorResponse(HttpServletResponse response, String message, int status) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, String message, int status)
+        throws IOException {
         response.setStatus(status);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

@@ -40,18 +40,18 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Long memberId = jwtTokenUtil.getMemberId(refresh);
-        if(jwtTokenUtil.isExpired(refresh)) {
+        if (jwtTokenUtil.isExpired(refresh)) {
             redisTemplate.delete("RT:" + memberId);
             throw new RuntimeException("Refresh expired");
         }
 
         // DB에 저장되어 있는지 확인
         String findRefresh = redisTemplate.opsForValue().get("RT:" + memberId);
-        if(findRefresh == null) {
+        if (findRefresh == null) {
             throw new RuntimeException("Refresh token not found");
         }
 
-        if(!findRefresh.equals(refresh)) {
+        if (!findRefresh.equals(refresh)) {
             throw new RuntimeException("Refresh Error");
         }
 
