@@ -4,6 +4,7 @@ import com.ddubok.api.card.dto.request.CreateCardReq;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
+import com.ddubok.api.card.dto.request.ReceiveCardReq;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.api.card.service.GetCardService;
 import com.ddubok.common.s3.S3ImageService;
@@ -50,6 +51,12 @@ public class CardController {
     public BaseResponse<?> deleteCard(@PathVariable Long cardId) {
         cardService.deleteCard(DeleteCardReq.builder().memberId(1l).cardId(cardId).build());
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
+    }
+
+    @PostMapping("/{cardId}")
+    public BaseResponse<?> receiveCard(@PathVariable Long cardId) {
+        cardService.receiveCard(ReceiveCardReq.builder().cardId(cardId).memberId(1l).build());
+        return BaseResponse.ofSuccess(ResponseCode.OK);
     }
 
     @GetMapping
