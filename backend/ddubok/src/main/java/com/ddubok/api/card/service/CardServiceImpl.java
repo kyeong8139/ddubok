@@ -4,14 +4,17 @@ import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
+import com.ddubok.api.card.dto.request.ReceiveCardReq;
 import com.ddubok.api.card.entity.Album;
 import com.ddubok.api.card.entity.Card;
 import com.ddubok.api.card.exception.AlbumAlreadyDeletedException;
 import com.ddubok.api.card.exception.AlbumNotFoundException;
+import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
 import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
+import com.ddubok.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final SeasonRepository seasonRepository;
     private final AlbumRepository albumRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * {@inheritDoc}
@@ -55,5 +59,17 @@ public class CardServiceImpl implements CardService {
             throw new MemberNotFoundException("Invalid member state: " + dto.getMemberId());
         }
         album.delete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void receiveCard(ReceiveCardReq dto) {
+        albumRepository.save(Album.builder()
+            .card(cardRepository.findById(dto.getCardId())
+                .orElseThrow(() -> new CardNotFoundException()))
+            .member(memberRepository.findById(dto.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException())).build());
     }
 }

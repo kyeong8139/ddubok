@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,6 +45,19 @@ public class Album {
      */
     @Column(nullable = false)
     private Boolean isDeleted;
+
+    /**
+     * 앨범 객체를 생성하는 생성자
+     *
+     * @param member 카드를 소유한 member
+     * @param card   소유할 카드 정보
+     */
+    @Builder
+    public Album(Member member, Card card) {
+        this.member = member;
+        this.card = card;
+        this.isDeleted = false;
+    }
 
     /**
      * 앨범에서 카드를 삭제하는 메서드

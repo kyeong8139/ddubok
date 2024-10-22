@@ -2,6 +2,7 @@ package com.ddubok.api.card.service;
 
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
+import com.ddubok.api.card.dto.request.ReceiveCardReq;
 
 public interface CardService {
 
@@ -19,4 +20,11 @@ public interface CardService {
      * @param dto 카드를 삭제하는데 필요한 정보
      */
     void deleteCard(DeleteCardReq dto);
+
+    /**
+     * 카드를 내 앨범에 전달 받는다.
+     *
+     * @param dto 전달 받을 카드 id
+     */
+    void receiveCard(ReceiveCardReq dto);
 }
