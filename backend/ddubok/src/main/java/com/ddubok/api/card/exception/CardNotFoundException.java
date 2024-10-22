@@ -1,7 +1,7 @@
 package com.ddubok.api.card.exception;
 
 /**
- * 행운 카드를 받을 수 없을때 발생되는 에러
+ * 해당 id의 카드가 존재하지 않을때 발생되는 에러
  */
 public class CardNotFoundException extends RuntimeException {
 
