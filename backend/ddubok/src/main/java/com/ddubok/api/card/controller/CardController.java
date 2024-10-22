@@ -2,6 +2,7 @@ package com.ddubok.api.card.controller;
 
 import com.ddubok.api.card.dto.request.CreateCardReq;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
+import com.ddubok.api.card.dto.request.DeleteCardReq;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
@@ -43,7 +44,8 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}")
-    public BaseResponse<?> deleteCard(@PathVariable String cardId) {
+    public BaseResponse<?> deleteCard(@PathVariable Long cardId) {
+        cardService.deleteCard(DeleteCardReq.builder().memberId(1L).cardId(cardId).build());
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
 

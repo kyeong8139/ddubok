@@ -7,4 +7,6 @@ import lombok.Getter;
 @Getter
 public class DeleteCardReq {
 
+    private Long cardId;
+    private Long memberId;
 }
