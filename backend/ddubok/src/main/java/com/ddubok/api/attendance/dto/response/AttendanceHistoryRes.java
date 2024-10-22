@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetAttendanceRes {
+public class AttendanceHistoryRes {
 
     List<LocalDate> attendanceList;
     Integer attendanceCount;
