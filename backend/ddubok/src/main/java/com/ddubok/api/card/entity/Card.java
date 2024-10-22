@@ -57,7 +57,7 @@ public class Card {
     @Column(nullable = false)
     private String path;
     /**
-     * 카드의 상태 <br> READY(오픈예정), OPEN(오픈됨), FILTERED(내용 필터링됨), DELETE(삭제됨)
+     * 카드의 상태 <br> READY(오픈예정), OPEN(오픈됨), FILTERED(내용 필터링됨)
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -7,6 +7,5 @@ public enum State {
 
     READY,
     OPEN,
-    FILTERED,
-    DELETE;
+    FILTERED;
 }

@@ -39,4 +39,16 @@ public class Album {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
+    /**
+     * 카드의 삭제 여부
+     */
+    @Column(nullable = false)
+    private Boolean isDeleted;
+
+    /**
+     * 앨범에서 카드를 삭제하는 메서드
+     */
+    public void delete() {
+        this.isDeleted = true;
+    }
 }
