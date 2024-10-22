@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @Entity
-@Table(name = "report")
+@Table(name = "season")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Season {
 
