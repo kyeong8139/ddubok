@@ -3,7 +3,9 @@ package com.ddubok.api.card.controller;
 import com.ddubok.api.card.dto.request.CreateCardReq;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
+import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.service.CardService;
+import com.ddubok.api.card.service.GetCardService;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.template.response.BaseResponse;
@@ -28,6 +30,7 @@ public class CardController {
 
     private final S3ImageService s3ImageService;
     private final CardService cardService;
+    private final GetCardService getCardService;
 
     @PostMapping
     public BaseResponse<?> createCard(
@@ -45,7 +48,7 @@ public class CardController {
 
     @DeleteMapping("/{cardId}")
     public BaseResponse<?> deleteCard(@PathVariable Long cardId) {
-        cardService.deleteCard(DeleteCardReq.builder().memberId(1L).cardId(cardId).build());
+        cardService.deleteCard(DeleteCardReq.builder().memberId(1l).cardId(cardId).build());
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
 
@@ -55,13 +58,9 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<BaseResponse<?>> getCardDetail(@PathVariable String cardId) {
-        return null;
-    }
-
-    @GetMapping("/{seasonId}")
-    public ResponseEntity<BaseResponse<?>> getCardListBySeason(@PathVariable String seasonId) {
-        return null;
+    public BaseResponse<?> getCardDetail(@PathVariable Long cardId) {
+        return BaseResponse.ofSuccess(getCardService.getCardDetail(
+            GetCardDetailReq.builder().cardId(cardId).memberId(1l).build()));
     }
 
     /**

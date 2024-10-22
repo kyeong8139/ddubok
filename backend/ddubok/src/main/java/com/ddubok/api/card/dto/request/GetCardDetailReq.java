@@ -7,4 +7,6 @@ import lombok.Getter;
 @Getter
 public class GetCardDetailReq {
 
+    private Long cardId;
+    private Long memberId;
 }
