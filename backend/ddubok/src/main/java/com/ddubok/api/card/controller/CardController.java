@@ -35,7 +35,7 @@ public class CardController {
         Long cardId = cardService.createCard(CreateCardReqDto.builder()
             .content(req.getContent())
             .seasonId(req.getSeasonId())
-            .path(uploadCustomPlanetImg(image, req.getSeasonId()))
+            .path(uploadCardImg(image, req.getSeasonId()))
             .isCustom(true)
             .writerName(req.getWriterName())
             .build());
@@ -65,12 +65,12 @@ public class CardController {
     /**
      * 카드 이미지를 업로드합니다.
      *
-     * @param customPlanetImg 업로드할 카드 이미지 파일입니다.
-     * @param seasonId        시즌 id입니다.
+     * @param cardImg  업로드할 카드 이미지 파일입니다.
+     * @param seasonId 시즌 id입니다.
      * @return 업로드된 이미지의 URL을 반환합니다.
      */
-    private String uploadCustomPlanetImg(MultipartFile customPlanetImg, Long seasonId) {
-        FileMetaInfo fileMetaInfo = s3ImageService.uploadCardImg(customPlanetImg, seasonId);
+    private String uploadCardImg(MultipartFile cardImg, Long seasonId) {
+        FileMetaInfo fileMetaInfo = s3ImageService.uploadCardImg(cardImg, seasonId);
         return fileMetaInfo.getUrl();
     }
 }
