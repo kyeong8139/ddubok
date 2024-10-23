@@ -15,7 +15,7 @@ public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
     private final MemberAuthDto memberAuthDto;
 
     public CustomOidcUser(MemberAuthDto memberAuthDto, OidcIdToken idToken, OidcUserInfo userInfo) {
-        super(Collections.singletonList(new SimpleGrantedAuthority(memberAuthDto.getRole())),
+        super(Collections.singletonList(new SimpleGrantedAuthority(memberAuthDto.getRole().name())),
             idToken,
             userInfo);
         this.memberAuthDto = memberAuthDto;
@@ -28,7 +28,7 @@ public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
 
     @Override
     public String getRole() {
-        return memberAuthDto.getRole();
+        return memberAuthDto.getRole().name();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return memberAuthDto.getRole();
+                return memberAuthDto.getRole().name();
             }
         });
 

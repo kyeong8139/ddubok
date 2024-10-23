@@ -11,15 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name="member")
+@Entity(name = "member")
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
     @Column(nullable = false)
     private String socialProvider;
@@ -30,8 +32,9 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String state;
+    private UserState state;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -46,7 +49,7 @@ public class Member {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.state = UserState.ACTIVATED.getValue();
+        this.state = UserState.ACTIVATED;
     }
 
     @PreUpdate

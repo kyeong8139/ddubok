@@ -13,7 +13,7 @@ public class KakaoResponse implements OAuth2Response {
 
     @Override
     public String getProvider() {
-        return SocialProvider.KAKAO.getValue();
+        return SocialProvider.KAKAO.name();
     }
 
     @Override

@@ -28,8 +28,13 @@ spring:
     meta-secret: ${META_SECRET}
     google-id: ${GOOGLE_ID}
     google-secret: ${GOOGLE_SECRET}
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${ACCESS_EXPIRATION}
+    refresh-token:
+      expiration: ${REFRESH_EXPIRATION}
+    redirect-url: ${JWT_REDIRECT_URL}
 
-#swagger : account ?? ???? ??
 springdoc:
   swagger-ui:
     path: /api/swagger-ui.html

@@ -13,7 +13,7 @@ public class MetaResponse implements OAuth2Response {
 
     @Override
     public String getProvider() {
-        return SocialProvider.META.getValue();
+        return SocialProvider.META.name();
     }
 
     @Override

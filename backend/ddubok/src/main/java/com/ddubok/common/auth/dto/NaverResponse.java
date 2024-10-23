@@ -13,7 +13,7 @@ public class NaverResponse implements OAuth2Response {
 
     @Override
     public String getProvider() {
-        return SocialProvider.NAVER.getValue();
+        return SocialProvider.NAVER.name();
     }
 
     @Override

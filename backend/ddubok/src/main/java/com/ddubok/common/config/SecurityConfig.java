@@ -1,5 +1,7 @@
 package com.ddubok.common.config;
 
+import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
+import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
@@ -15,16 +17,18 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final JwtTokenUtil jwtTokenUtil;
     private final CustomOidcUserService customOidcUserService;
-    private final SocialClientRegistrationConfig socialClientRegistrationConfig;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
@@ -45,8 +49,13 @@ public class SecurityConfig {
             );
 
         http
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenUtil),
+                UsernamePasswordAuthenticationFilter.class);
+
+        http
             .oauth2Login((oauth2) -> oauth2
-                .clientRegistrationRepository(socialClientRegistrationConfig.clientRegistrationRepository())
+                .clientRegistrationRepository(
+                    socialClientRegistrationConfig.clientRegistrationRepository())
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
@@ -56,7 +65,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/logout", "/api/auth/**").permitAll()
+                .requestMatchers("/api/logout", "/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated()
             );
 
