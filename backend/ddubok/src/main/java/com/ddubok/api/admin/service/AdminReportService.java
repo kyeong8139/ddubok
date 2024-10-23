@@ -14,7 +14,7 @@ public interface AdminReportService {
     /**
      * 현재 모든 신고 목록을 조회한다.
      *
-     * @param getReportListReq
+     * @param getReportListReq 신고 목록에 대한 필터링 정보를 담고 있는 Req
      * @return 모든 신고들을 반환한다.
      */
     List<GetReportDetailRes> getAllReportList(GetReportListReq getReportListReq);

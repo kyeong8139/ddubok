@@ -1,6 +1,7 @@
 package com.ddubok.api.report.entity;
 
 import com.ddubok.api.admin.exception.InvalidConditionException;
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -21,11 +22,9 @@ public enum State {
     }
 
     public static State fromName(String name) {
-        for (State state : values()) {
-            if (state.getName().equals(name)) {
-                return state;
-            }
-        }
-        throw new InvalidConditionException("잘못된 상태 값입니다: " + name);
+        return Arrays.stream(values())
+            .filter(state -> state.getName().equals(name))
+            .findFirst()
+            .orElseThrow(() -> new InvalidConditionException("잘못된 상태 값입니다: " + name));
     }
 }
