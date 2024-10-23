@@ -2,6 +2,7 @@ package com.ddubok.api.member.service;
 
 import com.ddubok.api.member.dto.response.MemberDetailRes;
 import com.ddubok.api.member.entity.Member;
+import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,8 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public MemberDetailRes getMemberDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
         return MemberDetailRes.builder().nickname(member.getNickname()).build();
     }
 }
