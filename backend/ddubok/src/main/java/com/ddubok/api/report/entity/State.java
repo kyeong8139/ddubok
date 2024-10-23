@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum State {
 
-    PROCESSED,
+    ACCEPT,
+    REJECT,
     UNPROCESSED;
 }

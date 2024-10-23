@@ -1,5 +1,7 @@
 package com.ddubok.api.report.entity;
 
+import com.ddubok.api.admin.entity.Season;
+import com.ddubok.api.card.entity.Card;
 import com.ddubok.api.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -65,6 +68,26 @@ public class Report {
     /**
      * 신고된 카드의 id
      */
-    @Column(nullable = false)
-    private Long cardId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id", nullable = false)
+    private Card card;
+    /**
+     * 신고 엔티티를 생성하는 빌더.
+     *
+     * <p>
+     * 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며,
+     * 신고 상태는 기본값으로 {@code State.UNPROCESSED}로 설정됩니다.
+     * </p>
+     *
+     * @param content    신고 내용 또는 사유
+     * @param member     신고한 멤버 (신고자)
+     * @param card       신고된 카드
+     */
+    @Builder
+    public Report(String content, Member member, Card card) {
+        this.content = content;
+        this.member = member;
+        this.card = card;
+        this.state = State.UNPROCESSED;  // 상태가 null일 경우 기본값으로 UNPROCESSED 설정
+    }
 }
