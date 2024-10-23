@@ -5,6 +5,7 @@ import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.ReceiveCardReq;
+import com.ddubok.api.card.dto.response.CardIdRes;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.api.card.service.GetCardService;
 import com.ddubok.common.s3.S3ImageService;
@@ -37,14 +38,11 @@ public class CardController {
     public BaseResponse<?> createCard(
         @RequestPart(name = "image", required = false) MultipartFile image,
         @RequestPart CreateCardReq req) {
-        Long cardId = cardService.createCard(CreateCardReqDto.builder()
-            .content(req.getContent())
-            .seasonId(req.getSeasonId())
-            .path(uploadCardImg(image, req.getSeasonId()))
-            .isCustom(true)
-            .writerName(req.getWriterName())
-            .build());
-        return BaseResponse.ofSuccess(cardId);
+        Long cardId = cardService.createCard(
+            CreateCardReqDto.builder().content(req.getContent()).seasonId(req.getSeasonId())
+                .path(uploadCardImg(image, req.getSeasonId())).isCustom(true)
+                .writerName(req.getWriterName()).build());
+        return BaseResponse.ofSuccess(CardIdRes.builder().cardId(cardId).build());
     }
 
     @DeleteMapping("/{cardId}")
@@ -61,6 +59,7 @@ public class CardController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<?>> getAllCardList() {
+        getCardService.getAllCardList(1l);
         return null;
     }
 
