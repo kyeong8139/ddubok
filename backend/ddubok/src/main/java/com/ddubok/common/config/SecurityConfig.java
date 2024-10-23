@@ -19,6 +19,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Spring Security 보안 설정 클래스.
+ * JWT 인증과 OAuth2 소셜 로그인을 구성한다.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -30,12 +34,37 @@ public class SecurityConfig {
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
+    /**
+     * AuthenticationManager 빈을 구성한다.
+     *
+     * @param configuration 인증 설정 객체
+     * @return AuthenticationManager 인스턴스
+     * @throws Exception 인증 관련 예외 발생 시
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
         throws Exception {
         return configuration.getAuthenticationManager();
     }
 
+    /**
+     * SecurityFilterChain을 구성한다.
+     *
+     * 주요 설정:
+     * 1. CSRF, 폼 로그인, HTTP Basic 인증 비활성화
+     * 2. Frame Options 설정 (same-origin 허용)
+     * 3. JWT 인증 필터 추가
+     * 4. OAuth2 로그인 설정
+     *    - 소셜 로그인 제공자 설정
+     *    - 인증 엔드포인트 설정
+     *    - 사용자 서비스 설정
+     * 5. URL 기반 접근 제어
+     * 6. 세션 관리 설정 (STATELESS)
+     *
+     * @param http HttpSecurity 객체
+     * @return 구성된 SecurityFilterChain
+     * @throws Exception 보안 설정 관련 예외 발생 시
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
