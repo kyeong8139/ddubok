@@ -12,5 +12,4 @@ public class AttendanceHistoryRes {
 
     List<LocalDate> attendanceList;
     Integer attendanceCount;
-    Integer maxAttendanceStreak;
 }
