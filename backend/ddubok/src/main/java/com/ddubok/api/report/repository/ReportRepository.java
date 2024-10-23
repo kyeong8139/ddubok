@@ -10,4 +10,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("SELECT r FROM Report r WHERE r.state = :state ORDER BY r.id DESC ")
     List<Report> findByState(State state);
+
+    @Query("SELECT r FROM Report r ORDER BY r.id DESC ")
+    List<Report> findAll();
 }

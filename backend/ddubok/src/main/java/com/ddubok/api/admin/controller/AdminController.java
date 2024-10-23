@@ -2,14 +2,13 @@ package com.ddubok.api.admin.controller;
 
 import com.ddubok.api.admin.dto.request.GetReportListReq;
 import com.ddubok.api.admin.service.AdminReportService;
-import java.util.List;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.service.MemberStatusService;
 import com.ddubok.api.admin.service.SeasonService;
 import com.ddubok.common.template.response.BaseResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +31,10 @@ public class AdminController {
      * @return 신고 목록
      */
     @GetMapping("/reports")
-    public ResponseEntity<BaseResponse<?>> getAllReportList(
+    public BaseResponse<?> getAllReportList(
         @RequestBody GetReportListReq getReportListReq
     ) {
         List<GetReportDetailRes> reportList = adminReportService.getAllReportList(getReportListReq);
-        return ResponseEntity.ok(BaseResponse.ofSuccess(reportList));
+        return BaseResponse.ofSuccess(reportList);
     }
 }

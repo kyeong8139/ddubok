@@ -1,5 +1,6 @@
 package com.ddubok.common.exception.handler;
 
+import com.ddubok.api.admin.exception.InvalidConditionException;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.member.exception.MemberNotFoundException;
@@ -26,7 +27,8 @@ public class CommonExceptionHandler {
         InvalidRefreshTokenException.class,
         UnsupportedOAuth2ProviderException.class,
         UnsupportedOAuth2UserTypeException.class,
-        MemberNotFoundException.class
+        MemberNotFoundException.class,
+        InvalidConditionException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handleCommonException(CommonException e) {

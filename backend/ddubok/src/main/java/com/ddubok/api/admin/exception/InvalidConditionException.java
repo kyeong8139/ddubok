@@ -1,6 +1,14 @@
 package com.ddubok.api.admin.exception;
 
-public class InvalidConditionException extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class InvalidConditionException extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.INVALID_CONDITION;
+    }
 
     public InvalidConditionException() {
     }
