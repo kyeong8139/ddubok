@@ -17,7 +17,7 @@ public interface AttendanceService {
      * 유저의 오늘자 출석 기록을 생성함
      *
      * @param memberId 유저의 id값
-     * @return 출석체크 결과 객체 (운세, 코인)
+     * @return 출석체크 결과 객체 (운세,)
      */
     CreateAttendanceRes createAttendance(Long memberId);
 }
