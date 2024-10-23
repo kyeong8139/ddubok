@@ -9,9 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -52,4 +55,33 @@ public class Streak {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public Streak(int currentStreak, int maxStreak, Member member) {
+        this.currentStreak = currentStreak;
+        this.maxStreak = maxStreak;
+        this.member = member;
+    }
+
+    public void resetCurrentStreak() {
+        this.currentStreak = 1;
+    }
+
+    public void resetMaxStreak() {
+        this.maxStreak = 1;
+    }
+
+    public void addCurrentStreak() {
+        this.currentStreak = this.currentStreak + 1;
+    }
+
+    public void syncMaxStreakWithCurrent() {
+        this.maxStreak = this.currentStreak;
+    }
 }
