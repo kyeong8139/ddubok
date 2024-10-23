@@ -1,3 +1,3 @@
 export default function Home() {
-	return <div className="font-pyeongchang">main</div>;
+	return <div className="font-pyeongchang text-white">main</div>;
 }

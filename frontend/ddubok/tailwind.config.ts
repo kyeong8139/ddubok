@@ -16,6 +16,7 @@ const config: Config = {
 				ddubokPurple: "#B693FE",
 				ddubokGreen: "#6EFFBF",
 				ddubokGray: "#DBDBDB",
+				ddubokBackground: "#17153B",
 			},
 			boxShadow: {
 				"custom-green": "0px 4px 0px 0px #329167",
