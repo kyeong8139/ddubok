@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,4 +43,10 @@ public class Attendance {
      */
     @Column(nullable = false)
     private LocalDate date;
+
+    @Builder
+    public Attendance(Member member) {
+        this.member = member;
+        this.date = LocalDate.now();
+    }
 }
