@@ -8,6 +8,7 @@ import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class GetCardServiceImpl implements GetCardService {
 
     private final AlbumRepository albumRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetCardDetailRes getCardDetail(GetCardDetailReq req) {
         Album album = albumRepository.findByCardIdAndMemberId(req.getCardId(), req.getMemberId())
@@ -36,13 +40,30 @@ public class GetCardServiceImpl implements GetCardService {
             .build();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req) {
         return List.of();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<GetCardDetailRes> getAllCardList(Integer memberId) {
-        return List.of();
+    public List<GetCardDetailRes> getAllCardList(Long memberId) {
+        List<Album> albums = albumRepository.findByMemberId(memberId).orElse(List.of());
+        return albums.stream()
+            .filter(album -> !album.getIsDeleted())
+            .map(album -> GetCardDetailRes.builder()
+                .id(album.getCard().getId())
+                .content(album.getCard().getContent())
+                .openedAt(album.getCard().getOpenedAt())
+                .path(album.getCard().getPath())
+                .state(album.getCard().getState())
+                .writerName(album.getCard().getWriterName())
+                .build())
+            .collect(Collectors.toList());
     }
 }

@@ -24,10 +24,13 @@ public interface GetCardService {
     List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req);
 
     /**
+     * <p>
      * 보유한 모든 카드 정보를 조회한다.
+     * </p>
+     * 삭제된 카드는 반환하지 않는다.
      *
      * @param memberId 보유한 카드를 조회하기 위한 멤버의 고유 id
      * @return 보유한 모든 카드들을 반환한다.
      */
-    List<GetCardDetailRes> getAllCardList(Integer memberId);
+    List<GetCardDetailRes> getAllCardList(Long memberId);
 }
