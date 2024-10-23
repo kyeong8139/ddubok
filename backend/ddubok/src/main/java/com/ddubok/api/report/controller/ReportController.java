@@ -1,6 +1,7 @@
 package com.ddubok.api.report.controller;
 
 import com.ddubok.api.report.dto.request.ReportMemberReq;
+import com.ddubok.api.report.dto.response.ReportMemberRes;
 import com.ddubok.api.report.service.ReportService;
 import com.ddubok.common.template.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +26,12 @@ public class ReportController {
      * @return 신고의 번호
      */
     @PostMapping("")
-    public BaseResponse<?> reportMember(
+    public ResponseEntity<BaseResponse<?>> reportMember(
         @RequestBody ReportMemberReq reportMemberReq){
-        System.out.println(1234);
-        System.out.println(reportMemberReq.getReportMemberId());
-        System.out.println(reportMemberReq.getCardId());
-        System.out.println(reportMemberReq.getContent());
         Long reportId = reportService.reportMember(reportMemberReq);
-        return BaseResponse.ofSuccess(reportId);
+        ReportMemberRes reportMemberRes = ReportMemberRes.builder()
+            .reportId(reportId)
+            .build();
+        return ResponseEntity.ok(BaseResponse.ofSuccess(reportMemberRes));
     }
 }
