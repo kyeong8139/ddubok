@@ -28,9 +28,8 @@ public class ReportController {
     @PostMapping("")
     public ResponseEntity<BaseResponse<?>> reportMember(
         @RequestBody ReportMemberReq reportMemberReq){
-        Long reportId = reportService.reportMember(reportMemberReq);
         ReportMemberRes reportMemberRes = ReportMemberRes.builder()
-            .reportId(reportId)
+            .reportId(reportService.reportMember(reportMemberReq))
             .build();
         return ResponseEntity.ok(BaseResponse.ofSuccess(reportMemberRes));
     }
