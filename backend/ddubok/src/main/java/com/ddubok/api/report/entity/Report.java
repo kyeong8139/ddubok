@@ -41,6 +41,11 @@ public class Report {
      * 신고에 대한 사유
      */
     @Column(nullable = false)
+    private String title;
+    /**
+     * 신고에 대한 사유
+     */
+    @Column(nullable = false)
     private String content;
     /**
      * 신고에 대한 처리 상태
@@ -74,20 +79,20 @@ public class Report {
     /**
      * 신고 엔티티를 생성하는 빌더.
      *
-     * <p>
      * 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며,
      * 신고 상태는 기본값으로 {@code State.UNPROCESSED}로 설정됩니다.
-     * </p>
      *
+     * @param title    신고 제목
      * @param content    신고 내용 또는 사유
      * @param member     신고한 멤버 (신고자)
      * @param card       신고된 카드
      */
     @Builder
-    public Report(String content, Member member, Card card) {
+    public Report(String title, String content, Member member, Card card) {
+        this.title = title;
         this.content = content;
         this.member = member;
         this.card = card;
-        this.state = State.UNPROCESSED;  // 상태가 null일 경우 기본값으로 UNPROCESSED 설정
+        this.state = State.UNPROCESSED;
     }
 }

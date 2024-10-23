@@ -37,6 +37,7 @@ public class ReportServiceImpl implements ReportService {
         Card card = cardRepository.findById(reportMemberReq.getCardId())
             .orElseThrow(() -> new CardNotFoundException("카드를 찾을 수 없습니다."));
         Report report = reportRepository.save(Report.builder()
+            .title(reportMemberReq.getTitle())
             .content(reportMemberReq.getContent())
             .member(member)
             .card(card)
