@@ -11,8 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
- * JWT 토큰의 생성, 파싱, 검증을 처리하는 유틸리티 클래스.
- * HS256 알고리즘을 사용하여 토큰을 서명한다.
+ * JWT 토큰의 생성, 파싱, 검증을 처리하는 유틸리티 클래스. HS256 알고리즘을 사용하여 토큰을 서명한다.
  */
 @Component
 public class JwtTokenUtil {
@@ -86,8 +85,7 @@ public class JwtTokenUtil {
     }
 
     /**
-     * Authorization 헤더에서 Bearer 토큰을 추출한다.
-     * "Bearer " 접두사를 제거하고 실제 토큰만 반환한다.
+     * Authorization 헤더에서 Bearer 토큰을 추출한다. "Bearer " 접두사를 제거하고 실제 토큰만 반환한다.
      *
      * @param token Authorization 헤더 값
      * @return Bearer 접두사가 제거된 토큰, 유효하지 않은 형식이면 null
@@ -102,9 +100,9 @@ public class JwtTokenUtil {
     /**
      * 새로운 JWT 토큰을 생성한다.
      *
-     * @param category 토큰 카테고리 (예 : "access", "refresh")
-     * @param memberId 멤버 ID
-     * @param role 멤버 역할
+     * @param category  토큰 카테고리 (예 : "access", "refresh")
+     * @param memberId  멤버 ID
+     * @param role      멤버 역할
      * @param expiredMs 토큰 만료 시간(밀리초)
      * @return 생성된 JWT 토큰
      */

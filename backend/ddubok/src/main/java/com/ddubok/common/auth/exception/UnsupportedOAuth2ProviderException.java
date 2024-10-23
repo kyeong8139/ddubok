@@ -25,7 +25,8 @@ public class UnsupportedOAuth2ProviderException extends CommonException {
         super(message, cause);
     }
 
-    public UnsupportedOAuth2ProviderException(String message, Throwable cause, boolean enableSuppression,
+    public UnsupportedOAuth2ProviderException(String message, Throwable cause,
+        boolean enableSuppression,
         boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

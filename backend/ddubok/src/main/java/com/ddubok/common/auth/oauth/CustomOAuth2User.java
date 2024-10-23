@@ -9,8 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 /**
- * OAuth2User 인터페이스의 커스텀 구현체.
- * MemberAuthDto를 통해 사용자 정보를 관리한다.
+ * OAuth2User 인터페이스의 커스텀 구현체. MemberAuthDto를 통해 사용자 정보를 관리한다.
  */
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User, CustomUser {
@@ -18,9 +17,7 @@ public class CustomOAuth2User implements OAuth2User, CustomUser {
     private final MemberAuthDto memberAuthDto;
 
     /**
-     * OAuth2 사용자의 속성을 반환한다.
-     * 현재 구현에서는 빈 Map을 반환한다.
-     * 사용하지는 않지만 필수 구현 메서드라 구현함.
+     * OAuth2 사용자의 속성을 반환한다. 현재 구현에서는 빈 Map을 반환한다. 사용하지는 않지만 필수 구현 메서드라 구현함.
      *
      * @return 빈 속성 Map
      */
@@ -71,6 +68,7 @@ public class CustomOAuth2User implements OAuth2User, CustomUser {
 
     /**
      * 멤버 ID를 반환한다.
+     *
      * @return 멤버 ID
      */
     @Override

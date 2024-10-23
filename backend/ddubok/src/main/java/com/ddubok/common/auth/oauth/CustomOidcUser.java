@@ -11,20 +11,18 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 
 /**
- * OidcUser 인터페이스의 커스텀 구현체.
- * MemberAuthDto를 통해 사용자 정보를 관리한다.
+ * OidcUser 인터페이스의 커스텀 구현체. MemberAuthDto를 통해 사용자 정보를 관리한다.
  */
 public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
 
     private final MemberAuthDto memberAuthDto;
 
     /**
-     * CustomOidcUser 생성자.
-     * 사용자의 권한, ID 토큰, 사용자 정보를 설정한다.
+     * CustomOidcUser 생성자. 사용자의 권한, ID 토큰, 사용자 정보를 설정한다.
      *
      * @param memberAuthDto 회원 인증 정보 DTO
-     * @param idToken OpenID Connect ID 토큰
-     * @param userInfo OpenID Connect 사용자 정보
+     * @param idToken       OpenID Connect ID 토큰
+     * @param userInfo      OpenID Connect 사용자 정보
      */
     public CustomOidcUser(MemberAuthDto memberAuthDto, OidcIdToken idToken, OidcUserInfo userInfo) {
         super(Collections.singletonList(new SimpleGrantedAuthority(memberAuthDto.getRole().name())),
@@ -35,6 +33,7 @@ public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
 
     /**
      * 멤버 ID를 반환한다.
+     *
      * @return 멤버 ID
      */
     @Override

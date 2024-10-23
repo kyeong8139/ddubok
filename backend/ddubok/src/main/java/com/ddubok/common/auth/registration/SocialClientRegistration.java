@@ -9,14 +9,9 @@ import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.stereotype.Component;
 
 /**
- * 소셜 로그인 제공자들의 OAuth2 클라이언트 등록 정보를 관리하는 클래스.
- * application.yml의 spring.social 설정값을 주입받는다.
- *
- * 지원하는 소셜 로그인:
- * - 카카오
- * - 네이버
- * - 메타
- * - 구글
+ * 소셜 로그인 제공자들의 OAuth2 클라이언트 등록 정보를 관리하는 클래스. application.yml의 spring.social 설정값을 주입받는다.
+ * <p>
+ * 지원하는 소셜 로그인: - 카카오 - 네이버 - 메타 - 구글
  */
 @Component
 @Setter
