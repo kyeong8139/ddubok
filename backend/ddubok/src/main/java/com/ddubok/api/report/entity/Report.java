@@ -38,7 +38,7 @@ public class Report {
     @Column(name = "report_id")
     private Long id;
     /**
-     * 신고에 대한 사유
+     * 신고에 대한 제목
      */
     @Column(nullable = false)
     private String title;
