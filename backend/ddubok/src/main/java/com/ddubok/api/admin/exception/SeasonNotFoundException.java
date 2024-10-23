@@ -1,6 +1,14 @@
 package com.ddubok.api.admin.exception;
 
-public class SeasonNotFoundException extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class SeasonNotFoundException extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.SEASON_NOT_FOUND;
+    }
 
     public SeasonNotFoundException() {
     }
