@@ -55,7 +55,7 @@ public class CardServiceImpl implements CardService {
         if (album.getIsDeleted()) {
             throw new AlbumAlreadyDeletedException("album already deleted: " + dto.getCardId());
         }
-        if (!album.getMember().getState().equals(UserState.ACTIVATED.getValue())) {
+        if (!album.getMember().getState().equals(UserState.ACTIVATED)) {
             throw new MemberNotFoundException("Invalid member state: " + dto.getMemberId());
         }
         album.delete();
