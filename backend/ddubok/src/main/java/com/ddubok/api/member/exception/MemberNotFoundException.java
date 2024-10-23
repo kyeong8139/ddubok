@@ -1,6 +1,14 @@
 package com.ddubok.api.member.exception;
 
-public class MemberNotFoundException extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class MemberNotFoundException extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.MEMBER_NOT_FOUND;
+    }
 
     public MemberNotFoundException() {
     }
