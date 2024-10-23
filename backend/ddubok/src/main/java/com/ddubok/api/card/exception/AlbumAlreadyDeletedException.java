@@ -1,6 +1,14 @@
 package com.ddubok.api.card.exception;
 
-public class AlbumAlreadyDeletedException extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class AlbumAlreadyDeletedException extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.ALBUM_ALREADY_DELETED;
+    }
 
     public AlbumAlreadyDeletedException() {
     }
