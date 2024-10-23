@@ -1,5 +1,6 @@
 package com.ddubok.common.exception.handler;
 
+import com.ddubok.api.admin.exception.InvalidConditionException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.card.exception.AlbumAlreadyDeletedException;
 import com.ddubok.api.card.exception.AlbumNotFoundException;
@@ -34,7 +35,8 @@ public class CommonExceptionHandler {
         S3Exception.class,
         AlbumAlreadyDeletedException.class,
         AlbumNotFoundException.class,
-        SeasonNotFoundException.class
+        SeasonNotFoundException.class,
+        InvalidConditionException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handleCommonException(CommonException e) {

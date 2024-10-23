@@ -34,7 +34,10 @@ public enum ResponseCode {
     INVALID_REFRESH_TOKEN("800", "Refresh 토큰을 찾을 수 없음"),
     RT_EXPIRED("801", "Refresh 토큰이 만료됨"),
     PROVIDER_UNSUPPORTED("802", "해당 소셜 제공자는 지원하지 않음"),
-    USER_TYPE_UNSUPPORTED("803", "해당 소셜 유저 타입을 지원하지 않음");
+    USER_TYPE_UNSUPPORTED("803", "해당 소셜 유저 타입을 지원하지 않음"),
+
+    // 900 - admin
+    INVALID_CONDITION("900", "조건이 올바르지 않음");
 
     private String code;
     private String message;
