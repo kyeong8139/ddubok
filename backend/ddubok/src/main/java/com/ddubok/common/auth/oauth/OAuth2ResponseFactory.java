@@ -5,6 +5,7 @@ import com.ddubok.common.auth.dto.KakaoResponse;
 import com.ddubok.common.auth.dto.MetaResponse;
 import com.ddubok.common.auth.dto.NaverResponse;
 import com.ddubok.common.auth.dto.OAuth2Response;
+import com.ddubok.common.auth.exception.UnsupportedOAuth2ProviderException;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +40,8 @@ public class OAuth2ResponseFactory {
             /*
                 todo : Exception 구현
              */
-            default -> throw new RuntimeException(
-                "Sorry! Login with " + registrationId + " is not supported yet.");
+            default -> throw new UnsupportedOAuth2ProviderException(
+                "해당 SNS(" + registrationId + ")는 지원하지 않습니다.");
         };
     }
 }

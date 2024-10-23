@@ -1,5 +1,6 @@
 package com.ddubok.common.auth.oauth;
 
+import com.ddubok.common.auth.exception.UnsupportedOAuth2UserTypeException;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * OAuth2 인증 성공 시 후처리를 담당하는 핸들러.
- * refresh 토큰을 생성하여 쿠키에 저장하고 Redis에 캐싱
+ * OAuth2 인증 성공 시 후처리를 담당하는 핸들러. refresh 토큰을 생성하여 쿠키에 저장하고 Redis에 캐싱
  */
 @Component
 @RequiredArgsConstructor
@@ -31,15 +31,13 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private final RedisTemplate<String, String> redisTemplate;
 
     /**
-     * OAuth2 인증 성공 시 실행되는 메서드
-     * CustomUser 정보를 추출하여 refresh 토큰을 생성하고,
-     * 생성된 토큰을 쿠키에 저장하고 redis에 캐싱한다.
+     * OAuth2 인증 성공 시 실행되는 메서드 CustomUser 정보를 추출하여 refresh 토큰을 생성하고, 생성된 토큰을 쿠키에 저장하고 redis에 캐싱한다.
      *
-     * @param request HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param request        HTTP 요청 객체
+     * @param response       HTTP 응답 객체
      * @param authentication 인증 정보
-     * @throws IOException 입출력 처리 중 발생할 수 있는 예외
-     * @throws ServletException 서블릿 처리 중 발생할 수 있는 예외
+     * @throws IOException              입출력 처리 중 발생할 수 있는 예외
+     * @throws ServletException         서블릿 처리 중 발생할 수 있는 예외
      * @throws IllegalArgumentException 지원하지 않는 사용자 타입인 경우
      */
     @Override
@@ -54,7 +52,8 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         } else if (principal instanceof CustomOAuth2User) {
             customUser = (CustomOAuth2User) principal;
         } else {
-            throw new IllegalArgumentException("Unsupported user type: " + principal.getClass());
+            throw new UnsupportedOAuth2UserTypeException("해당 유저 타입(" + principal.getClass()
+                + ")은 지원하지 않습니다.");
         }
 
         long userId = customUser.getId();
@@ -72,7 +71,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     /**
      * refresh 토큰을 redis에 저장한다.
      *
-     * @param memberId 멤버 ID
+     * @param memberId     멤버 ID
      * @param refreshToken refresh 토큰
      */
     private void saveRefreshTokenToRedis(long memberId, String refreshToken) {
@@ -85,10 +84,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     }
 
     /**
-     * 쿠키를 생성한다.
-     * 보안을 위해 secure 플래그를 설정한다.
+     * 쿠키를 생성한다. 보안을 위해 secure 플래그를 설정한다.
      *
-     * @param key 쿠키 키
+     * @param key   쿠키 키
      * @param value 쿠키 값
      * @return 생성된 쿠키 객체
      */
@@ -107,13 +105,12 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     }
 
     /**
-     * 인증 실패 시 실행되는 메서드
-     * 실패 시 지정된 URL로 리다이렉트 한다.
+     * 인증 실패 시 실행되는 메서드 실패 시 지정된 URL로 리다이렉트 한다.
      *
-     * @param request HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param request        HTTP 요청 객체
+     * @param response       HTTP 응답 객체
      * @param authentication 인증 정보
-     * @throws IOException 입출력 처리 중 발생할 수 있는 예외
+     * @throws IOException      입출력 처리 중 발생할 수 있는 예외
      * @throws ServletException 서블릿 처리 중 발생할 수 있는 예외
      */
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
