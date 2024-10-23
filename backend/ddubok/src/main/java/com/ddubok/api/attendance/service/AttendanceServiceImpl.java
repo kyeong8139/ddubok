@@ -1,7 +1,9 @@
 package com.ddubok.api.attendance.service;
 
 import com.ddubok.api.attendance.dto.response.AttendanceHistoryRes;
+import com.ddubok.api.attendance.dto.response.CoinRes;
 import com.ddubok.api.attendance.dto.response.CreateAttendanceRes;
+import com.ddubok.api.attendance.dto.response.FortuneRes;
 import com.ddubok.api.attendance.entity.Attendance;
 import com.ddubok.api.attendance.entity.Streak;
 import com.ddubok.api.attendance.repository.AttendanceRepository;
@@ -9,11 +11,10 @@ import com.ddubok.api.attendance.repository.FortuneRepository;
 import com.ddubok.api.attendance.repository.StreakRepository;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.entity.Role;
-import com.ddubok.api.member.entity.SocialProvider;
 import com.ddubok.api.member.entity.UserState;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,42 +42,6 @@ public class AttendanceServiceImpl implements AttendanceService {
             .attendanceCount(attendanceList.size())
             .maxAttendanceStreak(maxAttendanceStreak)
             .build();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public CreateAttendanceRes createAttendance(Long memberId) {
-
-        /*
-         * todo : Redis를 통하여 오늘의 운세 체크 여부 확인 로직 추가
-         */
-
-        /*
-         * todo : 실제 Member 객체로 변경
-         */
-        Member member = Member.builder()
-            .id(1L)
-            .role(Role.ROLE_USER)
-            .socialProvider("kakao")
-            .socialId("kakao123")
-            .nickname("lucky_user")
-            .state(UserState.ACTIVATED)
-            .createdAt(LocalDateTime.now())
-            .updatedAt(LocalDateTime.now())
-            .deletedAt(null)
-            .build();
-
-        Attendance attendance = Attendance.builder().member(member).build();
-        attendanceRepository.save(attendance);
-
-        /*
-         * todo : streak update
-         */
-
-        return getCreateAttendanceRes(member);
     }
 
     /**
@@ -114,8 +79,110 @@ public class AttendanceServiceImpl implements AttendanceService {
         return streak.getMaxStreak();
     }
 
-    private CreateAttendanceRes getCreateAttendanceRes(Member member) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public CreateAttendanceRes createAttendance(Long memberId) {
 
+        /*
+         * todo : Redis를 통하여 오늘의 출석 체크 여부 확인 로직 추가
+         */
+
+        /*
+         * todo : 실제 Member 객체로 변경
+         */
+        Member member = Member.builder().id(1L).role(Role.ROLE_USER).socialProvider("kakao")
+            .socialId("kakao123").nickname("lucky_user").state(UserState.ACTIVATED)
+            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).deletedAt(null).build();
+
+        Attendance attendance = Attendance.builder().member(member).build();
+        attendanceRepository.save(attendance);
+        updateStreak(member);
+
+        return getCreateAttendanceRes(member);
+    }
+
+    private void updateStreak(Member member) {
+        Optional<Streak> streakOptional = streakRepository.findByMember(member);
+        if (streakOptional.isEmpty()) {
+            createStreak(member);
+            return;
+        }
+
+        Streak streak = streakOptional.get();
+        StreakAction action = evaluateStreakState(streak);
+        switch (action) {
+            case RESET:
+                streak.resetCurrentStreak();
+                streak.resetMaxStreak();
+                break;
+            case RESET_CURRENT:
+                streak.resetCurrentStreak();
+                break;
+            case INCREMENT:
+                streak.addCurrentStreak();
+                if (streak.getCurrentStreak() > streak.getMaxStreak()) {
+                    streak.syncMaxStreakWithCurrent();
+                }
+                break;
+        }
+
+        streakRepository.save(streak);
+    }
+
+    private void createStreak(Member member) {
+        Streak streak = Streak.builder()
+            .currentStreak(1)
+            .maxStreak(1)
+            .member(member)
+            .build();
+
+        streakRepository.save(streak);
+    }
+
+    private StreakAction evaluateStreakState(Streak streak) {
+        int currentMonth = LocalDate.now().getMonthValue();
+        int updatedMonth = streak.getUpdatedAt().getMonthValue();
+        boolean isUpdatedThisMonth = (currentMonth == updatedMonth);
+
+        if (!isUpdatedThisMonth) {
+            return StreakAction.RESET;
+        }
+
+        int updatedDay = streak.getUpdatedAt().getDayOfMonth();
+        int today = LocalDate.now().getDayOfMonth();
+        boolean isAttendedYesterday = (today == updatedDay + 1);
+
+        if (!isAttendedYesterday) {
+            return StreakAction.RESET_CURRENT;
+        }
+
+        return StreakAction.INCREMENT;
+    }
+
+    private CreateAttendanceRes getCreateAttendanceRes(Member member) {
+        return CreateAttendanceRes.builder()
+            .coin(getCoinRes(member))
+            .fortune(getFortuneRes())
+            .attendanceHistory(getAttendanceHistoryThisMonth(member.getId()))
+            .build();
+    }
+
+    private FortuneRes getFortuneRes() {
+        int rowCount = fortuneRepository.getRowCount();
+        int rowNumber = (int) (Math.random() * (rowCount - 1));
+        String sentence = fortuneRepository.getRandomFortuneSentence(rowNumber);
+        int score = (int) (Math.random() * 40) + 60;
+
+        return FortuneRes.builder()
+            .sentence(sentence)
+            .score(score)
+            .build();
+    }
+
+    private CoinRes getCoinRes(Member member) {
         /*
          * todo : 코인 획득량 알고리즘 추가
          */
@@ -126,21 +193,9 @@ public class AttendanceServiceImpl implements AttendanceService {
          */
         int currentCoin = 10;
 
-        String fortune = getFortuneSentence();
-        int fortuneScore = Math.max(60, (int) (Math.random() * 100));
-
-        return CreateAttendanceRes.builder()
+        return CoinRes.builder()
             .changedCoinAmount(changedCoinAmount)
             .currentCoin(currentCoin)
-            .fortune(fortune)
-            .fortuneScore(fortuneScore)
             .build();
-    }
-
-    private String getFortuneSentence() {
-        int rowCount = fortuneRepository.getRowCount();
-        int rowNumber = (int) (Math.random() * (rowCount - 1));
-
-        return fortuneRepository.getRandomFortuneSentence(rowNumber);
     }
 }

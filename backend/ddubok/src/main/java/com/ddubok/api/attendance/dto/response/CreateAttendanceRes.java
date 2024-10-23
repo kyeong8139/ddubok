@@ -7,8 +7,7 @@ import lombok.Getter;
 @Builder
 public class CreateAttendanceRes {
 
-    Integer changedCoinAmount;
-    Integer currentCoin;
-    String fortune;
-    Integer fortuneScore;
+    CoinRes coin;
+    FortuneRes fortune;
+    AttendanceHistoryRes attendanceHistory;
 }
