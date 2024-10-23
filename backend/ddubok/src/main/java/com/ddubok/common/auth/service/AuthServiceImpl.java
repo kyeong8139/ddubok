@@ -1,5 +1,7 @@
 package com.ddubok.common.auth.service;
 
+import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
+import com.ddubok.common.auth.exception.RefreshTokenExpiredException;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,31 +37,28 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
-        /*
-            todo : CustomException 구현
-         */
         if (refresh == null) {
-            throw new RuntimeException("Refresh cookie not found");
+            throw new InvalidRefreshTokenException("Refresh cookie not found");
         }
 
         Long memberId = jwtTokenUtil.getMemberId(refresh);
         if (jwtTokenUtil.isExpired(refresh)) {
             redisTemplate.delete("RT:" + memberId);
-            throw new RuntimeException("Refresh expired");
+            throw new RefreshTokenExpiredException("Refresh expired");
         }
 
         String findRefresh = redisTemplate.opsForValue().get("RT:" + memberId);
         if (findRefresh == null) {
-            throw new RuntimeException("Refresh token not found");
+            throw new InvalidRefreshTokenException("Refresh token not found");
         }
 
         if (!findRefresh.equals(refresh)) {
-            throw new RuntimeException("Refresh Error");
+            throw new InvalidRefreshTokenException("Refresh Error");
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
-            throw new RuntimeException("Refresh token error");
+            throw new InvalidRefreshTokenException("Refresh token error");
         }
 
         String role = jwtTokenUtil.getRole(refresh);
