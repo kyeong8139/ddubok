@@ -19,6 +19,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
