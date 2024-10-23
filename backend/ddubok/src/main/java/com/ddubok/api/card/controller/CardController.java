@@ -4,6 +4,7 @@ import com.ddubok.api.card.dto.request.CreateCardReq;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
+import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.request.ReceiveCardReq;
 import com.ddubok.api.card.dto.response.CardIdRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
@@ -71,6 +72,12 @@ public class CardController {
     public BaseResponse<?> getCardDetail(@PathVariable Long cardId) {
         return BaseResponse.ofSuccess(getCardService.getCardDetail(
             GetCardDetailReq.builder().cardId(cardId).memberId(1l).build()));
+    }
+
+    @GetMapping("/albums/{seasonId}")
+    public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId) {
+        return BaseResponse.ofSuccess(getCardService.getCardListBySeason(
+            GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(1l).build()));
     }
 
     /**

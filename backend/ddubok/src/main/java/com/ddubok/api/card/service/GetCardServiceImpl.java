@@ -45,7 +45,18 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req) {
-        return List.of();
+        List<Album> albums = albumRepository.findByMemberId(req.getMemberId()).orElse(List.of());
+        return albums.stream()
+            .filter(album -> album.getCard().getSeason().getId().equals(req.getSeasonId()))
+            .map(album -> GetCardDetailRes.builder()
+                .id(album.getCard().getId())
+                .content(album.getCard().getContent())
+                .openedAt(album.getCard().getOpenedAt())
+                .path(album.getCard().getPath())
+                .state(album.getCard().getState())
+                .writerName(album.getCard().getWriterName())
+                .build())
+            .collect(Collectors.toList());
     }
 
     /**

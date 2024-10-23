@@ -7,4 +7,6 @@ import lombok.Getter;
 @Getter
 public class GetCardListBySeasonReq {
 
+    private Long seasonId;
+    private Long memberId;
 }
