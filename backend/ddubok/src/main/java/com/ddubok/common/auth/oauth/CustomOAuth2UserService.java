@@ -22,7 +22,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final OAuth2ResponseFactory oAuth2ResponseFactory;
     private final MemberRepository memberRepository;
     private final NicknameService nicknameService;
-    private final OidcUserService delegate = new OidcUserService();
 
     @Override
     @Transactional
@@ -46,7 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .socialId(id)
                     .socialProvider(socialProvider)
                     .nickname(nicknameService.createNickname())
-                    .role(Role.USER.getValue())
+                    .role(Role.ROLE_USER)
                     .build();
                 return memberRepository.save(newMember);
             });

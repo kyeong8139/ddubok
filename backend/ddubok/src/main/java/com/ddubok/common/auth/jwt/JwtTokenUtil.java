@@ -56,10 +56,10 @@ public class JwtTokenUtil {
         return null;
     }
 
-    public String createToken(String category, long userId, String role, Long expiredMs) {
+    public String createToken(String category, long memberId, String role, Long expiredMs) {
         return Jwts.builder()
             .claim("category", category)
-            .claim("memberId", userId)
+            .claim("memberId", memberId)
             .claim("role", role)
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + expiredMs))

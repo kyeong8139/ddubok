@@ -1,16 +1,13 @@
 package com.ddubok.api.member.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum SocialProvider {
 
-    KAKAO("kakao"),
-    META("meta"),
-    GOOGLE("google"),
-    NAVER("naver");
+    KAKAO,
+    META,
+    GOOGLE,
+    NAVER;
 
-    private final String value;
 }

@@ -42,7 +42,7 @@ public class CustomOidcUserService extends OidcUserService {
                     .socialId(id)
                     .socialProvider(socialProvider)
                     .nickname(nicknameService.createNickname())
-                    .role(Role.USER.getValue())
+                    .role(Role.ROLE_USER)
                     .build();
                 return memberRepository.save(newMember);
             });

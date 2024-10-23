@@ -45,7 +45,6 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Refresh expired");
         }
 
-        // DB에 저장되어 있는지 확인
         String findRefresh = redisTemplate.opsForValue().get("RT:" + memberId);
         if (findRefresh == null) {
             throw new RuntimeException("Refresh token not found");
