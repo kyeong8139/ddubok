@@ -1,6 +1,14 @@
 package com.ddubok.api.card.exception;
 
-public class AlbumNotFoundException extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class AlbumNotFoundException extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.ALBUM_NOT_FOUND;
+    }
 
     public AlbumNotFoundException() {
     }

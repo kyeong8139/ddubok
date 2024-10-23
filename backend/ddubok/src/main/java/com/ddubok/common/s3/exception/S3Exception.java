@@ -1,6 +1,14 @@
 package com.ddubok.common.s3.exception;
 
-public class S3Exception extends RuntimeException {
+import com.ddubok.common.exception.CommonException;
+import com.ddubok.common.template.response.ResponseCode;
+
+public class S3Exception extends CommonException {
+
+    @Override
+    public ResponseCode getResponseCode() {
+        return ResponseCode.FAIL_TO_UPLOAD_FILE;
+    }
 
     public S3Exception() {
     }
