@@ -13,5 +13,6 @@ public class ReportMemberReq {
 
     private Long reportMemberId;
     private Long cardId;
+    private String title;
     private String content;
 }
