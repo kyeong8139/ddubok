@@ -27,7 +27,8 @@ public enum ResponseCode {
 
     // 700 - album
     ALBUM_NOT_FOUND("700", "앨범을 찾을 수 없음"),
-    ALBUM_ALREADY_DELETED("701", "이미 삭제된 앨범");
+    ALBUM_ALREADY_DELETED("701", "이미 삭제된 앨범"),
+    NO_ALBUM("702", "보유한 카드가 없음");
 
     private String code;
     private String message;

@@ -6,15 +6,16 @@ import com.ddubok.api.card.dto.request.DeleteCardReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.ReceiveCardReq;
 import com.ddubok.api.card.dto.response.CardIdRes;
+import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.api.card.service.GetCardService;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.template.response.BaseResponse;
 import com.ddubok.common.template.response.ResponseCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,9 +59,12 @@ public class CardController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<?>> getAllCardList() {
-        getCardService.getAllCardList(1l);
-        return null;
+    public BaseResponse<?> getAllCardList() {
+        List<GetCardDetailRes> res = getCardService.getAllCardList(1l);
+        if (res.size() == 0) {
+            return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
+        }
+        return BaseResponse.ofSuccess(res);
     }
 
     @GetMapping("/{cardId}")
