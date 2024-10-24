@@ -3,6 +3,7 @@ package com.ddubok.api.report.controller;
 import com.ddubok.api.report.dto.request.ReportMemberReq;
 import com.ddubok.api.report.dto.response.ReportMemberRes;
 import com.ddubok.api.report.service.ReportService;
+import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.template.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportController {
 
     final private ReportService reportService;
+    private final AuthUtil authUtil;
+
 
     /**
      * 사용자가 카드의 내용을 신고하는 경우 사용하는 API
@@ -28,8 +31,9 @@ public class ReportController {
     @PostMapping("")
     public ResponseEntity<BaseResponse<?>> reportMember(
         @RequestBody ReportMemberReq reportMemberReq){
+        Long memberId = authUtil.getMemberId();
         ReportMemberRes reportMemberRes = ReportMemberRes.builder()
-            .reportId(reportService.reportMember(reportMemberReq))
+            .reportId(reportService.reportMember(memberId, reportMemberReq))
             .build();
         return ResponseEntity.ok(BaseResponse.ofSuccess(reportMemberRes));
     }

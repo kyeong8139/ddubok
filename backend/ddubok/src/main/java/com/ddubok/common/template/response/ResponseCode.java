@@ -17,6 +17,7 @@ public enum ResponseCode {
 
     // 400 - member
     MEMBER_NOT_FOUND("400", "멤버를 찾을 수 없음"),
+    MEMBER_UPDATED("401", "수정됨"),
 
     // 500 - season
     SEASON_NOT_FOUND("500", "시즌을 찾을 수 없음"),
@@ -37,7 +38,10 @@ public enum ResponseCode {
     USER_TYPE_UNSUPPORTED("803", "해당 소셜 유저 타입을 지원하지 않음"),
 
     // 900 - admin
-    INVALID_CONDITION("900", "조건이 올바르지 않음");
+    INVALID_CONDITION("900", "조건이 올바르지 않음"),
+    
+    // 1000 - report
+    INVALID_TYPE("1000", "타입이 올바르지 않음");
 
     private String code;
     private String message;

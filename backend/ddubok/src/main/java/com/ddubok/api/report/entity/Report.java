@@ -1,6 +1,5 @@
 package com.ddubok.api.report.entity;
 
-import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.card.entity.Card;
 import com.ddubok.api.member.entity.Member;
 import jakarta.persistence.Column;
@@ -45,6 +44,12 @@ public class Report {
     /**
      * 신고에 대한 사유
      */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type;
+    /**
+     * 신고에 대한 내용
+     */
     @Column(nullable = false)
     private String content;
     /**
@@ -88,8 +93,9 @@ public class Report {
      * @param card       신고된 카드
      */
     @Builder
-    public Report(String title, String content, Member member, Card card) {
+    public Report(String title, Type type,String content, Member member, Card card) {
         this.title = title;
+        this.type = type;
         this.content = content;
         this.member = member;
         this.card = card;
