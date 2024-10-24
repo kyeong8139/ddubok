@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
+import Header from "@components/common/header";
+
 import "./globals.css";
 
 const pyeongChangPeaceBold = localFont({
@@ -39,12 +42,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body
-				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`} 
+				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
 			>
-				<div className="font-sans min-h-screen min-w-max mx-auto w-full max-w-[480px] bg-ddubokBackground"
-				style={{
-					boxShadow: '0 14px 28px #0000001a, 0 10px 10px #0000001a',
-				}}>
+				<div
+					className="font-sans min-h-screen min-w-max mx-auto w-full max-w-[480px] bg-ddubokBackground"
+					style={{
+						boxShadow: "0 14px 28px #0000001a, 0 10px 10px #0000001a",
+					}}
+				>
+					<Header />
 					{children}
 				</div>
 			</body>
