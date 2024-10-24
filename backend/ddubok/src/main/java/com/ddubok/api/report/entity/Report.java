@@ -101,4 +101,13 @@ public class Report {
         this.card = card;
         this.state = State.UNPROCESSED;
     }
+    /**
+     * 신고의 상태를 수정한다.
+     *
+     * @param state 닉네임
+     */
+    public void updateReportState(State state) {
+        this.state = state;
+        this.processedAt = LocalDateTime.now();
+    }
 }
