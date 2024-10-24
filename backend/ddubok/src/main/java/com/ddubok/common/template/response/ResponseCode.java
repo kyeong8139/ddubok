@@ -18,6 +18,8 @@ public enum ResponseCode {
     // 400 - member
     MEMBER_NOT_FOUND("400", "멤버를 찾을 수 없음"),
     MEMBER_UPDATED("401", "수정됨"),
+    SOCIAL_ACCESS_TOKEN_NOT_FOUND("402", "소셜 액세스 토큰을 찾을 수 없습니다."),
+    INVALID_DELETE_MEMBER_ERROR("403", "연동 해제 중 문제가 발생하였습니다."),
 
     // 500 - season
     SEASON_NOT_FOUND("500", "시즌을 찾을 수 없음"),

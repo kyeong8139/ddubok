@@ -2,11 +2,11 @@ package com.ddubok.common.auth.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -24,8 +24,7 @@ public class JwtTokenUtil {
      * @param secret application.yml 설정된 JWT 시크릿 키
      */
     public JwtTokenUtil(@Value("${spring.jwt.secret}") String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-            Jwts.SIG.HS256.key().build().getAlgorithm());
+        secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -62,6 +61,18 @@ public class JwtTokenUtil {
     public String getRole(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
             .get("role", String.class);
+    }
+
+    /**
+     * 토큰에서 사용자의 해당 소셜 accessToken을 추출한다.
+     *
+     * @param token JWT 토큰
+     * @return 해당 소셜 accessToken
+     * @throws JwtException 토큰이 유효하지 않은 경우
+     */
+    public String getSocialAccessToken(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+            .get("socialAccessToken", String.class);
     }
 
     /**
@@ -106,6 +117,19 @@ public class JwtTokenUtil {
      * @param expiredMs 토큰 만료 시간(밀리초)
      * @return 생성된 JWT 토큰
      */
+    public String createToken(String category, long memberId, String role, String socialAccessToken,
+        Long expiredMs) {
+        return Jwts.builder()
+            .claim("category", category)
+            .claim("memberId", memberId)
+            .claim("role", role)
+            .claim("socialAccessToken", socialAccessToken)
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis() + expiredMs))
+            .signWith(secretKey)
+            .compact();
+    }
+
     public String createToken(String category, long memberId, String role, Long expiredMs) {
         return Jwts.builder()
             .claim("category", category)

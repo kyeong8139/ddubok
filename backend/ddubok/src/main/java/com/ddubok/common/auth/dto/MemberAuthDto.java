@@ -11,5 +11,6 @@ public class MemberAuthDto {
     private Long memberId;
     private Role role;
     private String nickname;
+    private String socialAccessToken;
 
 }

@@ -18,4 +18,11 @@ public interface CustomUser {
      * @return 사용자 역할 문자열
      */
     String getRole();
+
+    /**
+     * 사용자가 로그인한 소셜 서비스의 accessToken을 반환한다.
+     *
+     * @return 사용자가 로그인한 소셜 서비스의 accessToken
+     */
+    String getSocialAccessToken();
 }

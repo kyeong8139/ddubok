@@ -20,4 +20,5 @@ public interface MemberService {
      * @param updateMemberDto 변경할 정보
      */
     void updateMember(Long memberId, UpdateMemberReq updateMemberDto);
+
 }
