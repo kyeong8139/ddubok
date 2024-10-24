@@ -10,6 +10,7 @@ import com.ddubok.api.card.dto.response.CardIdRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.api.card.service.GetCardService;
+import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.template.response.BaseResponse;
@@ -32,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/cards")
 public class CardController {
 
+    private final AuthUtil authUtil;
+
     private final S3ImageService s3ImageService;
     private final CardService cardService;
     private final GetCardService getCardService;
@@ -49,19 +52,21 @@ public class CardController {
 
     @DeleteMapping("/{cardId}")
     public BaseResponse<?> deleteCard(@PathVariable Long cardId) {
-        cardService.deleteCard(DeleteCardReq.builder().memberId(1l).cardId(cardId).build());
+        cardService.deleteCard(
+            DeleteCardReq.builder().memberId(authUtil.getMemberId()).cardId(cardId).build());
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
 
     @PostMapping("/{cardId}")
     public BaseResponse<?> receiveCard(@PathVariable Long cardId) {
-        cardService.receiveCard(ReceiveCardReq.builder().cardId(cardId).memberId(1l).build());
+        cardService.receiveCard(
+            ReceiveCardReq.builder().cardId(cardId).memberId(authUtil.getMemberId()).build());
         return BaseResponse.ofSuccess(ResponseCode.OK);
     }
 
     @GetMapping
     public BaseResponse<?> getAllCardList() {
-        List<GetCardDetailRes> res = getCardService.getAllCardList(1l);
+        List<GetCardDetailRes> res = getCardService.getAllCardList(authUtil.getMemberId());
         if (res.size() == 0) {
             return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
         }
@@ -71,13 +76,14 @@ public class CardController {
     @GetMapping("/{cardId}")
     public BaseResponse<?> getCardDetail(@PathVariable Long cardId) {
         return BaseResponse.ofSuccess(getCardService.getCardDetail(
-            GetCardDetailReq.builder().cardId(cardId).memberId(1l).build()));
+            GetCardDetailReq.builder().cardId(cardId).memberId(authUtil.getMemberId()).build()));
     }
 
     @GetMapping("/albums/{seasonId}")
     public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId) {
         return BaseResponse.ofSuccess(getCardService.getCardListBySeason(
-            GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(1l).build()));
+            GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(authUtil.getMemberId())
+                .build()));
     }
 
     /**
