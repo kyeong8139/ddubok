@@ -47,7 +47,7 @@ public class AdminController {
      * @return 신고 내용에 대한 상세조회 반환
      */
     @GetMapping("/reports/{reportId}")
-    public BaseResponse<?> getAllReportList(@PathVariable Long reportId) {
+    public BaseResponse<?> getReportDetail(@PathVariable Long reportId) {
         GetReportDetailRes getReportDetailRes = adminReportService.getReportDetail(reportId);
         return BaseResponse.ofSuccess(getReportDetailRes);
     }

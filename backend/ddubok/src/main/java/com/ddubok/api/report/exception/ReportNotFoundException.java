@@ -7,7 +7,7 @@ public class ReportNotFoundException extends CommonException {
 
     @Override
     public ResponseCode getResponseCode() {
-        return null;
+        return ResponseCode.REPORT_NOT_FOUND;
     }
 
     public ReportNotFoundException() {
