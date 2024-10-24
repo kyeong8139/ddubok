@@ -53,7 +53,7 @@ public class AdminController {
         return BaseResponse.ofSuccess(getReportDetailRes);
     }
 
-    /**
+    /*
      * todo : 신고 ip 차단 및 AI 학습 자료로 활용예정
      */
     /**
