@@ -10,8 +10,11 @@ import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.entity.Role;
 import com.ddubok.api.member.entity.UserState;
 import jakarta.transaction.Transactional;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +26,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     final private AttendanceRepository attendanceRepository;
     final private FortuneRepository fortuneRepository;
+    final private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * {@inheritDoc}
@@ -55,9 +59,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public CreateAttendanceRes createAttendance(Long memberId) {
 
-        /*
-         * todo : Redis를 통하여 오늘의 출석 체크 여부 확인 로직 추가
-         */
+        String key = "Attendance:" + memberId;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            return (CreateAttendanceRes) redisTemplate.opsForValue().get(key);
+        }
 
         /*
          * todo : 실제 Member 객체로 변경
@@ -69,7 +74,20 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance attendance = Attendance.builder().member(member).build();
         attendanceRepository.save(attendance);
 
-        return getCreateAttendanceRes(member);
+        CreateAttendanceRes createAttendanceRes = getCreateAttendanceRes(member);
+        saveCreateAttendanceResToRedis(key, createAttendanceRes);
+
+        return createAttendanceRes;
+    }
+
+    private void saveCreateAttendanceResToRedis(String key,
+        CreateAttendanceRes value) {
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime midnight = now.toLocalDate().atTime(LocalTime.MIDNIGHT).plusDays(1);
+        Duration ttl = Duration.between(now, midnight);
+
+        redisTemplate.opsForValue().set(key, value, ttl);
     }
 
     private CreateAttendanceRes getCreateAttendanceRes(Member member) {
