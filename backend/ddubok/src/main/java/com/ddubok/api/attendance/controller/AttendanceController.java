@@ -3,6 +3,7 @@ package com.ddubok.api.attendance.controller;
 import com.ddubok.api.attendance.dto.response.AttendanceHistoryRes;
 import com.ddubok.api.attendance.dto.response.CreateAttendanceRes;
 import com.ddubok.api.attendance.service.AttendanceService;
+import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.template.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttendanceController {
 
     final private AttendanceService attendanceService;
+    final private AuthUtil authUtil;
 
     @GetMapping
     public BaseResponse<AttendanceHistoryRes> getAttendanceHistory() {
 
-        /*
-         * todo memberId를 실제 데이터로 변경
-         */
-        Long memberId = 1L;
+        Long memberId = authUtil.getMemberId();
         AttendanceHistoryRes res = attendanceService.getAttendanceHistoryThisMonth(memberId);
 
         return BaseResponse.ofSuccess(res);
@@ -34,10 +33,7 @@ public class AttendanceController {
     @PostMapping
     public BaseResponse<CreateAttendanceRes> createAttendance() {
 
-        /*
-         * todo memberId를 실제 데이터로 변경
-         */
-        Long memberId = 1L;
+        Long memberId = authUtil.getMemberId();
         CreateAttendanceRes res = attendanceService.createAttendance(memberId);
 
         return BaseResponse.ofSuccess(res);

@@ -9,6 +9,8 @@ import com.ddubok.api.attendance.repository.FortuneRepository;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.entity.Role;
 import com.ddubok.api.member.entity.UserState;
+import com.ddubok.api.member.exception.MemberNotFoundException;
+import com.ddubok.api.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     final private AttendanceRepository attendanceRepository;
     final private FortuneRepository fortuneRepository;
+    final private MemberRepository memberRepository;
     final private RedisTemplate<String, Object> redisTemplate;
 
     /**
@@ -64,13 +67,8 @@ public class AttendanceServiceImpl implements AttendanceService {
             return (CreateAttendanceRes) redisTemplate.opsForValue().get(key);
         }
 
-        /*
-         * todo : 실제 Member 객체로 변경
-         */
-        Member member = Member.builder().id(1L).role(Role.ROLE_USER).socialProvider("kakao")
-            .socialId("kakao123").nickname("lucky_user").state(UserState.ACTIVATED)
-            .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).deletedAt(null).build();
-
+        Member member = memberRepository.findById(memberId).orElseThrow(
+            MemberNotFoundException::new);
         Attendance attendance = Attendance.builder().member(member).build();
         attendanceRepository.save(attendance);
 
