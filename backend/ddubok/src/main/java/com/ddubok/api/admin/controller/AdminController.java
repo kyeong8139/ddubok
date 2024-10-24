@@ -1,6 +1,8 @@
 package com.ddubok.api.admin.controller;
 
+import com.ddubok.api.admin.dto.request.GetMemberListReq;
 import com.ddubok.api.admin.dto.request.GetReportListReq;
+import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.service.AdminReportService;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
@@ -67,5 +69,19 @@ public class AdminController {
         @PathVariable Long reportId, @RequestBody GetReportListReq getReportListReq) {
         GetReportListRes getReportState = adminReportService.handleReport(reportId,getReportListReq);
         return BaseResponse.ofSuccess(getReportState);
+    }
+
+    /**
+     * 관리자가 사용자 목록을 조회합니다.
+     *
+     * @param getMemberListReq 필터링 및 검색 조건
+     * @return 사용자 목록
+     */
+    @GetMapping("/members")
+    public BaseResponse<?> getAllMemberList(
+        @RequestBody GetMemberListReq getMemberListReq
+    ) {
+        List<GetMemberListRes> memberList = memberStatusService.getMemberList(getMemberListReq);
+        return BaseResponse.ofSuccess(memberList);
     }
 }
