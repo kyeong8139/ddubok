@@ -1,6 +1,5 @@
 package com.ddubok.api.report.service;
 
-import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.card.entity.Card;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.CardRepository;
@@ -9,8 +8,8 @@ import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.report.dto.request.ReportMemberReq;
 import com.ddubok.api.report.entity.Report;
+import com.ddubok.api.report.entity.Type;
 import com.ddubok.api.report.repository.ReportRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +30,16 @@ public class ReportServiceImpl implements ReportService {
      * {@inheritDoc}
      */
     @Override
-    public Long reportMember(ReportMemberReq reportMemberReq) {
-        Member member = memberRepository.findById(reportMemberReq.getReportMemberId())
+    public Long reportMember(Long memberId, ReportMemberReq reportMemberReq) {
+        String stringType = reportMemberReq.getType();
+        Type type = Type.fromTypeName(stringType);
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException("유저 번호가 정확하지 않습니다."));
         Card card = cardRepository.findById(reportMemberReq.getCardId())
             .orElseThrow(() -> new CardNotFoundException("카드를 찾을 수 없습니다."));
         Report report = reportRepository.save(Report.builder()
             .title(reportMemberReq.getTitle())
+            .type(type)
             .content(reportMemberReq.getContent())
             .member(member)
             .card(card)

@@ -9,8 +9,10 @@ public interface ReportService {
 
     /**
      * 카드의 내용을 신고
+     * 
+     * @param memberId 신고한 멤버의 번호
      * @param reportMemberReq 신고할 내용을 담은 객체
      * @return 생성된 신고의 고유 id
      */
-    Long reportMember(ReportMemberReq reportMemberReq);
+    Long reportMember(Long memberId, ReportMemberReq reportMemberReq);
 }

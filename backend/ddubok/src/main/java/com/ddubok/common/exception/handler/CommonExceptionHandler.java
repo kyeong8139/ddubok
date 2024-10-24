@@ -7,6 +7,7 @@ import com.ddubok.api.card.exception.AlbumNotFoundException;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.member.exception.MemberNotFoundException;
+import com.ddubok.api.report.exception.InvalidTypeException;
 import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
 import com.ddubok.common.auth.exception.RefreshTokenExpiredException;
 import com.ddubok.common.auth.exception.UnsupportedOAuth2ProviderException;
@@ -36,7 +37,8 @@ public class CommonExceptionHandler {
         AlbumAlreadyDeletedException.class,
         AlbumNotFoundException.class,
         SeasonNotFoundException.class,
-        InvalidConditionException.class
+        InvalidConditionException.class,
+        InvalidTypeException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handleCommonException(CommonException e) {
