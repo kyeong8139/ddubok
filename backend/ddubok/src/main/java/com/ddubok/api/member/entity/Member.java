@@ -92,6 +92,7 @@ public class Member {
 
     /**
      * 멤버 닉네임을 수정한다.
+     *
      * @param nickname 닉네임
      */
     public void updateNickname(String nickname) {
