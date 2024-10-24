@@ -21,8 +21,17 @@ public interface AdminReportService {
     /**
      * 신고번호에 해당하는 신고의 상세정보를 조회한다.
      *
-     * @param reportId 상세조회할 신고정보
+     * @param reportId 상세조회할 신고번호
      * @return 해당 신고의 상세정보를 반환한다.
      */
     GetReportDetailRes getReportDetail(Long reportId);
+
+    /**
+     * 신고번호에 해당하는 신고의 상태를 변경한다.
+     *
+     * @param reportId 변경할 신고번호
+     * @param getReportListReq 수락,반려, 미처리등을 결정
+     * @return 로직을 마치고 해당 신고의 신고번호, 신고제목, 상태를 반환한다.
+     */
+    GetReportListRes handleReport(Long reportId, GetReportListReq getReportListReq);
 }

@@ -49,6 +49,9 @@ public class AdminReportServiceImpl implements AdminReportService {
             .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public GetReportDetailRes getReportDetail(Long reportId) {
         Report report = reportRepository.findById(reportId).orElseThrow(
@@ -59,6 +62,22 @@ public class AdminReportServiceImpl implements AdminReportService {
             .type(report.getType().toTypeName())
             .cardId(report.getCard().getId())
             .content(report.getContent())
+            .build();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public GetReportListRes handleReport(Long reportId, GetReportListReq getReportListReq) {
+        Report report = reportRepository.findById(reportId).orElseThrow(
+            () -> new ReportNotFoundException("report not found: " + reportId)
+        );
+        report.updateReportState(State.fromName(getReportListReq.getState()));
+        return GetReportListRes.builder()
+            .id(reportId)
+            .title(report.getTitle())
+            .state(report.getState().toName())
             .build();
     }
 }
