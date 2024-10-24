@@ -41,7 +41,8 @@ public enum ResponseCode {
     INVALID_CONDITION("900", "조건이 올바르지 않음"),
     
     // 1000 - report
-    INVALID_TYPE("1000", "타입이 올바르지 않음");
+    INVALID_TYPE("1000", "타입이 올바르지 않음"),
+    REPORT_NOT_FOUND("1001", "신고를 찾을수 없음");
 
     private String code;
     private String message;

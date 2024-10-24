@@ -2,8 +2,10 @@ package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.GetReportListReq;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
+import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.report.entity.Report;
 import com.ddubok.api.report.entity.State;
+import com.ddubok.api.report.exception.ReportNotFoundException;
 import com.ddubok.api.report.repository.ReportRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class AdminReportServiceImpl implements AdminReportService {
      * @inheritDoc
      */
     @Override
-    public List<GetReportDetailRes> getAllReportList(GetReportListReq getReportListReq) {
+    public List<GetReportListRes> getAllReportList(GetReportListReq getReportListReq) {
         String stateString = getReportListReq.getState();
         List<Report> reports = new ArrayList<>();
 
@@ -39,11 +41,24 @@ public class AdminReportServiceImpl implements AdminReportService {
         }
 
         return reports.stream()
-            .map(report -> GetReportDetailRes.builder()
+            .map(report -> GetReportListRes.builder()
                 .id(report.getId())
                 .title(report.getTitle())
                 .state(report.getState().toName())  // Enum을 문자열로 변환
                 .build())
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public GetReportDetailRes getReportDetail(Long reportId) {
+        Report report = reportRepository.findById(reportId).orElseThrow(
+            () -> new ReportNotFoundException("report not found: " + reportId)
+        );
+        return GetReportDetailRes.builder()
+            .title(report.getTitle())
+            .type(report.getType().toTypeName())
+            .cardId(report.getCard().getId())
+            .content(report.getContent())
+            .build();
     }
 }
