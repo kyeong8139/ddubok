@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Member {
 
     /**
-     *  멤버 고유 ID
+     * 멤버 고유 ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,57 +23,57 @@ public class Member {
     private Long id;
 
     /**
-     *  멤버 역할
+     * 멤버 역할
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     /**
-     *  가입 SNS
+     * 가입 SNS
      */
     @Column(nullable = false)
     private String socialProvider;
 
     /**
-     *  SNS 제공 고유 ID
+     * SNS 제공 고유 ID
      */
     @Column(nullable = false)
     private String socialId;
 
     /**
-     *  멤버 닉네임
+     * 멤버 닉네임
      */
     @Column(nullable = false)
     private String nickname;
 
     /**
-     *  멤버 상태 <br> ACTIVATED(활성), INACTIVATED(비활성), BANNED(차단)
+     * 멤버 상태 <br> ACTIVATED(활성), INACTIVATED(비활성), BANNED(차단)
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserState state;
 
     /**
-     *  가입 날짜
+     * 가입 날짜
      */
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     /**
-     *  수정 날짜
+     * 수정 날짜
      */
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     /**
-     *  탈퇴 날짜
+     * 탈퇴 날짜
      */
     @Column
     private LocalDateTime deletedAt;
 
     /**
-     *  생성 시 자동 할당해주는 메서드
+     * 생성 시 자동 할당해주는 메서드
      */
     @PrePersist
     protected void onCreate() {
@@ -83,11 +83,18 @@ public class Member {
     }
 
     /**
-     *  업데이트 시 자동 할당해주는 메서드
+     * 업데이트 시 자동 할당해주는 메서드
      */
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * 멤버 닉네임을 수정한다.
+     * @param nickname 닉네임
+     */
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

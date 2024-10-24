@@ -17,6 +17,7 @@ public enum ResponseCode {
 
     // 400 - member
     MEMBER_NOT_FOUND("400", "멤버를 찾을 수 없음"),
+    MEMBER_UPDATED("401", "수정됨"),
 
     // 500 - season
     SEASON_NOT_FOUND("500", "시즌을 찾을 수 없음"),
