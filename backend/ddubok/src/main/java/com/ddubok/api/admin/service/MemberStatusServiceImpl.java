@@ -30,21 +30,7 @@ public class MemberStatusServiceImpl implements MemberStatusService {
     public List<GetMemberListRes> getMemberList(GetMemberListReq getMemberListReq) {
         String stateString = getMemberListReq.getState();
         String searchName = getMemberListReq.getSearchName();
-        List<Member> memberList = new ArrayList<>();
-        if(stateString == null && searchName == null) {
-            memberList = memberRepository.findAll();
-        }
-        if(stateString == null && searchName != null) {
-            memberList = memberRepository.findByNicknameContaining(searchName);
-        }
-        if(stateString != null && searchName == null) {
-            UserState userState = UserState.fromUserStateName(stateString);
-            memberList = memberRepository.findByState(userState);
-        }
-        if(stateString != null && searchName != null) {
-            UserState userState = UserState.fromUserStateName(stateString);
-            memberList = memberRepository.findByStateAndNickname(userState, searchName);
-        }
+        List<Member> memberList = getMembersByConditions(stateString, searchName);
         return memberList.stream()
             .map(member -> GetMemberListRes.builder()
                 .memberId(member.getId())
@@ -52,5 +38,20 @@ public class MemberStatusServiceImpl implements MemberStatusService {
                 .state(member.getState().toUserStateName())
                 .build())
             .collect(Collectors.toList());
+    }
+
+    private List<Member> getMembersByConditions(String stateString, String searchName){
+        List<Member> memberList = new ArrayList<>();
+        if(stateString == null) {
+            if(searchName == null) {
+                return memberList = memberRepository.findAll();
+            }
+            return memberList = memberRepository.findByNicknameContaining(searchName);
+        }
+        UserState userState = UserState.fromUserStateName(stateString);
+        if(searchName == null) {
+            return memberRepository.findByState(userState);
+        }
+        return memberRepository.findByStateAndNickname(userState, searchName);
     }
 }
