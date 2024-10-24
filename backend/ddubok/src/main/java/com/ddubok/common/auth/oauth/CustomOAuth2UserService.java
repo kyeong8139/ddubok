@@ -43,7 +43,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = oAuth2ResponseFactory.getOAuth2UserInfo(registrationId,
             oauth2User.getAttributes());
-        MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response);
+
+        String socialAccessToken = userRequest.getAccessToken().getTokenValue();
+        MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response, socialAccessToken);
 
         return new CustomOAuth2User(memberAuthDto);
     }
@@ -57,7 +59,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      * @param oAuth2Response OAuth2 인증 응답 정보
      * @return 회원 인증 정보 DTO
      */
-    private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response) {
+    private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response,
+        String socialAccessToken) {
         String id = oAuth2Response.getProviderId();
         String socialProvider = oAuth2Response.getProvider();
 
@@ -73,9 +76,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             });
 
         return MemberAuthDto.builder()
-            .nickname(member.getNickname())
-            .role(member.getRole())
             .memberId(member.getId())
+            .role(member.getRole())
+            .nickname(member.getNickname())
+            .socialAccessToken(socialAccessToken)
             .build();
     }
 }

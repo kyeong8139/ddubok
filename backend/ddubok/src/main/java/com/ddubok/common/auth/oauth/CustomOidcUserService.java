@@ -37,21 +37,22 @@ public class CustomOidcUserService extends OidcUserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = oAuth2ResponseFactory.getOAuth2UserInfo(registrationId,
             oidcUser.getAttributes());
-        MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response);
+
+        String socialAccessToken = userRequest.getAccessToken().getTokenValue();
+        MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response, socialAccessToken);
 
         return new CustomOidcUser(memberAuthDto, oidcUser.getIdToken(), oidcUser.getUserInfo());
     }
 
     /**
-     * OAuth2 인증 정보를 기반으로 회원 정보를 처리한다. 기존 회원이 아닌 경우 새로운 회원을 생성한다.
-     * <p>
-     * 회원 생성 시 설정되는 정보: - 소셜 ID (제공자별 고유 식별자) - 소셜 제공자 (GOOGLE, META) - 닉네임 (자동 생성) - 역할
-     * (ROLE_USER)
+     * OAuth2 인증 정보를 기반으로 회원 정보를 처리한다. 기존 회원이 아닌 경우 새로운 회원을 생성한다. 회원 생성 시 설정되는 정보: - 소셜 ID (제공자별 고유
+     * 식별자) - 소셜 제공자 (GOOGLE, META) - 닉네임 (자동 생성) - 역할 (ROLE_USER)
      *
      * @param oAuth2Response OAuth2 인증 응답 정보
      * @return 회원 인증 정보 DTO
      */
-    private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response) {
+    private MemberAuthDto processOAuth2User(OAuth2Response oAuth2Response,
+        String socialAccessToken) {
         String id = oAuth2Response.getProviderId();
         String socialProvider = oAuth2Response.getProvider();
 
@@ -67,9 +68,10 @@ public class CustomOidcUserService extends OidcUserService {
             });
 
         return MemberAuthDto.builder()
-            .nickname(member.getNickname())
-            .role(member.getRole())
             .memberId(member.getId())
+            .role(member.getRole())
+            .nickname(member.getNickname())
+            .socialAccessToken(socialAccessToken)
             .build();
     }
 }

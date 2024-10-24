@@ -58,9 +58,10 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         long userId = customUser.getId();
         String role = customUser.getRole();
+        String socialAccessToken = customUser.getSocialAccessToken();
 
         String refreshToken = jwtTokenUtil.createToken("refresh", userId, role,
-            expiration);
+            socialAccessToken, expiration);
         Cookie refreshCookie = createCookie("refresh", refreshToken);
         saveRefreshTokenToRedis(userId, refreshToken);
 
