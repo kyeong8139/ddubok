@@ -41,12 +41,11 @@ public class MemberStatusServiceImpl implements MemberStatusService {
     }
 
     private List<Member> getMembersByConditions(String stateString, String searchName){
-        List<Member> memberList = new ArrayList<>();
         if(stateString == null) {
             if(searchName == null) {
-                return memberList = memberRepository.findAll();
+                return memberRepository.findAll();
             }
-            return memberList = memberRepository.findByNicknameContaining(searchName);
+            return memberRepository.findByNicknameContaining(searchName);
         }
         UserState userState = UserState.fromUserStateName(stateString);
         if(searchName == null) {
