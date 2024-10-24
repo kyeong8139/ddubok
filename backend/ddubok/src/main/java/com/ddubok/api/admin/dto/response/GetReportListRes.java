@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetReportDetailRes {
+public class GetReportListRes {
 
+    private Long id;
     private String title;
-    private String type;
-    private Long cardId;
-    private String content;
+    private String state;
 }
