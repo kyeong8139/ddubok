@@ -37,7 +37,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
+    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
 
     /**
      * {@inheritDoc}
