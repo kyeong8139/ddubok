@@ -107,8 +107,8 @@ public class Member {
      * @param role 역할
      */
     public void updateRole(Role role) {
-        if(role==null) {
-            throw new UnknownRoleException("알 수 없는 상태입니다. " + state);
+        if (role == null) {
+            throw new UnknownRoleException("알 수 없는 상태입니다. " + role);
         }
         switch (role) {
             case ROLE_USER:
@@ -128,7 +128,7 @@ public class Member {
      * @param state 상태
      */
     public void updateUserState(UserState state) {
-        if(state==null){
+        if (state == null) {
             throw new UnknownStateException("알 수 없는 상태입니다. " + state);
         }
         switch (state) {
