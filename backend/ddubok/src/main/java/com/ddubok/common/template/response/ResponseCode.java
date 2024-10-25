@@ -41,6 +41,8 @@ public enum ResponseCode {
 
     // 900 - admin
     INVALID_CONDITION("900", "조건이 올바르지 않음"),
+    UNKNOWN_ROLE("901", "알수 없는 역할"),
+    UNKNOWN_STATE("902", "알수 없는 상태"),
     
     // 1000 - report
     INVALID_TYPE("1000", "타입이 올바르지 않음"),

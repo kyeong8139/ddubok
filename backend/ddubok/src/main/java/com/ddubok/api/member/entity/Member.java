@@ -1,5 +1,7 @@
 package com.ddubok.api.member.entity;
 
+import com.ddubok.api.member.exception.UnknownRoleException;
+import com.ddubok.api.member.exception.UnknownStateException;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -99,6 +101,45 @@ public class Member {
         this.nickname = nickname;
     }
 
+    /**
+     * 멤버의 역할을 수정한다.
+     *
+     * @param role 역할
+     */
+    public void updateRole(Role role) {
+        switch (role) {
+            case ROLE_USER:
+                this.role = Role.ROLE_ADMIN;
+                break;
+            case ROLE_ADMIN:
+                this.role = Role.ROLE_USER;
+                break;
+            default:
+                throw new UnknownRoleException("알 수 없는 역할입니다. " + role);
+        }
+    }
+
+    /**
+     * 멤버의 상태를 수정한다.
+     *
+     * @param state 상태
+     */
+    public void updateUserState(UserState state) {
+        switch (state) {
+            case BANNED:
+                this.state = UserState.ACTIVATED;
+                break;
+            case ACTIVATED:
+                this.state = UserState.BANNED;
+                break;
+            default:
+                throw new UnknownStateException("알 수 없는 상태입니다. " + state);
+        }
+    }
+
+    /**
+     * 멤버를 삭제한다.
+     */
     public void deleteMember() {
         this.socialId = "INACTIVATED";
         this.state = UserState.INACTIVATED;

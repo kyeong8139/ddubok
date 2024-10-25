@@ -5,6 +5,8 @@ import com.ddubok.api.admin.dto.request.GetReportListReq;
 import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
+import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
+import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
 import com.ddubok.api.admin.service.AdminReportService;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.admin.service.MemberStatusService;
@@ -98,5 +100,33 @@ public class AdminController {
     ) {
         GetMemberDetailRes memberDetail = memberStatusService.getMemberDetail(memberId);
         return BaseResponse.ofSuccess(memberDetail);
+    }
+
+    /**
+     * 관리자가 사용자의 역할을 변경합니다.
+     *
+     * @param memberId 역할을 변경할 사용자의 번호
+     * @return 해당 사용자의 번호와 변경된 역할
+     */
+    @GetMapping("/members/role/{memberId}")
+    public BaseResponse<?> updateMemberRole(
+        @PathVariable Long memberId
+    ) {
+        UpdateMemberRoleRes updateMemberRoleRes = memberStatusService.updateMemberRole(memberId);
+        return BaseResponse.ofSuccess(updateMemberRoleRes);
+    }
+
+    /**
+     * 관리자가 사용자의 상태를 변경합니다.
+     *
+     * @param memberId 상태를 변경할 사용자의 번호
+     * @return 해당 사용자의 번호와 변경된 상태
+     */
+    @GetMapping("/members/state/{memberId}")
+    public BaseResponse<?> updateMemberState(
+        @PathVariable Long memberId
+    ) {
+        UpdateMemberStateRes updateMemberStateRes = memberStatusService.updateMemberState(memberId);
+        return BaseResponse.ofSuccess(updateMemberStateRes);
     }
 }
