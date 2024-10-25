@@ -41,17 +41,12 @@ public class SeasonServiceImpl implements SeasonService {
 
     /**
      * 시작일, 종료일, 오픈일 검증
+     *
      * @param createSeasonReqDto 요청 데이터
      */
     private void validateSeasonDates(CreateSeasonReqDto createSeasonReqDto) {
         if (createSeasonReqDto.getStartedAt().isAfter(createSeasonReqDto.getEndedAt())) {
             throw new InvalidDateOrderException("시작일은 종료일보다 앞서야 합니다.");
         }
-
-        if (createSeasonReqDto.getOpenedAt().isAfter(createSeasonReqDto.getEndedAt())) {
-            throw new InvalidDateOrderException("오픈일은 종료일보다 앞서야 합니다.");
-        }
-
-
     }
 }

@@ -143,8 +143,8 @@ public class AdminController {
     /**
      * 관리자가 시즌을 등록합니다.
      *
-     * @param
-     *
+     * @param images 배너에 활용될 이미지 리스트
+     * @param createSeasonReq 생성될 시즌의 정보를 갖고 있는 객체
      */
     @PostMapping("/seasons")
     public BaseResponse<?> createSeason(
