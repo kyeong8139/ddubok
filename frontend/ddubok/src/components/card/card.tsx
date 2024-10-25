@@ -1,7 +1,7 @@
 // components/Card.tsx
 import React from "react";
 
-import { ICardProps } from "../../interface/components/card";
+import { ICardProps } from "@interface/components/card";
 
 import Image from "next/image";
 

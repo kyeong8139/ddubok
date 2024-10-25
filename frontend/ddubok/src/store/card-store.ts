@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ICardState } from "../interface/store/card-store";
+import { ICardState } from "@interface/store/card-store";
 
 export const useCardStore = create<ICardState>()((set) => ({
 	selectedImage: null,

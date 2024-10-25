@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-import { useCardStore } from "../../store/card-store";
-import Card from "../../components/card/card";
-import Loading from "../../components/common/loading";
+import { useCardStore } from "@store/card-store";
+import Card from "@components/card/card";
+import Loading from "@components/common/loading";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
