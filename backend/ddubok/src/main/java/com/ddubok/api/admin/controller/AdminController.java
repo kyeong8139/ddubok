@@ -108,7 +108,7 @@ public class AdminController {
      * @param memberId 역할을 변경할 사용자의 번호
      * @return 해당 사용자의 번호와 변경된 역할
      */
-    @GetMapping("/members/role/{memberId}")
+    @PatchMapping("/members/role/{memberId}")
     public BaseResponse<?> updateMemberRole(
         @PathVariable Long memberId
     ) {
@@ -122,7 +122,7 @@ public class AdminController {
      * @param memberId 상태를 변경할 사용자의 번호
      * @return 해당 사용자의 번호와 변경된 상태
      */
-    @GetMapping("/members/state/{memberId}")
+    @PatchMapping("/members/state/{memberId}")
     public BaseResponse<?> updateMemberState(
         @PathVariable Long memberId
     ) {
