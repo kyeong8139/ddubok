@@ -2,6 +2,7 @@ package com.ddubok.api.admin.controller;
 
 import com.ddubok.api.admin.dto.request.GetMemberListReq;
 import com.ddubok.api.admin.dto.request.GetReportListReq;
+import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.service.AdminReportService;
@@ -83,5 +84,19 @@ public class AdminController {
     ) {
         List<GetMemberListRes> memberList = memberStatusService.getMemberList(getMemberListReq);
         return BaseResponse.ofSuccess(memberList);
+    }
+
+    /**
+     * 관리자가 사용자를 상세 조회합니다.
+     *
+     * @param memberId 상세조회할 사용자의 번호
+     * @return 해당 사용자의 정보를 반환한다.
+     */
+    @GetMapping("/members/{memberId}")
+    public BaseResponse<?> getMemberDetail(
+        @PathVariable Long memberId
+    ) {
+        GetMemberDetailRes memberDetail = memberStatusService.getMemberDetail(memberId);
+        return BaseResponse.ofSuccess(memberDetail);
     }
 }
