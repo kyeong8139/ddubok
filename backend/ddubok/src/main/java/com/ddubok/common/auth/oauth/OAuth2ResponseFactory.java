@@ -33,9 +33,6 @@ public class OAuth2ResponseFactory {
             case "naver" -> new NaverResponse(attributes);
             case "kakao" -> new KakaoResponse(attributes);
             case "facebook" -> new MetaResponse(attributes);
-            /*
-                todo : Exception 구현
-             */
             default -> throw new UnsupportedOAuth2ProviderException(
                 "해당 SNS(" + registrationId + ")는 지원하지 않습니다.");
         };

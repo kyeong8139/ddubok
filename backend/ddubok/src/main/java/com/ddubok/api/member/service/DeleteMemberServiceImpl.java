@@ -37,6 +37,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
+    private static final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
 
     /**
      * {@inheritDoc}
@@ -63,7 +64,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
     private ResponseEntity<Object> sendUnlinkRequestByProvider(String socialProvider,
         Long memberId) {
 
-        String token = redisTemplate.opsForValue().get("RT:" + memberId);
+        String token = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (token == null) {
             throw new InvalidRefreshTokenException("리프레시 토큰을 찾을 수 없습니다.");
         }

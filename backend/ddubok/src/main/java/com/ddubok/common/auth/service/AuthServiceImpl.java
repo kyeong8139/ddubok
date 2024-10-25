@@ -20,6 +20,9 @@ public class AuthServiceImpl implements AuthService {
     private Long expiration;
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
+    private final String REFRESH_TOKEN_COOKIE_NAME = "refresh";
+    private final String ACCESS_TOKEN_COOKIE_NAME = "access";
 
     /**
      * {@inheritDoc}
@@ -31,8 +34,7 @@ public class AuthServiceImpl implements AuthService {
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-
+            if (cookie.getName().equals(REFRESH_TOKEN_COOKIE_NAME)) {
                 refresh = cookie.getValue();
             }
         }
@@ -43,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
 
         Long memberId = jwtTokenUtil.getMemberId(refresh);
         if (jwtTokenUtil.isExpired(refresh)) {
-            redisTemplate.delete("RT:" + memberId);
+            redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
             throw new RefreshTokenExpiredException("Refresh expired");
         }
 
-        String findRefresh = redisTemplate.opsForValue().get("RT:" + memberId);
+        String findRefresh = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (findRefresh == null) {
             throw new InvalidRefreshTokenException("Refresh token not found");
         }
@@ -57,12 +59,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
-        if (!category.equals("refresh")) {
+        if (!category.equals(REDIS_REFRESH_TOKEN_PREFIX)) {
             throw new InvalidRefreshTokenException("Refresh token error");
         }
 
         String role = jwtTokenUtil.getRole(refresh);
-        String newAccess = jwtTokenUtil.createToken("access", memberId, role, expiration);
+        String newAccess = jwtTokenUtil.createToken(ACCESS_TOKEN_COOKIE_NAME, memberId, role, expiration);
         response.setHeader("Authorization", "Bearer " + newAccess);
 
     }
