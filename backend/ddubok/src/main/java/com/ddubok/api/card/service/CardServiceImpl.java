@@ -15,14 +15,27 @@ import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
+import com.ddubok.common.openai.dto.OpenAiReq;
+import com.ddubok.common.openai.dto.OpenAiRes;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class CardServiceImpl implements CardService {
+
+    @Value("${openai.model}")
+    private String model;
+
+    @Value("${openai.api.url}")
+    private String apiURL;
+
+    private final RestTemplate template;
 
     private final CardRepository cardRepository;
     private final SeasonRepository seasonRepository;
@@ -41,6 +54,9 @@ public class CardServiceImpl implements CardService {
                 () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId())))
             .path(dto.getPath())
             .build());
+        if(filteringCheck(dto.getContent())) {
+            card.filtering();
+        }
         return card.getId();
     }
 
@@ -71,5 +87,11 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new CardNotFoundException()))
             .member(memberRepository.findById(dto.getMemberId())
                 .orElseThrow(() -> new MemberNotFoundException())).build());
+    }
+
+    private Boolean filteringCheck(String content) {
+        OpenAiReq request = new OpenAiReq(model, content);
+        OpenAiRes openAiRes =  template.postForObject(apiURL, request, OpenAiRes.class);
+        return openAiRes.getChoices().get(0).getMessage().getContent().equals("DENIED");
     }
 }

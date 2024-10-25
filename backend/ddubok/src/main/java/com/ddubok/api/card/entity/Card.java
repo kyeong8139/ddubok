@@ -114,4 +114,8 @@ public class Card {
         this.writerName = writerName;
         this.season = season;
     }
+
+    public void filtering() {
+        this.state = State.FILTERED;
+    }
 }
