@@ -98,4 +98,11 @@ public class Member {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void deleteMember() {
+        this.socialId = "INACTIVATED";
+        this.state = UserState.INACTIVATED;
+        this.deletedAt = LocalDateTime.now();
+    }
+
 }

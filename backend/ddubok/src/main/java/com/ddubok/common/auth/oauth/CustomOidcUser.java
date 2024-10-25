@@ -52,6 +52,16 @@ public class CustomOidcUser extends DefaultOidcUser implements CustomUser {
     }
 
     /**
+     * 사용자가 로그인한 소셜 서비스의 accessToken을 반환한다.
+     *
+     * @return 사용자가 로그인한 소셜 서비스의 accessToken
+     */
+    @Override
+    public String getSocialAccessToken() {
+        return memberAuthDto.getSocialAccessToken();
+    }
+
+    /**
      * 사용자의 권한 목록을 반환한다.
      *
      * @return 사용자 권한 컬렉션

@@ -67,6 +67,16 @@ public class CustomOAuth2User implements OAuth2User, CustomUser {
     }
 
     /**
+     * 사용자가 로그인한 소셜 서비스의 accessToken을 반환한다.
+     *
+     * @return 사용자가 로그인한 소셜 서비스의 accessToken
+     */
+    @Override
+    public String getSocialAccessToken() {
+        return memberAuthDto.getSocialAccessToken();
+    }
+
+    /**
      * 멤버 ID를 반환한다.
      *
      * @return 멤버 ID

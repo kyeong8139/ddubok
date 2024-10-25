@@ -1,9 +1,11 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.GetMemberListReq;
+import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.entity.UserState;
+import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.report.entity.State;
 import java.util.ArrayList;
@@ -38,6 +40,21 @@ public class MemberStatusServiceImpl implements MemberStatusService {
                 .state(member.getState().toUserStateName())
                 .build())
             .collect(Collectors.toList());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public GetMemberDetailRes getMemberDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException("유저 번호가 정확하지 않습니다."));
+        return GetMemberDetailRes.builder()
+            .id(member.getId())
+            .nickname(member.getNickname())
+            .role(member.getRole().toRoleName())
+            .state(member.getState().toUserStateName())
+            .build();
     }
 
     private List<Member> getMembersByConditions(String stateString, String searchName){

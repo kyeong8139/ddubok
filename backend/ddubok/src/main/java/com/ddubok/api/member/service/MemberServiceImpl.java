@@ -21,8 +21,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public MemberDetailRes getMemberDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new MemberNotFoundException());
+        Member member = findAndVerifyMember(memberId);
         return MemberDetailRes.builder().nickname(member.getNickname()).build();
     }
 
@@ -31,9 +30,18 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public void updateMember(Long memberId, UpdateMemberReq updateMemberDto) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new MemberNotFoundException());
-
+        Member member = findAndVerifyMember(memberId);
         member.updateNickname(updateMemberDto.getNickname());
+    }
+
+    /**
+     * 멤버 ID로 멤버를 찾고 검증한다.
+     *
+     * @param memberId 멤버 ID
+     * @return 해당 ID의 멤버
+     */
+    private Member findAndVerifyMember(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
     }
 }

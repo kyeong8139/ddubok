@@ -1,5 +1,6 @@
 package com.ddubok.common.config;
 
+import com.ddubok.common.auth.handler.CustomLogoutSuccessHandler;
 import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
     /**
@@ -59,7 +61,8 @@ public class SecurityConfig {
      *    - 인증 엔드포인트 설정
      *    - 사용자 서비스 설정
      * 5. URL 기반 접근 제어
-     * 6. 세션 관리 설정 (STATELESS)
+     * 6. 로그아웃 제어
+     * 7. 세션 관리 설정 (STATELESS)
      *
      * @param http HttpSecurity 객체
      * @return 구성된 SecurityFilterChain
@@ -94,9 +97,16 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/logout", "/api/v1/auth/**").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/api/v1/auth/reissue").permitAll()
+                .anyRequest().authenticated()
             );
+
+        http
+            .logout(logout ->
+                logout
+                    .logoutUrl("/api/v1/auth/logout")
+                    .logoutSuccessHandler(customLogoutSuccessHandler)
+                    .clearAuthentication(true));
 
         http
             .sessionManagement((session) -> session
