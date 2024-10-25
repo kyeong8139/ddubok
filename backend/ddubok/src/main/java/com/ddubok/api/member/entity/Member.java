@@ -107,6 +107,9 @@ public class Member {
      * @param role 역할
      */
     public void updateRole(Role role) {
+        if(role==null) {
+            throw new UnknownRoleException("알 수 없는 상태입니다. " + state);
+        }
         switch (role) {
             case ROLE_USER:
                 this.role = Role.ROLE_ADMIN;
@@ -125,6 +128,9 @@ public class Member {
      * @param state 상태
      */
     public void updateUserState(UserState state) {
+        if(state==null){
+            throw new UnknownStateException("알 수 없는 상태입니다. " + state);
+        }
         switch (state) {
             case BANNED:
                 this.state = UserState.ACTIVATED;

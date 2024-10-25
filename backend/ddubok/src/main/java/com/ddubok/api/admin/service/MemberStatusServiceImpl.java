@@ -89,7 +89,6 @@ public class MemberStatusServiceImpl implements MemberStatusService {
             .build();
     }
 
-
     private List<Member> getMembersByConditions(String stateString, String searchName){
         if(stateString == null) {
             if(searchName == null) {
