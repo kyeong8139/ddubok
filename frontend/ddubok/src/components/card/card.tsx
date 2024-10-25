@@ -41,7 +41,7 @@ const Card = ({ width, height, image, effect }: ICardProps) => {
 					className={`relative rounded-lg shadow-lg overflow-hidden bg-white flex justify-center items-center`}
 					style={{ width: `${width}px`, height: `${height}px` }}
 				>
-					<div className="font-nexonBold text-2xl">직접 만들기</div>
+					<div className="font-nexonBold text-xl">직접 만들기</div>
 				</div>
 			)}
 		</div>
