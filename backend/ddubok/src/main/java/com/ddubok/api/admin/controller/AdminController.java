@@ -155,7 +155,6 @@ public class AdminController {
             .map(image -> s3ImageService.uploadBannerImg(image))
             .map(FileMetaInfo::getUrl)
             .collect(Collectors.toList());
-        System.out.println(paths.toString());
         CreateSeasonRes seasonId = seasonService.createSeason(
             CreateSeasonReqDto.builder()
                 .seasonName(createSeasonReq.getSeasonName())

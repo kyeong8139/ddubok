@@ -25,7 +25,6 @@ public class SeasonServiceImpl implements SeasonService {
     @Override
     public CreateSeasonRes createSeason(CreateSeasonReqDto createSeasonReqDto) {
         validateSeasonDates(createSeasonReqDto);
-        System.out.println(createSeasonReqDto.getPath());
         Season season = seasonRepository.save(Season.builder()
             .name(createSeasonReqDto.getSeasonName())
             .description(createSeasonReqDto.getSeasonDescription())
