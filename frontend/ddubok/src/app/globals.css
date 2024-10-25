@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* globals.css */
+.slick-slide > div {
+	@apply flex justify-center items-center;
+}
+
+.slick-list {
+	@apply w-full;
+}
+
+.slick-track {
+	@apply flex items-center;
+}
+
+.slick-slide {
+	opacity: 0.5;
+	transition: all 0.3s ease;
+	transform: scale(0.9);
+}
+
+.slick-center {
+	opacity: 1;
+	transform: scale(1);
+}
