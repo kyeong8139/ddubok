@@ -3,6 +3,8 @@ package com.ddubok.api.admin.service;
 import com.ddubok.api.admin.dto.request.GetMemberListReq;
 import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
+import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
+import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
 import java.util.List;
 
 /**
@@ -25,4 +27,20 @@ public interface MemberStatusService {
      * @return 해당 사용자의 상세 정보를 반환
      */
     GetMemberDetailRes getMemberDetail(Long memberId);
+
+    /**
+     * 관리자가 사용자의 역할을 변경한다
+     *
+     * @param memberId 역할을 변경할 사용자의 번호
+     * @return
+     */
+    UpdateMemberRoleRes updateMemberRole(Long memberId);
+
+    /**
+     * 관리자가 사용자의 상태를 변경한다
+     *
+     * @param memberId 상태를 변경할 사용자의 번호
+     * @return
+     */
+    UpdateMemberStateRes updateMemberState(Long memberId);
 }

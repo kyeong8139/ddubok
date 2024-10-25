@@ -7,6 +7,8 @@ import com.ddubok.api.card.exception.AlbumNotFoundException;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.member.exception.MemberNotFoundException;
+import com.ddubok.api.member.exception.UnknownRoleException;
+import com.ddubok.api.member.exception.UnknownStateException;
 import com.ddubok.api.report.exception.InvalidTypeException;
 import com.ddubok.api.report.exception.ReportNotFoundException;
 import com.ddubok.common.auth.exception.InvalidDeleteMemberException;
@@ -44,7 +46,9 @@ public class CommonExceptionHandler {
         InvalidTypeException.class,
         ReportNotFoundException.class,
         SoicalAccessTokenNotFoundExcpetion.class,
-        InvalidDeleteMemberException.class
+        InvalidDeleteMemberException.class,
+        UnknownRoleException.class,
+        UnknownStateException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handleCommonException(CommonException e) {
