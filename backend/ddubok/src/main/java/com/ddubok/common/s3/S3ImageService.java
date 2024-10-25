@@ -18,10 +18,9 @@ public interface S3ImageService {
      * 배너 이미지 업로드
      *
      * @param file     이미지 파일
-     * @param seasonId 배너의 시즌 id
      * @return 저장된 이미지 파일에 대한 정보
      */
-    FileMetaInfo uploadBannerImg(MultipartFile file, long seasonId);
+    FileMetaInfo uploadBannerImg(MultipartFile file);
 
     /**
      * 파일 확장자 추출

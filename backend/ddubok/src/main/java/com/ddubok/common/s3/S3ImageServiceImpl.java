@@ -38,12 +38,12 @@ public class S3ImageServiceImpl implements S3ImageService {
      * {@inheritDoc}
      */
     @Override
-    public FileMetaInfo uploadBannerImg(MultipartFile file, long seasonId) {
-        return getFileMetaInfo(file, seasonId, BANNER_IMG_DIR);
+    public FileMetaInfo uploadBannerImg(MultipartFile file) {
+        return getFileMetaInfo(file, BANNER_IMG_DIR);
     }
 
     /**
-     * FileMetaInfo를 생성한다.
+     * Card FileMetaInfo를 생성한다.
      *
      * @param file     업로드할 파일
      * @param seasonId 해당하는 season 고유 id
@@ -52,6 +52,26 @@ public class S3ImageServiceImpl implements S3ImageService {
      */
     private FileMetaInfo getFileMetaInfo(MultipartFile file, long seasonId, String ImgDir) {
         String url = upload(file, ImgDir, seasonId);
+        String name = file.getOriginalFilename();
+        String format = getFileExtension(name);
+        long size = file.getSize();
+        return FileMetaInfo.builder()
+            .url(url)
+            .name(name)
+            .format(format)
+            .size(size)
+            .build();
+    }
+
+    /**
+     * Banner FileMetaInfo를 생성한다.
+     *
+     * @param file     업로드할 파일
+     * @param ImgDir   업로드할 이미지의 디렉토리
+     * @return 이미지의 정보 반환
+     */
+    private FileMetaInfo getFileMetaInfo(MultipartFile file, String ImgDir) {
+        String url = upload(file, ImgDir);
         String name = file.getOriginalFilename();
         String format = getFileExtension(name);
         long size = file.getSize();
@@ -76,6 +96,29 @@ public class S3ImageServiceImpl implements S3ImageService {
             throw new S3Exception("Image file is empty");
         }
         String fileName = dirName + memberId + "/" + UUID.randomUUID() + file.getOriginalFilename();
+        try (InputStream inputStream = file.getInputStream()) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new S3Exception("error: MultipartFile -> S3 upload fail");
+        }
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    /**
+     * S3로 배너 이미지 파일 업로드 하기
+     *
+     * @param file     변환된 File
+     * @param dirName  디렉토리 명
+     * @return 이미지 url
+     */
+    private String upload(MultipartFile file, String dirName) {
+        if (file.isEmpty()) {
+            throw new S3Exception("Image file is empty");
+        }
+        String fileName = dirName + "/" + UUID.randomUUID() + file.getOriginalFilename();
         try (InputStream inputStream = file.getInputStream()) {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
