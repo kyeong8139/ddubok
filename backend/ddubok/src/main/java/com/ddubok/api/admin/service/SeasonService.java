@@ -2,6 +2,7 @@ package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
+import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 
 /**
  * 시즌 관련 처리를 위한 서비스
@@ -15,4 +16,12 @@ public interface SeasonService {
      * @return 등록된 시즌의 번호를 반환한다.
      */
     CreateSeasonRes createSeason(CreateSeasonReqDto createSeasonReqDto);
+
+    /**
+     * 시즌에 대한 정보를 조회한다.
+     *
+     * @param seasonId 조회할 시즌 번호
+     * @return 해당 시즌의 정보를 받아온다.
+     */
+    GetSeasonDetailRes getSeasonDetail(Long seasonId);
 }

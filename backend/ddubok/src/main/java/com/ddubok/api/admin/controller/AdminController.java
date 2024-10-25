@@ -8,6 +8,7 @@ import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
+import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
 import com.ddubok.api.admin.service.AdminReportService;
@@ -166,5 +167,18 @@ public class AdminController {
                 .build()
             );
         return BaseResponse.ofSuccess(seasonId);
+    }
+
+    /**
+     * 시즌의 상세정보를 조회합니다.
+     *
+     * @param seasonId 현재 시즌의 값
+     */
+    @GetMapping("/seasons/{seasonId}")
+    public BaseResponse<?> getSeasonDetail(
+        @PathVariable Long seasonId
+    ){
+        GetSeasonDetailRes getSeasonDetailRes = seasonService.getSeasonDetail(seasonId);
+        return BaseResponse.ofSuccess(getSeasonDetailRes);
     }
 }

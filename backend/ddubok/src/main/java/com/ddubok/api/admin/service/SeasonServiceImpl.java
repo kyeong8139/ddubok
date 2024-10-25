@@ -2,9 +2,12 @@ package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
+import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
+import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
+import com.ddubok.api.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,24 @@ public class SeasonServiceImpl implements SeasonService {
         );
         return CreateSeasonRes.builder()
             .id(season.getId())
+            .build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GetSeasonDetailRes getSeasonDetail(Long seasonId) {
+        Season season = seasonRepository.findById(seasonId)
+            .orElseThrow(() -> new SeasonNotFoundException("시즌 번호가 정확하지 않습니다 : " + seasonId));
+        return GetSeasonDetailRes.builder()
+            .id(season.getId())
+            .name(season.getName())
+            .seasonDescription(season.getDescription())
+            .startedAt(season.getStartedAt())
+            .endedAt(season.getEndedAt())
+            .openedAt(season.getOpenedAt())
+            .path(season.getPath())
             .build();
     }
 
