@@ -29,6 +29,8 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private String redirectUrl;
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
+    private final String REFRESH_TOKEN_COOKIE_NAME = "refresh";
 
     /**
      * OAuth2 인증 성공 시 실행되는 메서드 CustomUser 정보를 추출하여 refresh 토큰을 생성하고, 생성된 토큰을 쿠키에 저장하고 redis에 캐싱한다.
@@ -60,9 +62,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String role = customUser.getRole();
         String socialAccessToken = customUser.getSocialAccessToken();
 
-        String refreshToken = jwtTokenUtil.createToken("refresh", userId, role,
+        String refreshToken = jwtTokenUtil.createToken(REFRESH_TOKEN_COOKIE_NAME, userId, role,
             socialAccessToken, expiration);
-        Cookie refreshCookie = createCookie("refresh", refreshToken);
+        Cookie refreshCookie = createCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
         saveRefreshTokenToRedis(userId, refreshToken);
 
         response.addCookie(refreshCookie);
@@ -76,7 +78,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
      * @param refreshToken refresh 토큰
      */
     private void saveRefreshTokenToRedis(long memberId, String refreshToken) {
-        String key = "RT:" + memberId;
+        String key = REDIS_REFRESH_TOKEN_PREFIX + memberId;
 
         redisTemplate.delete(key);
 
