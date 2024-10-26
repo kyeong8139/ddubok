@@ -1,23 +1,30 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-
-import { CaretLeft, List } from "@phosphor-icons/react";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+
+import Hamburger from "@components/common/hamburger";
+import Menu from "@components/common/menu";
+import { MenuContext } from "@context/menu-context";
+
+import { CaretLeft } from "@phosphor-icons/react";
 
 const Header = () => {
 	const pathname = usePathname();
-	console.log(pathname);
+	const { isMenuOpen, closeMenu } = useContext(MenuContext);
+	const router = useRouter();
 
-	const renderHeader = () => {
+	useEffect(() => {
+		closeMenu();
+	}, [pathname, closeMenu]);
+
+	const renderHeaderContent = () => {
 		switch (pathname) {
 			case "/":
 				return (
 					<div className="flex justify-end items-center h-full">
-						<List
-							size={24}
-							color="white"
-						/>
+						<Hamburger />
 					</div>
 				);
 			case "/create":
@@ -40,24 +47,25 @@ const Header = () => {
 						<CaretLeft
 							size={24}
 							color="white"
+							onClick={() => router.back()}
 						/>
-						<List
-							size={24}
-							color="white"
-						/>
+						<Hamburger />
 					</div>
 				);
 			default:
-				return <></>;
+				return null;
 		}
 	};
 
 	return (
-		<div
-			id="header"
-			className="h-14 px-4"
-		>
-			{renderHeader()}
+		<div id="header">
+			<div className="h-14 px-4">{renderHeaderContent()}</div>
+			<div
+				className={`transition-opacity duration-300
+					${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+			>
+				<Menu />
+			</div>
 		</div>
 	);
 };
