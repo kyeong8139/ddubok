@@ -31,6 +31,10 @@ const config: Config = {
 				"custom-green": "0px 4px 0px 0px #329167",
 				"custom-gray": "0px 4px 0px 0px #9E9E9E",
 				"custom-gradient": "0px 4px 0px 0px #717171",
+				kakao: "0px 4px 0px 0px #7D7319",
+				naver: "0px 4px 0px 0px #0D6102",
+				google: "0px 4px 0px 0px #6F6F6F",
+				meta: "0px 4px 0px 0px #601E0D",
 			},
 			fontFamily: {
 				pyeongchang: ["var(--font-pyeongchang-peace-bold)", "sans-serif"],

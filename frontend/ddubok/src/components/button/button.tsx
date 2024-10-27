@@ -1,5 +1,3 @@
-"use client";
-
 import { IButtonProps } from "@interface/components/button";
 import { colorClass, fontClass, shadowClass, sizeClass } from "@styles/button";
 
@@ -9,7 +7,8 @@ const Button = (props: IButtonProps) => {
 
 	return (
 		<button
-			className={`rounded-lg text-black ${colorClass[color]} ${sizeClass[size]} ${shadowClass[shadow]}`}
+			id="button"
+			className={`rounded-lg border border-solid border-black text-black ${colorClass[color]} ${sizeClass[size]} ${shadowClass[shadow]}`}
 			onClick={onClick}
 		>
 			{font === "both" ? (

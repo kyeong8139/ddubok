@@ -4,7 +4,10 @@ import Button from "@components/button/button";
 
 export default function Home() {
 	return (
-		<div className="font-pyeongchang text-white">
+		<div
+			id="home"
+			className="font-pyeongchang text-white"
+		>
 			<Button
 				text="행운 카드<br/>만들어주기"
 				color="purple"
