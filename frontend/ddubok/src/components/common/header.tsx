@@ -58,7 +58,10 @@ const Header = () => {
 	};
 
 	return (
-		<div id="header">
+		<div
+			id="header"
+			className="max-w-[480px] w-full fixed top-0"
+		>
 			<div className="h-14 px-4">{renderHeaderContent()}</div>
 			<div
 				className={`transition-opacity duration-300
