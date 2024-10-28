@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCardStore } from "@store/card-store";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
+import Button from "@components/button/button";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -101,7 +102,7 @@ const Create = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center w-full h-full">
-					<div className="text-white font-nexonBold text-2xl mt-6">행운 카드 만들기</div>
+					<div className="text-white font-nexonBold text-2xl mt-10">행운 카드 만들기</div>
 
 					<div className="w-full flex items-center justify-center mt-8">
 						<div className="w-full max-w-[480px]">
@@ -128,8 +129,8 @@ const Create = () => {
 						</div>
 					</div>
 
-					<div className="w-9/12 flex flex-col items-center mt-6">
-						<label className="text-white text-xl font-nexonRegular mb-2">나의 이름은?</label>
+					<div className="w-9/12 flex flex-col items-center mt-10">
+						<label className="text-white text-xl font-nexonRegular mb-4">나의 이름은?</label>
 						<input
 							type="text"
 							placeholder="익명 (최대 11글자)"
@@ -139,13 +140,16 @@ const Create = () => {
 							className="border-b-2 border-white bg-transparent font-nexonRegular text-white text-center outline-none"
 						/>
 					</div>
-
-					<button
-						className="mt-6 px-6 py-2 bg-blue-500 text-white rounded"
-						onClick={handleSelectButton}
-					>
-						다음으로
-					</button>
+					<div className="mt-10 mb-10 w-full flex justify-center">
+						<Button
+							text="다음으로"
+							color="green"
+							size="long"
+							font="bold"
+							shadow="green"
+							onClick={handleSelectButton}
+						/>
+					</div>
 				</div>
 			)}
 		</div>
