@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
 			>
 				<div
-					className="font-sans min-h-screen min-w-max mx-auto w-full max-w-[480px] bg-ddubokBackground relative overflow-hidden"
+					className="font-sans min-h-screen mx-auto w-full max-w-[480px] bg-ddubokBackground relative overflow-hidden"
 					style={{
 						boxShadow: "0 14px 28px #0000001a, 0 10px 10px #0000001a",
 					}}
