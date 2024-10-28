@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 import LoginButton from "@components/button/loginButton";
 
 import { Clover } from "@phosphor-icons/react";
-import Link from "next/link";
 
 const Login = () => {
 	return (
