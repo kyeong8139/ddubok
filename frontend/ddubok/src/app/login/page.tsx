@@ -11,7 +11,7 @@ import Link from "next/link";
 const Login = () => {
 	return (
 		<div id="login">
-			<div className="font-nexonRegular flex flex-col items-center relative pt-[16%]">
+			<div className="font-nexonRegular flex flex-col items-center relative pt-[20%]">
 				<div className="flex flex-row items-center gap-1 absolute">
 					<p className="text-white">당신을 위한 행운 배달부</p>
 					<Clover

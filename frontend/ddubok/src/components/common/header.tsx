@@ -33,8 +33,8 @@ const Header = () => {
 						<Image
 							src="/assets/ddubok.png"
 							alt="ddubok"
-							width={56}
-							height={56}
+							width={64}
+							height={64}
 							objectFit="contain"
 						/>
 					</div>
@@ -52,6 +52,16 @@ const Header = () => {
 						<Hamburger />
 					</div>
 				);
+			case "/login":
+				return (
+					<div className="flex justify-start items-center h-full">
+						<CaretLeft
+							size={24}
+							color="white"
+							onClick={() => router.back()}
+						/>
+					</div>
+				);
 			default:
 				return null;
 		}
@@ -60,7 +70,7 @@ const Header = () => {
 	return (
 		<div
 			id="header"
-			className="max-w-[480px] w-full fixed top-0"
+			className="max-w-[480px] w-full fixed top-0 bg-ddubokBackground z-10"
 		>
 			<div className="h-14 px-4">{renderHeaderContent()}</div>
 			<div
