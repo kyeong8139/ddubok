@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import Header from "@components/common/header";
+import { MenuProvider } from "@context/menu-context";
 
 import "./globals.css";
 
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body
 				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
+				suppressHydrationWarning={true}
 			>
 				<div
 					className="font-sans min-h-screen mx-auto w-full max-w-[480px] bg-ddubokBackground relative overflow-hidden"
@@ -50,8 +52,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						boxShadow: "0 14px 28px #0000001a, 0 10px 10px #0000001a",
 					}}
 				>
-					<Header />
-					{children}
+					<MenuProvider>
+						<Header />
+						<div className="mt-14">{children}</div>
+					</MenuProvider>
 				</div>
 			</body>
 		</html>
