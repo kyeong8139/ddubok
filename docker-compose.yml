@@ -1,0 +1,50 @@
+services:
+  web-server:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx/error.log:/var/log/nginx/error.log
+
+  backend-server:
+    build: 
+      context: ./backend/ddubok
+    ports:
+      - 8081:8081
+    depends_on:
+      db-server:
+        condition: service_healthy
+      cache-server:
+        condition: service_healthy
+
+  db-server:
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./config/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./logs/mysql/error.log:/var/log/mysql/error.log
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  cache-server:
+    image: redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 1s
+      timeout: 3s
+      retries: 5
