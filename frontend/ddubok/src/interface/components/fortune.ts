@@ -3,4 +3,8 @@ export interface IMiniCardProps {
 	isAttend: boolean;
 }
 
-export interface IFortuneProps {}
+export interface IFortuneProps {
+	date: string;
+	sentence: string;
+	score: number;
+}

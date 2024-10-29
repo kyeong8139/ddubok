@@ -91,7 +91,11 @@ const Fortune = () => {
 				className={`transition-opacity duration-300
 					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
 			>
-				<FortuneCard />
+				<FortuneCard
+					date="2024-10-29"
+					sentence="긍정적인 자세로 난관을 극복할 수 있어요"
+					score={87}
+				/>
 			</div>
 		</div>
 	);

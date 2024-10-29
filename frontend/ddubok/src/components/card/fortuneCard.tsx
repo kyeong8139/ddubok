@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useContext } from "react";
 
 import { ModalContext } from "@context/modal-context";
+import { IFortuneProps } from "@interface/components/fortune";
+import { currentday, currentMonth } from "@lib/utils/dateUtils";
 
-const FortuneCard = () => {
+const FortuneCard = ({ sentence, score }: IFortuneProps) => {
 	const { closeModal } = useContext(ModalContext);
 
 	return (
@@ -22,17 +24,17 @@ const FortuneCard = () => {
 				<div className="flex flex-col items-center font-nexonRegular">
 					<div className="my-6">
 						<p className="text-sm text-center mb-2">
-							<strong>10</strong>월 <strong>29</strong>일
+							<strong>{currentMonth}</strong>월 <strong>{currentday}</strong>일
 						</p>
 						<h1 className="font-pyeongchang text-3xl">오늘의 운세</h1>
 					</div>
 					<div className="my-18">
 						<p className="whitespace-pre-line break-keep font-nexonBold text-xl text-center leading-snug">
-							긍정적인 자세로 난관을 극복할 수 있어요
+							{sentence}
 						</p>
 					</div>
 					<div className="my-6">
-						당신의 행운지수는 <strong>87</strong>
+						당신의 행운지수는 <strong>{score}</strong>
 					</div>
 				</div>
 
