@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 
 import Header from "@components/common/header";
 import { MenuProvider } from "@context/menu-context";
+import { ModalProvider } from "@context/modal-context";
 
 import "./globals.css";
-import { ModalProvider } from "@context/modal-context";
 
 const pyeongChangPeaceBold = localFont({
 	src: "./fonts/PyeongChangPeace-Bold.ttf",
