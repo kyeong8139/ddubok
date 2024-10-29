@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ModalContext } from "@context/modal-context";
 import MiniCard from "@components/card/miniCard";
 import Button from "@components/button/button";
-import Modal from "@components/common/modal";
+import FortuneCard from "@components/card/fortuneCard";
 import { checkAttendance, currentMonth, daysInMonth } from "@lib/utils/dateUtils";
 
 const Fortune = () => {
@@ -91,7 +91,7 @@ const Fortune = () => {
 				className={`transition-opacity duration-300
 					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
 			>
-				<Modal />
+				<FortuneCard />
 			</div>
 		</div>
 	);
