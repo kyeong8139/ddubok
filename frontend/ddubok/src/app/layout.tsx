@@ -5,6 +5,7 @@ import Header from "@components/common/header";
 import { MenuProvider } from "@context/menu-context";
 
 import "./globals.css";
+import { ModalProvider } from "@context/modal-context";
 
 const pyeongChangPeaceBold = localFont({
 	src: "./fonts/PyeongChangPeace-Bold.ttf",
@@ -53,8 +54,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					}}
 				>
 					<MenuProvider>
-						<Header />
-						<div className="mt-14">{children}</div>
+						<ModalProvider>
+							<Header />
+							<div className="mt-14">{children}</div>
+						</ModalProvider>
 					</MenuProvider>
 				</div>
 			</body>
