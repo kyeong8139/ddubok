@@ -54,7 +54,7 @@ const Fortune = () => {
 					</span>
 				</div>
 			</div>
-			<div className="flex flex-wrap justify-between gap-x-1 gap-y-3 w-[calc(100%-64px)] mx-auto">
+			<div className="flex flex-wrap justify-between gap-x-[6px] gap-y-3 w-[calc(100%-64px)] mx-auto">
 				{Array.from({ length: daysInMonth }, (_, index) => {
 					const day = index + 1;
 					const isAttend = checkAttendance(day, attendanceList);
