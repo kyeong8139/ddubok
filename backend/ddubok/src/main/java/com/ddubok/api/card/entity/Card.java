@@ -65,7 +65,7 @@ public class Card {
     /**
      * 카드를 보낸이의 닉네임
      */
-    @Column(nullable = true)
+    @Column(nullable = false, length = 11)
     private String writerName;
     /**
      * 카드가 속할 시즌의 고유 id
