@@ -86,6 +86,11 @@ public class CardController {
                 .build()));
     }
 
+    @GetMapping("/{memberId}/preview")
+    public BaseResponse<?> getCardPreview(@PathVariable Long memberId) {
+        return BaseResponse.ofSuccess(getCardService.getCardPreview(memberId));
+    }
+
     /**
      * 카드 이미지를 업로드합니다.
      *

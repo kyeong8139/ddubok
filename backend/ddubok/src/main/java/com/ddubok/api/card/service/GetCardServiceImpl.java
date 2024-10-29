@@ -2,6 +2,7 @@ package com.ddubok.api.card.service;
 
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
+import com.ddubok.api.card.dto.response.CardPreviewRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import com.ddubok.api.card.entity.Album;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
@@ -76,5 +77,24 @@ public class GetCardServiceImpl implements GetCardService {
                 .writerName(album.getCard().getWriterName())
                 .build())
             .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CardPreviewRes getCardPreview(Long memberId) {
+        //TODO: member id 유효성 검증
+        List<Album> albums = albumRepository.findByMemberId(memberId).orElse(List.of());
+        //TODO: 앨범이 비어있을 경우 체크
+        String nickname = albums.get(0).getMember().getNickname();
+        List<String> cardUrl = albums.stream()
+            .filter(album -> !album.getIsDeleted())
+            .map(album -> album.getCard().getPath())
+            .collect(Collectors.toList());
+        return CardPreviewRes.builder()
+            .nickname(nickname)
+            .cardUrl(cardUrl)
+            .build();
     }
 }
