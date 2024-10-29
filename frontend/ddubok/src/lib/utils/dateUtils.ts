@@ -2,6 +2,7 @@
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
 export const currentMonth = currentDate.getMonth() + 1;
+export const currentday = currentDate.getDate();
 export const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
 // 일자에 맞는 출석 여부를 확인하는 메서드
