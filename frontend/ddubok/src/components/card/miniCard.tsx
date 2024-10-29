@@ -1,5 +1,6 @@
-import { IMiniCardProps } from "@interface/components/fortune";
 import Image from "next/image";
+
+import { IMiniCardProps } from "@interface/components/fortune";
 
 const MiniCard = ({ day, isAttend }: IMiniCardProps) => {
 	return (

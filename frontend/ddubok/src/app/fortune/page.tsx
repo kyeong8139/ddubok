@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 
 import MiniCard from "@components/card/miniCard";
-import { checkAttendance, currentMonth, daysInMonth } from "@lib/utils/dateUtils";
 import Button from "@components/button/button";
+import { checkAttendance, currentMonth, daysInMonth } from "@lib/utils/dateUtils";
 
 const Fortune = () => {
 	const attendanceList = ["2024-10-23", "2024-10-29"]; // 임시 데이터
