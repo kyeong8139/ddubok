@@ -54,6 +54,13 @@ public class CardServiceImpl implements CardService {
                 () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId())))
             .path(dto.getPath())
             .build());
+        if(dto.getMemberId() != null) {
+            albumRepository.save(Album.builder()
+                .card(cardRepository.findById(card.getId())
+                    .orElseThrow(() -> new CardNotFoundException()))
+                .member(memberRepository.findById(dto.getMemberId())
+                    .orElseThrow(() -> new MemberNotFoundException())).build());
+        }
         if(filteringCheck(dto.getContent())) {
             card.filtering();
         }
@@ -89,6 +96,12 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new MemberNotFoundException())).build());
     }
 
+    /**
+     * 카드의 내용이 적절한지 부적절한지 판별하는 메서드
+     *
+     * @param content 카드에 들어가는 편지 내용
+     * @return 필터링 결과를 반환
+     */
     private Boolean filteringCheck(String content) {
         OpenAiReq request = new OpenAiReq(model, content);
         OpenAiRes openAiRes =  template.postForObject(apiURL, request, OpenAiRes.class);

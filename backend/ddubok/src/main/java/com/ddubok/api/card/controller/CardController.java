@@ -46,7 +46,7 @@ public class CardController {
         Long cardId = cardService.createCard(
             CreateCardReqDto.builder().content(req.getContent()).seasonId(req.getSeasonId())
                 .path(uploadCardImg(image, req.getSeasonId())).isCustom(true)
-                .writerName(req.getWriterName()).build());
+                .writerName(req.getWriterName()).memberId(req.getMemberId()).build());
         return BaseResponse.ofSuccess(CardIdRes.builder().cardId(cardId).build());
     }
 
