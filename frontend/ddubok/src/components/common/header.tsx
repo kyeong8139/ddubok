@@ -28,14 +28,14 @@ const Header = () => {
 					</div>
 				);
 			case "/create":
+			case "/share":
 				return (
 					<div className="flex justify-center items-center h-full">
 						<Image
 							src="/assets/ddubok.png"
 							alt="ddubok"
-							width={64}
-							height={64}
-							objectFit="contain"
+							width={72}
+							height={72}
 						/>
 					</div>
 				);
