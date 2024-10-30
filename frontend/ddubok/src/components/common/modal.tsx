@@ -16,7 +16,7 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
 			></div>
 			<div
 				id="content"
-				className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[calc(100%-64px)] bg-white rounded-lg p-8 z-10 font-nexonRegular"
+				className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[calc(100%-64px)] max-w-[416px] bg-white rounded-lg p-8 z-10 font-nexonRegular"
 			>
 				{children}
 			</div>
