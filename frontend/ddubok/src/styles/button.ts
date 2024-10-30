@@ -6,13 +6,15 @@ export const colorClass = {
 };
 
 export const sizeClass = {
+	small: "w-20 py-2",
 	short: "w-36 h-18",
 	long: "w-[calc(100%-64px)] h-14",
 };
 
 export const fontClass = {
-	regular: "font-nexonRegular",
-	bold: "font-nexonBold",
+	small: "font-nexonRegular text-sm",
+	regular: "font-nexonRegular text-lg",
+	bold: "font-nexonBold text-lg",
 	both: "",
 };
 
