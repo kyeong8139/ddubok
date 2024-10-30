@@ -2,6 +2,7 @@ package com.ddubok.api.card.service;
 
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
+import com.ddubok.api.card.dto.response.CardPreviewRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import java.util.List;
 
@@ -33,4 +34,12 @@ public interface GetCardService {
      * @return 보유한 모든 카드들을 반환한다.
      */
     List<GetCardDetailRes> getAllCardList(Long memberId);
+
+    /**
+     * 사용자가 보유한 카드 정보와 사용자 정보를 미리보기 형태로 조회한다.
+     *
+     * @param memberId 조회할 멤버의 고유 id
+     * @return 보유한 카드들의 정보를 일부(이미지 링크) 반환한다.
+     */
+    CardPreviewRes getCardPreview(Long memberId);
 }
