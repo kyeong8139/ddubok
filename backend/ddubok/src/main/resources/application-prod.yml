@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: optional:file:/home/ubuntu/config/.env[.properties]
   application:
     name: ddubok
   datasource:
