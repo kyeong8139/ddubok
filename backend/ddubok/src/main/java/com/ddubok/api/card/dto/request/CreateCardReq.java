@@ -10,4 +10,5 @@ public class CreateCardReq {
     private String content;
     private String writerName;
     private Long seasonId;
+    private Long memberId;
 }
