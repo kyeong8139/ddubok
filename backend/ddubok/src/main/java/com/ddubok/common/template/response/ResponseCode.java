@@ -33,6 +33,7 @@ public enum ResponseCode {
     ALBUM_NOT_FOUND("700", "앨범을 찾을 수 없음"),
     ALBUM_ALREADY_DELETED("701", "이미 삭제된 앨범"),
     NO_ALBUM("702", "보유한 카드가 없음"),
+    ALBUM_ALREADY_EXIST("703", "이미 받은 카드"),
 
     // 800 - auth
     INVALID_REFRESH_TOKEN("800", "Refresh 토큰을 찾을 수 없음"),
