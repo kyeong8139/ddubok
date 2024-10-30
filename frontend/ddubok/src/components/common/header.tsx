@@ -40,7 +40,7 @@ const Header = () => {
 					</div>
 				);
 			case "/admin":
-			case "/collection":
+			case "/book":
 			case "/fortune":
 				return (
 					<div className="flex justify-between items-center h-full">

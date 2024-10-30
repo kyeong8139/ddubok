@@ -40,7 +40,7 @@ const Menu = () => {
 				<div className="mx-6">
 					<ul>
 						<li className="mb-4">
-							<Link href="/collection">행운 카드 앨범</Link>
+							<Link href="/book">행운 카드북</Link>
 						</li>
 						<li className="mb-4">
 							<Link href="/fortune">오늘의 운세</Link>
