@@ -91,6 +91,7 @@ const Create = () => {
 		variableWidth: true,
 		arrows: false,
 		className: "w-full",
+		adaptiveHeight: true,
 		afterChange: handleSlideChange,
 	};
 
