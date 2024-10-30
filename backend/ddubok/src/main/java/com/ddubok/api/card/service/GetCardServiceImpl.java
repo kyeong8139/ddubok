@@ -8,6 +8,9 @@ import com.ddubok.api.card.entity.Album;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
+import com.ddubok.api.member.entity.Member;
+import com.ddubok.api.member.exception.MemberNotFoundException;
+import com.ddubok.api.member.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetCardServiceImpl implements GetCardService {
 
     private final AlbumRepository albumRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * {@inheritDoc}
@@ -84,10 +88,9 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public CardPreviewRes getCardPreview(Long memberId) {
-        //TODO: member id 유효성 검증
-        List<Album> albums = albumRepository.findByMemberId(memberId).orElse(List.of());
-        //TODO: 앨범이 비어있을 경우 체크
-        String nickname = albums.get(0).getMember().getNickname();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
+        List<Album> albums = albumRepository.findByMemberId(memberId).orElse(null);
+        String nickname = member.getNickname();
         List<String> cardUrl = albums.stream()
             .filter(album -> !album.getIsDeleted())
             .map(album -> album.getCard().getPath())
