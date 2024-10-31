@@ -45,6 +45,11 @@ public class Album {
      */
     @Column(nullable = false)
     private Boolean isDeleted;
+    /**
+     * 사용자가 카드의 내용을 읽었는지 여부
+     */
+    @Column(nullable = false)
+    private Boolean isRead;
 
     /**
      * 앨범 객체를 생성하는 생성자
@@ -57,6 +62,7 @@ public class Album {
         this.member = member;
         this.card = card;
         this.isDeleted = false;
+        this.isRead = false;
     }
 
     /**
@@ -64,5 +70,12 @@ public class Album {
      */
     public void delete() {
         this.isDeleted = true;
+    }
+
+    /**
+     * 카드 content를 읽음 상태로 업데이트 하는 메서드
+     */
+    public void read() {
+        this.isRead = true;
     }
 }
