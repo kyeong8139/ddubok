@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     name: ddubok-test
   datasource:
@@ -21,19 +19,19 @@ spring:
       host: localhost
       port: 6379
   social:
-    kakao-id: ${KAKAO_ID}
-    naver-id: ${NAVER_ID}
-    naver-secret: ${NAVER_SECRET}
-    meta-id: ${META_ID}
-    meta-secret: ${META_SECRET}
-    google-id: ${GOOGLE_ID}
-    google-secret: ${GOOGLE_SECRET}
+    kakao-id: test-kakao-id
+    naver-id: test-naver-id
+    naver-secret: test-naver-secret
+    meta-id: test-meta-id
+    meta-secret: test-meta-secret
+    google-id: test-google-id
+    google-secret: test-google-secret
   jwt:
-    secret: ${JWT_SECRET}
-    expiration: ${ACCESS_EXPIRATION}
+    secret: test-jwt-secret-key-12345678901234567890
+    expiration: 3600  # 테스트용으로 1시간(3600초)
     refresh-token:
-      expiration: ${REFRESH_EXPIRATION}
-    redirect-url: ${JWT_REDIRECT_URL}
+      expiration: 7200  # 테스트용으로 2시간(7200초)
+    redirect-url: http://localhost:8080/login
 
 springdoc:
   swagger-ui:
@@ -42,10 +40,10 @@ springdoc:
 cloud:
   aws:
     s3:
-      bucket: ${S3_BUCKET_NAME}
+      bucket: test-s3-bucket
     credentials:
-      access-key: ${S3_ACCESS_KEY}
-      secret-key: ${S3_SECRET_KEY}
+      access-key: test-access-key
+      secret-key: test-secret-key
     region:
       static: ap-northeast-2
       auto: false
@@ -54,6 +52,6 @@ cloud:
 
 openai:
   api:
-    key: ${OPEN_AI_KEY}
-    url: ${OPEN_AI_URL}
-  model: ${OPEN_AI_MODEL}
+    key: test-openai-key
+    url: https://api.openai.test.com
+  model: test-model
