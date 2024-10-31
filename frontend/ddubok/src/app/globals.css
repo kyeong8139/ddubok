@@ -25,3 +25,18 @@
 	opacity: 1;
 	transform: scale(1);
 }
+
+@font-face {
+	font-family: "NEXON Lv1 Gothic Bold";
+	src: url("./fonts/NEXONLv1GothicBold.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "PyeongChangPeace-Bold";
+	src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2")
+		format("woff2");
+	font-weight: 700;
+	font-style: normal;
+}

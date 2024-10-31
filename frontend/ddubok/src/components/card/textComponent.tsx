@@ -13,10 +13,8 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const [selectedText, setSelectedText] = useState<fabric.IText | null>(null);
 
 	const fonts = [
-		{ name: "Arial", label: "기본" },
-		{ name: "Times New Roman", label: "명조" },
-		{ name: "Courier New", label: "고딕" },
-		{ name: "Comic Sans MS", label: "손글씨" },
+		{ name: "NEXON Lv1 Gothic Bold", label: "넥슨 고딕 볼드" },
+		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
 	];
 
 	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#7e22ce"];
@@ -29,8 +27,8 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			const selectedObject = canvas.getActiveObject();
 			if (selectedObject && selectedObject.type === "i-text") {
 				setSelectedText(selectedObject as fabric.IText);
-				setFontFamily(selectedObject.get("fontFamily") || "Arial");
-				setTextColor((selectedObject.get("fill") as string) || "#000000");
+				setFontFamily((selectedObject as fabric.IText).get("fontFamily") || "Arial");
+				setTextColor(((selectedObject as fabric.IText).get("fill") as string) || "#000000");
 			} else {
 				setSelectedText(null);
 			}
@@ -56,7 +54,7 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const handleFontChange = (newFont: string) => {
 		setFontFamily(newFont);
 		if (selectedText && canvas) {
-			selectedText.set("fontFamily", newFont);
+			(selectedText as fabric.IText).set("fontFamily", newFont);
 			canvas.renderAll();
 		}
 	};
@@ -65,7 +63,7 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const handleColorChange = (newColor: string) => {
 		setTextColor(newColor);
 		if (selectedText && canvas) {
-			selectedText.set("fill", newColor);
+			(selectedText as fabric.IText).set("fill", newColor);
 			canvas.renderAll();
 		}
 	};
