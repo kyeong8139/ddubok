@@ -6,6 +6,7 @@ import { CaretRight } from "@phosphor-icons/react";
 
 const Menu = () => {
 	// 로그인 연결 후 로그인 로직 추가 필요
+	// 토큰 받으면 토큰에 따른 메뉴 탭 노출 변경 필요
 
 	return (
 		<div
@@ -39,12 +40,24 @@ const Menu = () => {
 				</div>
 				<div className="mx-6">
 					<ul>
+						{/* 사용자 로그인 시 보여져야 하는 것 */}
 						<li className="mb-4">
 							<Link href="/book">행운 카드북</Link>
 						</li>
 						<li className="mb-4">
 							<Link href="/fortune">오늘의 운세</Link>
 						</li>
+						{/* 관리자 로긘 시 보여져야 하는 것 */}
+						<li className="mb-4">
+							<Link href="/admin/user">사용자 관리</Link>
+						</li>
+						<li className="mb-4">
+							<Link href="/admin/report">신고 관리</Link>
+						</li>
+						<li className="mb-4">
+							<Link href="/admin/setting">메인 관리</Link>
+						</li>
+						{/* 공통 */}
 						<li className="mb-4">로그아웃</li>
 					</ul>
 				</div>

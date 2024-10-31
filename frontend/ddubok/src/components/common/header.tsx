@@ -39,7 +39,9 @@ const Header = () => {
 						/>
 					</div>
 				);
-			case "/admin":
+			case "/admin/user":
+			case "/admin/report":
+			case "/admin/setting":
 			case "/book":
 			case "/fortune":
 				return (
