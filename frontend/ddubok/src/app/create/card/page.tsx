@@ -112,7 +112,7 @@ const CreateFront = () => {
 			case "sticker":
 				return <StickerComponent canvas={canvas} />;
 			case "text":
-				return <TextComponent />;
+				return <TextComponent canvas={canvas} />;
 			case "brush":
 				return <BrushComponent canvas={canvas} />;
 			case "border":

@@ -60,10 +60,14 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 
 		// 삭제 버튼 위치 업데이트 함수
 		const positionDeleteButton = (target: fabric.Object, deleteBtn: HTMLElement) => {
-			const zoom = canvas.getZoom();
-			const bound = target.getBoundingRect();
-			deleteBtn.style.left = `${bound.left + bound.width - 10}px`;
-			deleteBtn.style.top = `${bound.top - 10}px`;
+			if (!target.aCoords) return;
+
+			// aCoords.tr은 우상단 좌표를 나타냅니다 (top right)
+			const topRight = target.aCoords.tr;
+
+			// 삭제 버튼 위치 설정 (약간의 오프셋 적용)
+			deleteBtn.style.left = `${topRight.x}px`;
+			deleteBtn.style.top = `${topRight.y - 20}px`;
 		};
 
 		let deleteBtn: HTMLElement | null = null;
@@ -184,6 +188,15 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 					},
 					cursorStyle: "se-resize",
 					actionName: "resize_rotate",
+					render: function (ctx, left, top, styleOverride, fabricObject) {
+						const size = 8; // 컨트롤 크기
+						ctx.save();
+						ctx.fillStyle = "#6EFFBF"; // 컨트롤 색상
+						ctx.beginPath();
+						ctx.arc(left, top, size / 2, 0, Math.PI * 2);
+						ctx.fill();
+						ctx.restore();
+					},
 				}),
 			};
 
