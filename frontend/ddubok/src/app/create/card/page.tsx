@@ -12,77 +12,109 @@ import EffectComponent from "@components/card/effectComponent";
 const CreateFront = () => {
 	const [activeComponent, setActiveComponent] = useState<string>("background");
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const canvasRef = useRef<fabric.Canvas | null>(null);
 
 	// 캔버스 초기화
 	useEffect(() => {
-		// DOM이 완전히 로드된 후 캔버스 초기화
-		const timer = setTimeout(() => {
-			try {
-				const canvasElement = document.getElementById("canvas");
-				if (!canvasElement) {
-					console.error("Canvas element not found");
-					return;
-				}
+		const newCanvas = new fabric.Canvas("canvas", {
+			width: 280,
+			height: 495,
+			isDrawingMode: false,
+		});
+		setCanvas(newCanvas);
 
-				// 이전 캔버스가 있다면 정리
-				if (canvasRef.current) {
-					canvasRef.current.dispose();
-					canvasRef.current = null;
-				}
-
-				// 새 캔버스 생성
-				const newCanvas = new fabric.Canvas("canvas", {
-					width: 280,
-					height: 495,
-				});
-
-				// 초기 흰색 배경 설정
-				const whiteBg = new fabric.Rect({
-					width: newCanvas.width,
-					height: newCanvas.height,
-					fill: "white",
-					selectable: false,
-					evented: false,
-					data: { type: "background" },
-				});
-
-				newCanvas.insertAt(whiteBg, 0, false);
-				newCanvas.renderAll();
-
-				canvasRef.current = newCanvas;
-				setCanvas(newCanvas);
-				setIsLoading(false);
-			} catch (error) {
-				console.error("Canvas initialization error:", error);
-				setIsLoading(false);
-			}
-		}, 100); // 100ms 딜레이 추가
-
+		// 클린업: 컴포넌트 언마운트 시 캔버스 해제
 		return () => {
-			clearTimeout(timer);
-			if (canvasRef.current) {
-				try {
-					canvasRef.current.dispose();
-					canvasRef.current = null;
-				} catch (error) {
-					console.log("Cleanup error:", error);
-				}
-			}
+			newCanvas.dispose();
 		};
 	}, []);
+
+	useEffect(() => {
+		if (canvas) {
+			canvas.isDrawingMode = activeComponent === "brush";
+			canvas.selection = true;
+			canvas.off("mouse:down");
+		}
+	}, [activeComponent, canvas]);
+
+	// JSON으로 저장
+	const saveToJSON = () => {
+		if (canvas) {
+			const json = canvas.toJSON();
+			// JSON 데이터를 서버에 저장하거나 로컬 스토리지에 저장
+			localStorage.setItem("canvasData", JSON.stringify(json));
+			console.log("Canvas saved as JSON");
+		}
+	};
+
+	// JSON에서 불러오기
+	const loadFromJSON = () => {
+		if (canvas) {
+			const savedData = localStorage.getItem("canvasData");
+			if (savedData) {
+				canvas.loadFromJSON(savedData, () => {
+					canvas.renderAll();
+					console.log("Canvas loaded from JSON");
+				});
+			}
+		}
+	};
+
+	// 이미지로 저장 (PNG)
+	const saveAsImage = () => {
+		if (canvas) {
+			const dataURL = canvas.toDataURL({
+				format: "png",
+				quality: 1,
+			});
+
+			// 이미지 다운로드
+			const link = document.createElement("a");
+			link.download = "canvas-image.png";
+			link.href = dataURL;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	};
+
+	// 서버에 이미지 업로드
+	const uploadToServer = async () => {
+		if (canvas) {
+			const dataURL = canvas.toDataURL({
+				format: "png",
+				quality: 1,
+			});
+
+			try {
+				const response = await fetch("/api/upload", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ image: dataURL }),
+				});
+
+				if (response.ok) {
+					console.log("Image uploaded successfully");
+				} else {
+					console.error("Failed to upload image");
+				}
+			} catch (error) {
+				console.error("Error uploading image:", error);
+			}
+		}
+	};
 
 	const renderActiveComponent = () => {
 		switch (activeComponent) {
 			case "background":
 				return <BackgroundComponent canvas={canvas} />;
 			case "sticker":
-				return <StickerComponent />;
+				return <StickerComponent canvas={canvas} />;
 			case "text":
 				return <TextComponent />;
 			case "brush":
-				return <BrushComponent />;
+				return <BrushComponent canvas={canvas} />;
 			case "border":
 				return <BorderComponent canvas={canvas} />;
 			case "effect":
@@ -94,21 +126,11 @@ const CreateFront = () => {
 
 	return (
 		<div className="flex flex-col items-center w-full h-full">
-			<div className="w-[280px] h-[495px] relative">
-				<canvas
-					id="canvas"
-					className="rounded-lg absolute top-0 left-0"
-					style={{ display: isLoading ? "none" : "block" }}
-				/>
-				{isLoading && (
-					<div className="w-full h-full rounded-lg bg-gray-100 flex items-center justify-center">
-						<div className="flex flex-col items-center gap-2">
-							<div className="w-8 h-8 border-4 border-ddubokPurple border-t-transparent rounded-full animate-spin" />
-							<p className="text-sm text-gray-500">행운카드 로딩중...</p>
-						</div>
-					</div>
-				)}
-			</div>
+			{/* Canvas 요소 */}
+			<canvas
+				id="canvas"
+				className=" rounded-lg"
+			></canvas>
 
 			<div className="mt-10 flex w-[320px]">
 				{["background", "border", "sticker", "effect", "text", "brush"].map((value) => (
@@ -139,8 +161,35 @@ const CreateFront = () => {
 				))}
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[320px] pl-4 pr-4 pt-4 pb-4 mb-12">
+			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] p-20 mb-12">
 				{renderActiveComponent()}
+			</div>
+
+			<div className="mt-4 flex gap-2">
+				<button
+					onClick={saveToJSON}
+					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
+				>
+					임시 저장
+				</button>
+				<button
+					onClick={loadFromJSON}
+					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
+				>
+					불러오기
+				</button>
+				<button
+					onClick={saveAsImage}
+					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
+				>
+					이미지로 저장
+				</button>
+				<button
+					onClick={uploadToServer}
+					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
+				>
+					서버에 저장
+				</button>
 			</div>
 		</div>
 	);
