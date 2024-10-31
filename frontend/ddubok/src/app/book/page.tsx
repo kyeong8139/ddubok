@@ -1,19 +1,30 @@
 "use client";
 
 import NextImage from "next/image";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 
 import Loading from "@components/common/loading";
+import DetailCard from "@components/card/detailCard";
+import { ModalContext } from "@context/modal-context";
 
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
 const Book = () => {
+	const { isModalOpen, openModal } = useContext(ModalContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [selected, setSelected] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [selectedImage, setSelectedImage] = useState("");
+	const [selectedEffect, setSelectedEffect] = useState(0);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
+	};
+
+	const handleCardClick = (image: string, effect: number) => {
+		setSelectedImage(image);
+		setSelectedEffect(effect);
+		openModal();
 	};
 
 	const cardImages = useMemo(
@@ -69,6 +80,18 @@ const Book = () => {
 		});
 	}, [cardImages]);
 
+	useEffect(() => {
+		if (isModalOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "auto";
+		}
+
+		return () => {
+			document.body.style.overflow = "auto";
+		};
+	}, [isModalOpen]);
+
 	return (
 		<div id="book">
 			{isLoading ? (
@@ -83,7 +106,7 @@ const Book = () => {
 					</div>
 					<div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-							{["전체", "안 읽은 카드", "2024 수능"].map((item, index) => (
+							{["전체", "안 읽은 카드", "수능"].map((item, index) => (
 								<li
 									key={index}
 									onClick={() => handleClick(index)}
@@ -100,7 +123,8 @@ const Book = () => {
 						{paginatedCards.map((card, index) => (
 							<div
 								key={index}
-								className="flex justify-center items-center w-full h-0 pb-[150%] relative rounded-lg overflow-hidden"
+								className="flex justify-center items-center w-full h-0 pb-[180%] relative rounded-lg overflow-hidden"
+								onClick={() => handleCardClick(card.image, card.effect)}
 							>
 								<NextImage
 									src={card.image}
@@ -135,6 +159,17 @@ const Book = () => {
 								weight="bold"
 							/>
 						</button>
+					</div>
+					<div
+						className={`transition-opacity duration-300
+					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+					>
+						<DetailCard
+							writer="나는야뿌랑하는유니스"
+							image={selectedImage}
+							content="상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼"
+							effect={selectedEffect}
+						/>
 					</div>
 				</>
 			)}
