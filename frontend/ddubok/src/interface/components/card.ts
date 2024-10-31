@@ -3,4 +3,5 @@ export interface ICardProps {
 	height: number;
 	image?: string;
 	effect: number;
+	flip?: boolean;
 }

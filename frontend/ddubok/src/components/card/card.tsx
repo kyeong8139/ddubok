@@ -1,11 +1,12 @@
 // components/Card.tsx
-import React from "react";
+import Image from "next/image";
+import React, { useState } from "react";
 
 import { ICardProps } from "@interface/components/card";
 
-import Image from "next/image";
+const Card = ({ width, height, image, effect, flip }: ICardProps) => {
+	const [isFlipped, setIsFlipped] = useState(false);
 
-const Card = ({ width, height, image, effect }: ICardProps) => {
 	const effectClasses = () => {
 		switch (effect) {
 			case 1:
@@ -17,14 +18,35 @@ const Card = ({ width, height, image, effect }: ICardProps) => {
 		}
 	};
 
+	const toggleFlip = () => {
+		if (flip) {
+			setIsFlipped(!isFlipped);
+		}
+	};
+
 	return (
-		<div>
+		<div onClick={toggleFlip}>
 			{image ? (
-				<div
-					className={`relative rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
-					style={{ width: `${width}px`, height: `${height}px` }}
-				>
-					{image && (
+				isFlipped ? (
+					<div
+						className={`relative rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
+						style={{
+							width: `${width}px`,
+							height: `${height}px`,
+						}}
+					>
+						<div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+							<div className="font-nexonBold text-lg">Card Back</div>
+						</div>
+					</div>
+				) : (
+					<div
+						className={`relative rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
+						style={{
+							width: `${width}px`,
+							height: `${height}px`,
+						}}
+					>
 						<Image
 							src={image}
 							alt="Card"
@@ -34,8 +56,8 @@ const Card = ({ width, height, image, effect }: ICardProps) => {
 							quality={80}
 							priority
 						/>
-					)}
-				</div>
+					</div>
+				)
 			) : (
 				<div
 					className={`relative rounded-lg shadow-lg overflow-hidden bg-white flex justify-center items-center`}
