@@ -1,5 +1,6 @@
 package com.ddubok.api.card.service;
 
+import com.ddubok.api.card.dto.request.GetAllCardListReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.response.CardPreviewRes;
@@ -30,10 +31,10 @@ public interface GetCardService {
      * </p>
      * 삭제된 카드는 반환하지 않는다.
      *
-     * @param memberId 보유한 카드를 조회하기 위한 멤버의 고유 id
+     * @param req 보유한 카드를 조회하기 위한 정보
      * @return 보유한 모든 카드들을 반환한다.
      */
-    List<GetCardDetailRes> getAllCardList(Long memberId);
+    List<GetCardDetailRes> getAllCardList(GetAllCardListReq req);
 
     /**
      * 사용자가 보유한 카드 정보와 사용자 정보를 미리보기 형태로 조회한다.
