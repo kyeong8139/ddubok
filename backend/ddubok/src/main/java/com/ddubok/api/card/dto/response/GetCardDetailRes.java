@@ -15,4 +15,5 @@ public class GetCardDetailRes {
     private String path;
     private State state;
     private String writerName;
+    private Boolean isRead;
 }

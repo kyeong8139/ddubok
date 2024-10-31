@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +32,9 @@ public class Fortune {
      */
     @Column(nullable = false)
     private String sentence;
+
+    @Builder
+    private Fortune(String sentence) {
+        this.sentence = sentence;
+    }
 }
