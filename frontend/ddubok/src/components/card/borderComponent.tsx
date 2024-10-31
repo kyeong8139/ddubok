@@ -1,8 +1,8 @@
-`use client`;
+"use client";
 import React, { useState, useEffect } from "react";
 import { fabric } from "fabric";
 import { chunk } from "lodash";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 
 // 테두리 이미지 URL 목록
 const borderImages = [
@@ -28,12 +28,10 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 	const [selectedBorder, setSelectedBorder] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(0);
 
-	// 페이지네이션 설정
 	const itemsPerPage = 8;
-	const pages = chunk(borderImages, itemsPerPage);
-	const totalPages = Math.ceil(borderImages.length / itemsPerPage);
+	const pages = chunk([null, ...borderImages], itemsPerPage); // null을 첫 번째 항목으로 추가
+	const totalPages = Math.ceil((borderImages.length + 1) / itemsPerPage);
 
-	// 현재 선택된 테두리 업데이트
 	useEffect(() => {
 		if (!canvas) return;
 
@@ -71,43 +69,7 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 		};
 	}, [canvas]);
 
-	// const setBorder = (imageUrl: string) => {
-	// 	if (!canvas) return;
-
-	// 	// 기존 테두리 제거
-	// 	const existingBorder = canvas.getObjects().find((obj) => obj.data?.type === "border");
-	// 	if (existingBorder) {
-	// 		canvas.remove(existingBorder);
-	// 	}
-
-	// 	// 새 테두리 추가
-	// 	fabric.Image.fromURL(imageUrl, (img) => {
-	// 		// 이미지와 캔버스의 비율 계산
-	// 		const scaleX = canvas.width! / img.width!;
-	// 		const scaleY = canvas.height! / img.height!;
-
-	// 		// 더 작은 비율을 사용하여 이미지가 캔버스를 벗어나지 않도록 함
-	// 		const scale = Math.min(scaleX, scaleY);
-
-	// 		img.set({
-	// 			scaleX: scale,
-	// 			scaleY: scale,
-	// 			left: (canvas.width! - img.width! * scale) / 2, // 중앙 정렬
-	// 			top: (canvas.height! - img.height! * scale) / 2, // 중앙 정렬
-	// 			selectable: false,
-	// 			evented: false,
-	// 			data: { type: "border" },
-	// 		});
-
-	// 		// 테두리는 항상 배경 바로 위에 위치하도록 설정
-	// 		const backgroundIndex = canvas.getObjects().findIndex((obj) => obj.data?.type === "background");
-	// 		canvas.insertAt(img, backgroundIndex + 1, false);
-	// 		canvas.renderAll();
-	// 		setSelectedBorder(imageUrl);
-	// 	});
-	// };
-
-	const setBorder = (imageUrl: string) => {
+	const setBorder = (imageUrl: string | null) => {
 		if (!canvas) return;
 
 		// 기존 테두리 제거
@@ -116,9 +78,15 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 			canvas.remove(existingBorder);
 		}
 
+		// imageUrl이 null이면 테두리를 제거만 하고 끝냄
+		if (imageUrl === null) {
+			setSelectedBorder(null);
+			canvas.renderAll();
+			return;
+		}
+
 		// 새 테두리 추가
 		fabric.Image.fromURL(imageUrl, (img) => {
-			// 캔버스 크기에 맞게 강제로 늘림
 			img.set({
 				scaleX: canvas.width! / img.width!,
 				scaleY: canvas.height! / img.height!,
@@ -129,7 +97,6 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 				data: { type: "border" },
 			});
 
-			// 테두리는 항상 배경 바로 위에 위치하도록 설정
 			const backgroundIndex = canvas.getObjects().findIndex((obj) => obj.data?.type === "background");
 			canvas.insertAt(img, backgroundIndex + 1, false);
 			canvas.renderAll();
@@ -141,29 +108,52 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 		<div className="w-full">
 			<div className="relative">
 				<div className="grid grid-cols-4 gap-4">
-					{pages[currentPage]?.map((imageUrl, index) => (
-						<label
-							key={index}
-							className="relative cursor-pointer"
+					{/* 테두리 제거 옵션 */}
+					<label className="relative cursor-pointer">
+						<input
+							type="radio"
+							className="absolute opacity-0"
+							checked={selectedBorder === null}
+							onChange={() => setBorder(null)}
+						/>
+						<div
+							className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all bg-white flex items-center justify-center
+                ${selectedBorder === null ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 						>
-							<input
-								type="radio"
-								className="absolute opacity-0"
-								checked={selectedBorder === imageUrl}
-								onChange={() => setBorder(imageUrl)}
+							<X
+								size={24}
+								weight="bold"
+								className="text-gray-400"
 							/>
-							<div
-								className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-                  ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+						</div>
+					</label>
+
+					{/* 테두리 옵션들 */}
+					{borderImages
+						.slice(currentPage * (itemsPerPage - 1), (currentPage + 1) * (itemsPerPage - 1))
+						.map((imageUrl, index) => (
+							<label
+								key={index}
+								className="relative cursor-pointer"
 							>
-								<img
-									src={imageUrl}
-									alt={`테두리 ${index + 1}`}
-									className="w-full h-full object-contain"
+								<input
+									type="radio"
+									className="absolute opacity-0"
+									checked={selectedBorder === imageUrl}
+									onChange={() => setBorder(imageUrl)}
 								/>
-							</div>
-						</label>
-					))}
+								<div
+									className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
+                  ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+								>
+									<img
+										src={imageUrl}
+										alt={`테두리 ${index + 1}`}
+										className="w-full h-full object-contain"
+									/>
+								</div>
+							</label>
+						))}
 				</div>
 
 				<div className="flex justify-between items-center mt-4">
