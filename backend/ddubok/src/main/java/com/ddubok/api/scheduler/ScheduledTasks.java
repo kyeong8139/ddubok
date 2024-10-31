@@ -19,6 +19,5 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 300000)
     void cardOpen() {
         Long result = cardRepositoryCustom.updateCardStates();
-        log.info("Card opened: " + result);
     }
 }
