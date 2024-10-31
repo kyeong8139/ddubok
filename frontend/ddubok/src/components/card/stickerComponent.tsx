@@ -47,7 +47,10 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 			deleteBtn.style.color = "#7e22ce";
 			deleteBtn.style.background = "white";
 			deleteBtn.style.borderRadius = "50%";
-			deleteBtn.style.padding = "0 5px";
+			deleteBtn.style.width = "20px"; // 너비 지정
+			deleteBtn.style.height = "20px"; // 높이 지정
+			deleteBtn.style.lineHeight = "16px"; // 텍스트 중앙 정렬
+			deleteBtn.style.textAlign = "center"; // 텍스트 중앙 정렬
 			deleteBtn.style.boxShadow = "0 0 5px rgba(0,0,0,0.2)";
 			deleteBtn.style.display = "none";
 			deleteBtn.className = "delete-btn";
@@ -150,7 +153,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 				top: (canvas.height! - img.height! * scale) / 2,
 				selectable: true,
 				evented: true,
-				hasRotatingPoint: true,
 				hasBorders: true,
 				hasControls: true,
 				lockUniScaling: true,
@@ -163,8 +165,30 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 				data: { type: "sticker" },
 			});
 
+			// 기본 컨트롤 가져오기
+			const baseControls = fabric.Object.prototype.controls;
+
+			// 새로운 컨트롤 설정
+			img.controls = {
+				...baseControls,
+				mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
+				br: new fabric.Control({
+					x: 0.5,
+					y: 0.5,
+					actionHandler: function (eventData, transform, x, y) {
+						// 회전 액션과 크기 조절 액션을 모두 적용
+						const rotateChange = baseControls.mtr.actionHandler(eventData, transform, x, y);
+						const scaleChange = baseControls.br.actionHandler(eventData, transform, x, y);
+
+						return rotateChange && scaleChange;
+					},
+					cursorStyle: "se-resize",
+					actionName: "resize_rotate",
+				}),
+			};
+
 			canvas.add(img);
-			canvas.bringToFront(img); // 스티커를 최상위로 이동
+			canvas.bringToFront(img);
 			canvas.setActiveObject(img);
 			canvas.renderAll();
 		});
