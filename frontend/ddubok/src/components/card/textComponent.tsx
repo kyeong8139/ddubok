@@ -54,7 +54,7 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const handleFontChange = (newFont: string) => {
 		setFontFamily(newFont);
 		if (selectedText && canvas) {
-			(selectedText as fabric.IText).set("fontFamily", newFont);
+			selectedText.set("fontFamily", newFont);
 			canvas.renderAll();
 		}
 	};
@@ -63,7 +63,7 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const handleColorChange = (newColor: string) => {
 		setTextColor(newColor);
 		if (selectedText && canvas) {
-			(selectedText as fabric.IText).set("fill", newColor);
+			selectedText.set("fill", newColor);
 			canvas.renderAll();
 		}
 	};
@@ -71,9 +71,9 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const addText = () => {
 		if (!canvas) return;
 
-		const text = new fabric.IText("텍스트를 입력하세요", {
-			left: 50,
-			top: 50,
+		const text = new fabric.IText("", {
+			left: (canvas.width || 0) / 2,
+			top: (canvas.height || 0) / 2,
 			fontFamily: fontFamily,
 			fontSize: 20,
 			fill: textColor,
@@ -83,11 +83,90 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			cornerSize: 8,
 			transparentCorners: false,
 			data: { type: "text" },
+			originX: "center",
+			originY: "center",
+			cursorColor: "#7e22ce",
+			cursorWidth: 2,
+			editingBorderColor: "#7e22ce",
 		});
 
 		canvas.add(text);
 		canvas.setActiveObject(text);
+
+		// 텍스트 객체가 추가된 후 편집 모드 시작
 		text.enterEditing();
+		text.selectAll();
+
+		// 커스텀 컨트롤 설정
+		const baseControls = fabric.Object.prototype.controls;
+
+		// 삭제 버튼용 커스텀 컨트롤 생성
+		fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+			x: 0.5,
+			y: -0.5,
+			offsetY: 0,
+			offsetX: 0,
+			cursorStyle: "pointer",
+			touchSizeX: 40,
+			touchSizeY: 40,
+			mouseUpHandler: function (eventData, transform) {
+				const target = transform.target;
+				canvas.remove(target);
+				canvas.requestRenderAll();
+				return true;
+			},
+			render: function (ctx, left, top, styleOverride, fabricObject) {
+				const size = 24;
+				ctx.save();
+				ctx.translate(left, top);
+
+				// 원형 배경
+				ctx.beginPath();
+				ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+				ctx.fillStyle = "white";
+				ctx.fill();
+				ctx.strokeStyle = "#7e22ce";
+				ctx.lineWidth = 1;
+				ctx.stroke();
+
+				// X 표시
+				ctx.fillStyle = "#7e22ce";
+				ctx.font = "bold 16px Arial";
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				ctx.fillText("×", 0, 0);
+
+				ctx.restore();
+			},
+		});
+
+		// 컨트롤 설정
+		text.controls = {
+			...baseControls,
+			mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
+			deleteControl: fabric.Object.prototype.controls.deleteControl, // 삭제 버튼
+			br: new fabric.Control({
+				x: 0.5,
+				y: 0.5,
+				actionHandler: function (eventData, transform, x, y) {
+					const rotateChange = baseControls.mtr.actionHandler(eventData, transform, x, y);
+					const scaleChange = baseControls.br.actionHandler(eventData, transform, x, y);
+					return rotateChange && scaleChange;
+				},
+				cursorStyle: "se-resize",
+				actionName: "resize_rotate",
+				render: function (ctx, left, top, styleOverride, fabricObject) {
+					const size = 8;
+					ctx.save();
+					ctx.fillStyle = "#6EFFBF";
+					ctx.beginPath();
+					ctx.arc(left, top, size / 2, 0, Math.PI * 2);
+					ctx.fill();
+					ctx.restore();
+				},
+			}),
+		};
+
 		canvas.renderAll();
 	};
 
