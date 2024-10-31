@@ -35,8 +35,9 @@ public class AttendanceServiceImpl implements AttendanceService {
      * {@inheritDoc}
      */
     @Override
-    public AttendanceHistoryRes getAttendanceHistoryThisMonth(Long memberId) {
-        List<LocalDate> attendanceList = getAttendanceList(memberId);
+    public AttendanceHistoryRes getAttendanceHistoryThisMonth(Long memberId, int year, int month) {
+        List<LocalDate> attendanceList = attendanceRepository.getDateByMemberIdAndMonth(memberId,
+            year, month);
 
         return AttendanceHistoryRes.builder()
             .attendanceList(attendanceList)
@@ -45,22 +46,14 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     /**
-     * 특정 유저가 이번달에 출석한 일자의 리스트를 반환함
-     *
-     * @param memberId 유저의 id
-     * @return 유저가 이번달에 출석한 일자의 리스트
-     */
-    private List<LocalDate> getAttendanceList(Long memberId) {
-        int month = LocalDate.now().getMonthValue();
-        return attendanceRepository.getDateByMemberIdAndMonth(memberId, month);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     @Transactional
-    public CreateAttendanceRes createAttendance(Long memberId) {
+    public CreateAttendanceRes createAttendance(Long memberId, LocalDate currentDate) {
+
+        int year = currentDate.getYear();
+        int month = currentDate.getMonthValue();
 
         String key = "Attendance:" + memberId;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
@@ -69,10 +62,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         Member member = memberRepository.findById(memberId).orElseThrow(
             MemberNotFoundException::new);
-        Attendance attendance = Attendance.builder().member(member).build();
+        Attendance attendance = Attendance.builder().member(member).date(currentDate).build();
         attendanceRepository.save(attendance);
 
-        CreateAttendanceRes createAttendanceRes = getCreateAttendanceRes(member);
+        CreateAttendanceRes createAttendanceRes = getCreateAttendanceRes(member, year, month);
         saveCreateAttendanceResToRedis(key, createAttendanceRes);
 
         return createAttendanceRes;
@@ -88,10 +81,10 @@ public class AttendanceServiceImpl implements AttendanceService {
         redisTemplate.opsForValue().set(key, value, ttl);
     }
 
-    private CreateAttendanceRes getCreateAttendanceRes(Member member) {
+    private CreateAttendanceRes getCreateAttendanceRes(Member member, int year, int month) {
         return CreateAttendanceRes.builder()
             .fortune(getFortuneRes())
-            .attendanceHistory(getAttendanceHistoryThisMonth(member.getId()))
+            .attendanceHistory(getAttendanceHistoryThisMonth(member.getId(), year, month))
             .build();
     }
 

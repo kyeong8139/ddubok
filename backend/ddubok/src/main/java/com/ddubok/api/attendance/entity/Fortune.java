@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "fortune")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Fortune {
+public class  Fortune {
 
     /**
      * 운세 정보 고유 id

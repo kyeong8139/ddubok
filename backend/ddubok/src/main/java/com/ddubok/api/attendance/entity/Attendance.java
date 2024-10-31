@@ -45,8 +45,8 @@ public class Attendance {
     private LocalDate date;
 
     @Builder
-    public Attendance(Member member) {
+    public Attendance(Member member, LocalDate date) {
         this.member = member;
-        this.date = LocalDate.now();
+        this.date = date;
     }
 }
