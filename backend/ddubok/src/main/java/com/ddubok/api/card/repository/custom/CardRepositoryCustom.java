@@ -42,5 +42,4 @@ public class CardRepositoryCustom {
     private BooleanExpression isOpenedBeforeOrOnToday() {
         return card.openedAt.loe(LocalDateTime.now());
     }
-
 }

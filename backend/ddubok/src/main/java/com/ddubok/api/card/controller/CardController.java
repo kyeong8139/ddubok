@@ -3,11 +3,13 @@ package com.ddubok.api.card.controller;
 import com.ddubok.api.card.dto.request.CreateCardReq;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
 import com.ddubok.api.card.dto.request.DeleteCardReq;
+import com.ddubok.api.card.dto.request.GetAllCardListReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.request.ReceiveCardReq;
 import com.ddubok.api.card.dto.response.CardIdRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
+import com.ddubok.api.card.dto.response.GetCardListRes;
 import com.ddubok.api.card.service.CardService;
 import com.ddubok.api.card.service.GetCardService;
 import com.ddubok.common.auth.util.AuthUtil;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,12 +68,23 @@ public class CardController {
     }
 
     @GetMapping
-    public BaseResponse<?> getAllCardList() {
-        List<GetCardDetailRes> res = getCardService.getAllCardList(authUtil.getMemberId());
-        if (res.size() == 0) {
+    public BaseResponse<?> getAllCardList(
+        @RequestParam(value = "lastCardId", required = false) Long lastCardId,
+        @RequestParam(value = "size", defaultValue = "4") int size
+    ) {
+        List<GetCardDetailRes> list = getCardService.getAllCardList(
+            GetAllCardListReq.builder().memberId(authUtil.getMemberId()).lastCardId(lastCardId)
+                .size(size).build());
+        if (list.size() == 0) {
             return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
         }
-        return BaseResponse.ofSuccess(res);
+        boolean hasNext = false;
+        if (list.size() > size) {
+            list.remove(size);
+            hasNext = true;
+        }
+        return BaseResponse.ofSuccess(
+            GetCardListRes.builder().hasNext(hasNext).cards(list).build());
     }
 
     @GetMapping("/{cardId}")
@@ -80,10 +94,23 @@ public class CardController {
     }
 
     @GetMapping("/albums/{seasonId}")
-    public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId) {
-        return BaseResponse.ofSuccess(getCardService.getCardListBySeason(
+    public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId,
+        @RequestParam(value = "lastCardId", required = false) Long lastCardId,
+        @RequestParam(value = "size", defaultValue = "4") int size) {
+        List<GetCardDetailRes> list = getCardService.getCardListBySeason(
             GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(authUtil.getMemberId())
-                .build()));
+                .lastCardId(lastCardId).size(size)
+                .build());
+        if (list.size() == 0) {
+            return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
+        }
+        boolean hasNext = false;
+        if (list.size() > size) {
+            list.remove(size);
+            hasNext = true;
+        }
+        return BaseResponse.ofSuccess(
+            GetCardListRes.builder().hasNext(hasNext).cards(list).build());
     }
 
     @GetMapping("/{memberId}/preview")

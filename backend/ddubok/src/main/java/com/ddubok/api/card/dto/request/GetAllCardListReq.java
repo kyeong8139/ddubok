@@ -5,9 +5,8 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class GetCardListBySeasonReq {
+public class GetAllCardListReq {
 
-    private Long seasonId;
     private Long memberId;
     private Integer size;
     private Long lastCardId;

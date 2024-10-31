@@ -1,5 +1,6 @@
 package com.ddubok.api.card.service;
 
+import com.ddubok.api.card.dto.request.GetAllCardListReq;
 import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.response.CardPreviewRes;
@@ -9,6 +10,7 @@ import com.ddubok.api.card.entity.State;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
+import com.ddubok.api.card.repository.custom.AlbumRepositoryCustom;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
@@ -26,6 +28,8 @@ public class GetCardServiceImpl implements GetCardService {
     private final AlbumRepository albumRepository;
     private final MemberRepository memberRepository;
 
+    private final AlbumRepositoryCustom albumRepositoryCustom;
+
     /**
      * {@inheritDoc}
      */
@@ -36,7 +40,7 @@ public class GetCardServiceImpl implements GetCardService {
         if (album.getIsDeleted()) {
             throw new CardAlreadyDeletedException();
         }
-        if(!album.getIsRead() && album.getCard().getState() == State.OPEN) {
+        if (!album.getIsRead() && album.getCard().getState() == State.OPEN) {
             album.read();
         }
         return GetCardDetailRes.builder()
@@ -55,7 +59,7 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req) {
-        List<Album> albums = albumRepository.findByMemberId(req.getMemberId()).orElse(List.of());
+        List<Album> albums = albumRepositoryCustom.getAllCardBySeason(req);
         return albums.stream()
             .filter(album -> album.getCard().getSeason().getId().equals(req.getSeasonId()))
             .map(album -> GetCardDetailRes.builder()
@@ -74,8 +78,8 @@ public class GetCardServiceImpl implements GetCardService {
      * {@inheritDoc}
      */
     @Override
-    public List<GetCardDetailRes> getAllCardList(Long memberId) {
-        List<Album> albums = albumRepository.findByMemberId(memberId).orElse(List.of());
+    public List<GetCardDetailRes> getAllCardList(GetAllCardListReq req) {
+        List<Album> albums = albumRepositoryCustom.getAllCard(req);
         return albums.stream()
             .filter(album -> !album.getIsDeleted())
             .map(album -> GetCardDetailRes.builder()
@@ -95,7 +99,8 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public CardPreviewRes getCardPreview(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException());
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
         List<Album> albums = albumRepository.findByMemberId(memberId).orElse(null);
         String nickname = member.getNickname();
         List<String> cardUrl = albums.stream()
