@@ -5,6 +5,7 @@ import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.response.CardPreviewRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import com.ddubok.api.card.entity.Album;
+import com.ddubok.api.card.entity.State;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
@@ -35,6 +36,9 @@ public class GetCardServiceImpl implements GetCardService {
         if (album.getIsDeleted()) {
             throw new CardAlreadyDeletedException();
         }
+        if(!album.getIsRead() && album.getCard().getState() == State.OPEN) {
+            album.read();
+        }
         return GetCardDetailRes.builder()
             .id(album.getCard().getId())
             .content(album.getCard().getContent())
@@ -42,6 +46,7 @@ public class GetCardServiceImpl implements GetCardService {
             .path(album.getCard().getPath())
             .state(album.getCard().getState())
             .writerName(album.getCard().getWriterName())
+            .isRead(album.getIsRead())
             .build();
     }
 
@@ -60,6 +65,7 @@ public class GetCardServiceImpl implements GetCardService {
                 .path(album.getCard().getPath())
                 .state(album.getCard().getState())
                 .writerName(album.getCard().getWriterName())
+                .isRead(album.getIsRead())
                 .build())
             .collect(Collectors.toList());
     }
@@ -79,6 +85,7 @@ public class GetCardServiceImpl implements GetCardService {
                 .path(album.getCard().getPath())
                 .state(album.getCard().getState())
                 .writerName(album.getCard().getWriterName())
+                .isRead(album.getIsRead())
                 .build())
             .collect(Collectors.toList());
     }
