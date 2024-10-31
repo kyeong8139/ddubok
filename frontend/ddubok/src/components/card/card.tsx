@@ -81,62 +81,6 @@ const Card = ({ width, height, image, content, effect, flip }: ICardProps) => {
 				</div>
 			</div>
 		</div>
-		// <div onClick={toggleFlip}>
-		// 	{image ? (
-		// 		isFlipped ? (
-		// 			<div
-		// 				className={`relative rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
-		// 				style={{
-		// 					width: `${width}px`,
-		// 					height: `${height}px`,
-		// 				}}
-		// 			>
-		// 				<div className="absolute inset-0 text-justify">
-		// 					<div
-		// 						className="font-nexonRegular my-10 px-8 leading-normal text-sm overflow-hidden overflow-y-scroll scrollbar-hide"
-		// 						style={{
-		// 							width: `${width}px`,
-		// 							height: `${height - 80}px`,
-		// 						}}
-		// 					>
-		// 						{content}
-		// 					</div>
-		// 					<Image
-		// 						src="/assets/fortune-reverse.png"
-		// 						alt="운세 카드"
-		// 						fill
-		// 						className="absolute z-[-1]"
-		// 					/>
-		// 				</div>
-		// 			</div>
-		// 		) : (
-		// 			<div
-		// 				className={`relative rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
-		// 				style={{
-		// 					width: `${width}px`,
-		// 					height: `${height}px`,
-		// 				}}
-		// 			>
-		// 				<Image
-		// 					src={image}
-		// 					alt="Card"
-		// 					fill
-		// 					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-		// 					style={{ objectFit: "cover" }}
-		// 					quality={80}
-		// 					priority
-		// 				/>
-		// 			</div>
-		// 		)
-		// 	) : (
-		// 		<div
-		// 			className={`relative rounded-lg shadow-lg overflow-hidden bg-white flex justify-center items-center`}
-		// 			style={{ width: `${width}px`, height: `${height}px` }}
-		// 		>
-		// 			<div className="font-nexonBold text-xl">직접 만들기</div>
-		// 		</div>
-		// 	)}
-		// </div>
 	);
 };
 
