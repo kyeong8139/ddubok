@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "fortune")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class  Fortune {
+public class Fortune {
 
     /**
      * 운세 정보 고유 id
@@ -31,4 +32,9 @@ public class  Fortune {
      */
     @Column(nullable = false)
     private String sentence;
+
+    @Builder
+    private Fortune(String sentence) {
+        this.sentence = sentence;
+    }
 }
