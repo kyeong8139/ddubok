@@ -94,30 +94,13 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
      * @return 생성된 쿠키 객체
      */
     private Cookie createCookie(String key, String value) {
-        /*
-            todo : 도메인 설정에 따라 cookie 정책 변경
-         */
         Cookie cookie = new Cookie(key, value);
 
         cookie.setMaxAge((int) (expiration / 1000));
         cookie.setSecure(true);
         cookie.setPath("/");
-//        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(true);
 
         return cookie;
-    }
-
-    /**
-     * 인증 실패 시 실행되는 메서드 실패 시 지정된 URL로 리다이렉트 한다.
-     *
-     * @param request        HTTP 요청 객체
-     * @param response       HTTP 응답 객체
-     * @param authentication 인증 정보
-     * @throws IOException      입출력 처리 중 발생할 수 있는 예외
-     * @throws ServletException 서블릿 처리 중 발생할 수 있는 예외
-     */
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-        Authentication authentication) throws IOException, ServletException {
-        response.sendRedirect("");
     }
 }

@@ -3,6 +3,7 @@ package com.ddubok.common.config;
 import com.ddubok.common.auth.handler.CustomLogoutSuccessHandler;
 import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
+import com.ddubok.common.auth.oauth.CustomOAuth2FailureHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
@@ -93,7 +95,9 @@ public class SecurityConfig {
                     .oidcUserService(customOidcUserService))
                 .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
                 .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
-                .successHandler(customOAuth2SuccessHandler));
+                .successHandler(customOAuth2SuccessHandler)
+                .failureHandler(customOAuth2FailureHandler)
+            );
 
         http
             .authorizeHttpRequests((auth) -> auth

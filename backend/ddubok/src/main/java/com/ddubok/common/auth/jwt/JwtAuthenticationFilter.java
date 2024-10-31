@@ -3,6 +3,7 @@ package com.ddubok.common.auth.jwt;
 import com.ddubok.api.member.entity.Role;
 import com.ddubok.common.auth.dto.MemberAuthDto;
 import com.ddubok.common.auth.oauth.CustomOAuth2User;
+import com.ddubok.common.template.response.ResponseCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,16 +53,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         accessToken = jwtTokenUtil.extractToken(accessToken);
 
         if (jwtTokenUtil.isExpired(accessToken)) {
-            String message = "AccessToken is Expired";
-            sendErrorResponse(response, message, HttpServletResponse.SC_UNAUTHORIZED);
+            String message = "Invalid Access Token";
+            sendErrorResponse(response, message,
+                Integer.parseInt(ResponseCode.INVALID_ACCESS_TOKEN.getCode()));
             return;
         }
 
         String category = jwtTokenUtil.getCategory(accessToken);
 
         if (!category.equals("access")) {
-            String message = "AccessToken Error";
-            sendErrorResponse(response, message, HttpServletResponse.SC_UNAUTHORIZED);
+            String message = "Invalid Access Token";
+            sendErrorResponse(response, message,
+                Integer.parseInt(ResponseCode.INVALID_ACCESS_TOKEN.getCode()));
             return;
         }
 
