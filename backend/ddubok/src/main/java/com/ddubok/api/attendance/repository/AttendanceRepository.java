@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    @Query("SELECT a.date FROM Attendance a WHERE a.member.id = :memberId AND MONTH(a.date) = :month")
-    List<LocalDate> getDateByMemberIdAndMonth(Long memberId, int month);
+    @Query("SELECT a.date FROM Attendance a WHERE a.member.id = :memberId AND YEAR(a.date) = :year AND MONTH(a.date) = :month")
+    List<LocalDate> getDateByMemberIdAndMonth(Long memberId, int year, int month);
 }
