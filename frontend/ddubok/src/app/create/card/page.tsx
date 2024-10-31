@@ -156,8 +156,8 @@ const CreateFront = () => {
 				return <BrushComponent canvas={canvas} />;
 			case "border":
 				return <BorderComponent canvas={canvas} />;
-			case "effect":
-				return <EffectComponent />;
+			// case "effect":
+			// 	return <EffectComponent />;
 			default:
 				return null;
 		}
@@ -180,7 +180,7 @@ const CreateFront = () => {
 			></canvas>
 
 			<div className="mt-10 flex w-[320px]">
-				{["background", "border", "sticker", "effect", "text", "brush"].map((value) => (
+				{["background", "border", "sticker", "text", "brush"].map((value) => (
 					<label
 						key={value}
 						className="flex items-center cursor-pointer"
@@ -202,7 +202,7 @@ const CreateFront = () => {
 							{value === "sticker" && "스티커"}
 							{value === "text" && "텍스트"}
 							{value === "brush" && "브러쉬"}
-							{value === "effect" && "효과"}
+							{/* {value === "effect" && "효과"} */}
 						</p>
 					</label>
 				))}

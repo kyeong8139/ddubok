@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { fabric } from "fabric";
 import { chunk } from "lodash";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
@@ -29,126 +29,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 	const pages = chunk(stickerImages, itemsPerPage);
 	const totalPages = Math.ceil(stickerImages.length / itemsPerPage);
 
-	useEffect(() => {
-		if (!canvas) return;
-
-		// 기존의 삭제 버튼 제거
-		const existingButton = document.querySelector(".delete-btn");
-		if (existingButton) {
-			existingButton.remove();
-		}
-
-		// 삭제 버튼 생성
-		const deleteBtn = document.createElement("div");
-		deleteBtn.innerHTML = "×";
-		deleteBtn.style.position = "absolute";
-		deleteBtn.style.zIndex = "999";
-		deleteBtn.style.cursor = "pointer";
-		deleteBtn.style.fontSize = "20px";
-		deleteBtn.style.fontWeight = "bold";
-		deleteBtn.style.color = "#7e22ce";
-		deleteBtn.style.background = "white";
-		deleteBtn.style.borderRadius = "50%";
-		deleteBtn.style.width = "20px";
-		deleteBtn.style.height = "20px";
-		deleteBtn.style.lineHeight = "16px";
-		deleteBtn.style.textAlign = "center";
-		deleteBtn.style.boxShadow = "0 0 5px rgba(0,0,0,0.2)";
-		deleteBtn.style.display = "none";
-		deleteBtn.className = "delete-btn";
-
-		const canvasContainer = document.querySelector(".canvas-container");
-		if (canvasContainer) {
-			canvasContainer.appendChild(deleteBtn);
-		}
-
-		// 삭제 버튼 위치 업데이트 함수
-		const updateDeleteButtonPosition = (target: fabric.Object) => {
-			if (!target.aCoords) return;
-
-			const canvasEl = document.querySelector(".canvas-container");
-			if (!canvasEl) return;
-
-			const rect = canvasEl.getBoundingClientRect();
-			const scale = rect.width / (canvas?.width || 1);
-			const topRight = target.aCoords.tr;
-
-			deleteBtn.style.left = `${topRight.x * scale}px`;
-			deleteBtn.style.top = `${topRight.y * scale - 20}px`;
-		};
-
-		// 스티커 삭제 핸들러
-		const handleStickerDelete = (target: fabric.Object) => {
-			canvas.remove(target);
-			deleteBtn.style.display = "none";
-			canvas.renderAll();
-			canvas.discardActiveObject();
-		};
-
-		// 객체 선택 이벤트 핸들러
-		const handleObjectSelect = (e: fabric.IEvent) => {
-			const target = canvas.getActiveObject();
-			if (!target) {
-				deleteBtn.style.display = "none";
-				return;
-			}
-
-			if (target.data?.type === "sticker") {
-				updateDeleteButtonPosition(target);
-				deleteBtn.style.display = "block";
-
-				// 이벤트 리스너 재설정
-				deleteBtn.onclick = () => handleStickerDelete(target);
-			} else {
-				deleteBtn.style.display = "none";
-			}
-		};
-
-		// 객체 수정 이벤트 핸들러
-		const handleObjectModification = (e: fabric.IEvent) => {
-			const target = e.target;
-			if (!target || target.data?.type !== "sticker") return;
-
-			updateDeleteButtonPosition(target);
-		};
-
-		// 선택 해제 이벤트 핸들러
-		const handleSelectionClear = () => {
-			deleteBtn.style.display = "none";
-		};
-
-		// 이벤트 리스너 등록
-		canvas.on("selection:created", handleObjectSelect);
-		canvas.on("selection:updated", handleObjectSelect);
-		canvas.on("object:moving", handleObjectModification);
-		canvas.on("object:scaling", handleObjectModification);
-		canvas.on("object:rotating", handleObjectModification);
-		canvas.on("selection:cleared", handleSelectionClear);
-
-		// 현재 선택된 객체 확인 및 처리
-		const activeObject = canvas.getActiveObject();
-		if (activeObject?.data?.type === "sticker") {
-			updateDeleteButtonPosition(activeObject);
-			deleteBtn.style.display = "block";
-			deleteBtn.onclick = () => handleStickerDelete(activeObject);
-		}
-
-		// 클린업
-		return () => {
-			// 개별 이벤트 리스너 제거
-			canvas.off("selection:created", handleObjectSelect);
-			canvas.off("selection:updated", handleObjectSelect);
-			canvas.off("object:moving", handleObjectModification);
-			canvas.off("object:scaling", handleObjectModification);
-			canvas.off("object:rotating", handleObjectModification);
-			canvas.off("selection:cleared", handleSelectionClear);
-
-			if (deleteBtn && deleteBtn.parentNode) {
-				deleteBtn.parentNode.removeChild(deleteBtn);
-			}
-		};
-	}, [canvas]);
-
 	const addSticker = (imageUrl: string) => {
 		if (!canvas) return;
 
@@ -176,9 +56,50 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 			});
 
 			const baseControls = fabric.Object.prototype.controls;
+
+			// 삭제 버튼용 커스텀 컨트롤 생성
+			fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+				x: 0.5,
+				y: -0.5,
+				offsetY: 0,
+				offsetX: 0,
+				cursorStyle: "pointer",
+				mouseUpHandler: function (eventData, transform) {
+					const target = transform.target;
+					canvas.remove(target);
+					canvas.requestRenderAll();
+					return true;
+				},
+				render: function (ctx, left, top, styleOverride, fabricObject) {
+					const size = 24;
+					ctx.save();
+					ctx.translate(left, top);
+
+					// 원형 배경
+					ctx.beginPath();
+					ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+					ctx.fillStyle = "white";
+					ctx.fill();
+					ctx.strokeStyle = "#7e22ce";
+					ctx.lineWidth = 1;
+					ctx.stroke();
+
+					// X 표시
+					ctx.fillStyle = "#7e22ce";
+					ctx.font = "16px Arial";
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.fillText("×", 0, 0);
+
+					ctx.restore();
+				},
+			});
+
+			// 커스텀 컨트롤 설정
 			img.controls = {
 				...baseControls,
-				mtr: new fabric.Control({ visible: false }),
+				mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
+				deleteControl: fabric.Object.prototype.controls.deleteControl, // 삭제 버튼 추가
 				br: new fabric.Control({
 					x: 0.5,
 					y: 0.5,
@@ -233,7 +154,7 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 						disabled={currentPage === 0}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-							${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
+                            ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretLeft
 							size={24}
@@ -257,7 +178,7 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
 						disabled={currentPage === totalPages - 1}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-							${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
+                            ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretRight
 							size={24}
