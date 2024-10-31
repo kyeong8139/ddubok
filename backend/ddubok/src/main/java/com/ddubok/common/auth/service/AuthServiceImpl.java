@@ -1,7 +1,6 @@
 package com.ddubok.common.auth.service;
 
 import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
-import com.ddubok.common.auth.exception.RefreshTokenExpiredException;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,26 +45,26 @@ public class AuthServiceImpl implements AuthService {
         Long memberId = jwtTokenUtil.getMemberId(refresh);
         if (jwtTokenUtil.isExpired(refresh)) {
             redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
-            throw new RefreshTokenExpiredException("Refresh expired");
+            throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         String findRefresh = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (findRefresh == null) {
-            throw new InvalidRefreshTokenException("Refresh token not found");
+            throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         if (!findRefresh.equals(refresh)) {
-            throw new InvalidRefreshTokenException("Refresh Error");
+            throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
         if (!category.equals(REDIS_REFRESH_TOKEN_PREFIX)) {
-            throw new InvalidRefreshTokenException("Refresh token error");
+            throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         String role = jwtTokenUtil.getRole(refresh);
         String newAccess = jwtTokenUtil.createToken(ACCESS_TOKEN_COOKIE_NAME, memberId, role, expiration);
-        response.setHeader("Authorization", "Bearer " + newAccess);
+        response.setHeader("Authorization", newAccess);
 
     }
 }
