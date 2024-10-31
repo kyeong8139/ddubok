@@ -61,7 +61,7 @@ public class GetCardServiceImpl implements GetCardService {
     public List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req) {
         List<Album> albums = albumRepositoryCustom.getAllCardBySeason(req);
         return albums.stream()
-            .filter(album -> album.getCard().getSeason().getId().equals(req.getSeasonId()))
+            .filter(album -> !album.getIsDeleted())
             .map(album -> GetCardDetailRes.builder()
                 .id(album.getCard().getId())
                 .content(album.getCard().getContent())
