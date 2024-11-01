@@ -19,6 +19,12 @@ RUN npm ci && \
 FROM base AS builder
 WORKDIR /usr/src/app
 
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_GA_ID
+
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
+
 # 의존성 파일 복사
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
