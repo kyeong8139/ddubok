@@ -8,7 +8,10 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
 	const { closeModal } = useContext(ModalContext);
 
 	return (
-		<div id="modal">
+		<div
+			id="modal"
+			className="absolute inset-0 flex items-center justify-center"
+		>
 			<div
 				id="overlay"
 				className="fixed bottom-0 w-screen max-w-[480px] z-10 h-full bg-black bg-opacity-30 backdrop-blur-sm"
