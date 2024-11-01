@@ -4,11 +4,10 @@ import com.ddubok.api.attendance.dto.response.AttendanceHistoryRes;
 import com.ddubok.api.attendance.dto.response.CreateAttendanceRes;
 import com.ddubok.api.attendance.dto.response.FortuneRes;
 import com.ddubok.api.attendance.entity.Attendance;
+import com.ddubok.api.attendance.exception.IllegalDateException;
 import com.ddubok.api.attendance.repository.AttendanceRepository;
 import com.ddubok.api.attendance.repository.FortuneRepository;
 import com.ddubok.api.member.entity.Member;
-import com.ddubok.api.member.entity.Role;
-import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +35,11 @@ public class AttendanceServiceImpl implements AttendanceService {
      */
     @Override
     public AttendanceHistoryRes getAttendanceHistoryThisMonth(Long memberId, int year, int month) {
+
+        if(month<1||month>12){
+            throw new IllegalDateException("월은 1에서 12 사이의 값이어야 합니다.");
+        }
+
         List<LocalDate> attendanceList = attendanceRepository.getDateByMemberIdAndMonth(memberId,
             year, month);
 

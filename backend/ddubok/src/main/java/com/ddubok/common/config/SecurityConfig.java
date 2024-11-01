@@ -3,10 +3,12 @@ package com.ddubok.common.config;
 import com.ddubok.common.auth.handler.CustomLogoutSuccessHandler;
 import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
+import com.ddubok.common.auth.oauth.CustomOAuth2FailureHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
 import com.ddubok.common.auth.registration.SocialClientRegistrationConfig;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,9 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Spring Security 보안 설정 클래스.
@@ -33,6 +38,7 @@ public class SecurityConfig {
     private final CustomOidcUserService customOidcUserService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
@@ -47,6 +53,21 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
         throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+            Arrays.asList("https://ddubok.com", "http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie", "Error", "Error-Description"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     /**
@@ -71,6 +92,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
+        http
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable);
@@ -91,9 +115,11 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
-                .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
-                .successHandler(customOAuth2SuccessHandler));
+                .authorizationEndpoint(endPoint -> endPoint.baseUri("https://ddubok.com/api/oauth2/authorization"))
+                .redirectionEndpoint(endPoint -> endPoint.baseUri("https://ddubok.com/api/login/oauth2/code/*"))
+                .successHandler(customOAuth2SuccessHandler)
+                .failureHandler(customOAuth2FailureHandler)
+            );
 
         http
             .authorizeHttpRequests((auth) -> auth
