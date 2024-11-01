@@ -1,7 +1,9 @@
 import axios from "axios";
 import { getCookie, setCookie } from "cookies-next";
 import Router from "next/router";
-import { reissue } from "./login-api";
+
+import { reissue } from "@lib/api/login-api";
+import useAuthStore from "@store/auth-store";
 
 const axiosInstance = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -14,7 +16,7 @@ const axiosInstance = axios.create({
 // 요청 인터셉터
 axiosInstance.interceptors.request.use(
 	(config) => {
-		const accessToken = getCookie("accessToken");
+		const { accessToken } = useAuthStore.getState();
 		if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
 		return config;
 	},
@@ -27,17 +29,17 @@ axiosInstance.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		// 에러 처리 수정 필요
-		if (error.response && !originalRequest._retry) {
+		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
-			const refreshToken = getCookie("refreshToken");
+			const refreshToken = getCookie("refresh");
 
 			if (refreshToken) {
 				try {
 					const response = await reissue();
 					const { accessToken: newAcessToken } = response.data;
 
-					setCookie("accessToken", newAcessToken);
+					useAuthStore.getState().setAccessToken(newAcessToken);
+
 					originalRequest.headers["Authorization"] = `Bearer ${newAcessToken}`;
 					return axiosInstance(originalRequest);
 				} catch (error) {

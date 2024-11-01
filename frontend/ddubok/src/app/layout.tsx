@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 
 import Header from "@components/common/header";
 import { MenuProvider } from "@context/menu-context";
@@ -43,6 +44,24 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
+			<head>
+				{/* Google Analytics Script */}
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=G-776Q6TRWEQ"
+					strategy="afterInteractive"
+				/>
+				<Script
+					id="google-analytics"
+					strategy="afterInteractive"
+				>
+					{`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'G-776Q6TRWEQ');
+					`}
+				</Script>
+			</head>
 			<body
 				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
 				suppressHydrationWarning={true}
