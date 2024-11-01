@@ -115,8 +115,8 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint.baseUri("https://ddubok.com/api/oauth2/authorization"))
-                .redirectionEndpoint(endPoint -> endPoint.baseUri("https://ddubok.com/api/login/oauth2/code/*"))
+                .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
+                .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
                 .successHandler(customOAuth2SuccessHandler)
                 .failureHandler(customOAuth2FailureHandler)
             );
