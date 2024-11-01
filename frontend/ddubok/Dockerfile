@@ -23,7 +23,6 @@ FROM base AS builder
 WORKDIR /usr/src/app
 
 # 의존성 파일 복사
-COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
 
 # Next.js standalone 모드로 빌드
