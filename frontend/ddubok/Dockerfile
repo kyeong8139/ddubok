@@ -11,17 +11,15 @@ WORKDIR /usr/src/app
 # package.json 관련 파일만 복사
 COPY package.json package-lock.json* .npmrc* ./
 
-# 설치하고 캐시 정리
-RUN rm -rf node_modules && \
-    rm -f package-lock.json && \
-    npm ci
-
+# 설치하고 
+RUN npm ci
 
 # 단계 3: 애플리케이션 빌드
 FROM base AS builder
 WORKDIR /usr/src/app
 
 # 의존성 파일 복사
+COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
 
 # Next.js standalone 모드로 빌드
