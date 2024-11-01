@@ -30,7 +30,7 @@ class FortuneRepositoryTest extends PersistenceLayerTestSupport {
         Fortune fortune3 = Fortune.builder()
             .sentence("운세내용3")
             .build();
-        fortuneRepository.saveAll(List.of(fortune1,fortune2,fortune3));
+        fortuneRepository.saveAll(List.of(fortune1, fortune2, fortune3));
 
       // when
         List<String> results = List.of(
@@ -97,7 +97,7 @@ class FortuneRepositoryTest extends PersistenceLayerTestSupport {
 
     @DisplayName("테이블에 저장된게 없다면 0을 반환한다.")
     @Test
-    void test(){
+    void getRowCountWithoutData(){
       // given
 
       // when
