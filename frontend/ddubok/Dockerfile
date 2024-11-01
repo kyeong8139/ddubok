@@ -23,10 +23,8 @@ WORKDIR /usr/src/app
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
 
-# 빌드 실행 및 불필요한 파일 정리
-RUN npm run build && \
-    rm -rf ./.next/cache && \
-    rm -rf ./node_modules/.cache
+# Next.js standalone 모드로 빌드
+RUN npm run build
 
 # 단계 4: 최종 프로덕션 이미지
 FROM base AS runner
@@ -36,21 +34,18 @@ WORKDIR /usr/src/app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# 필요한 파일만 복사
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/package.json ./
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/package-lock.json* ./
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/node_modules ./node_modules
+# standalone 출력과 필요한 public 파일들만 복사
 COPY --from=builder --chown=nextjs:nodejs /usr/src/app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /usr/src/app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /usr/src/app/.next/static ./.next/static
+
+# 환경 변수 설정
+ENV NODE_ENV production
+ENV PORT 3000
 
 # 보안 강화
 USER nextjs
-RUN chmod -R 500 ./.next && \
-    chmod -R 500 ./node_modules
-
-# 캐시 레이어 최적화를 위한 작업 디렉토리 설정
-WORKDIR /usr/src/app
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]
