@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 
-// const nextConfig = {};
-const withPWA = require("next-pwa");
+const withPWA = require("next-pwa")({
+	dest: "public",
+	swDest: "public/sw.js",
+});
 
 const nextConfig = {
-	// reactStrictMode: false,
+	output: "standalone",
 	webpack: (config) => {
 		config.externals.push({
 			"utf-8-validate": "commonjs utf-8-validate",
@@ -16,9 +18,4 @@ const nextConfig = {
 	},
 };
 
-module.exports = withPWA({
-	dest: "public",
-	output: "standalone",
-	...nextConfig,
-});
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);

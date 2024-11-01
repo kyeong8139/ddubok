@@ -6,4 +6,5 @@ export interface ILoginButtonProps {
 	shadow: keyof typeof shadowClass;
 	width: number;
 	height: number;
+	onClick?: () => void;
 }
