@@ -10,11 +10,14 @@ import BorderComponent from "@components/card/borderComponent";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { Trash } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
 
 const CreateFront = () => {
+	const router = useRouter();
 	const [activeComponent, setActiveComponent] = useState<string>("background");
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
+	const [showNextConfirm, setShowNextConfirm] = useState(false);
 
 	// 캔버스 초기화
 	useEffect(() => {
@@ -27,7 +30,7 @@ const CreateFront = () => {
 		// 선택 스타일 설정
 		const setSelectionStyles = () => {
 			// 기본 선택 스타일 설정
-			newCanvas.set({
+			(newCanvas as any).set({
 				borderColor: "#7e22ce",
 				cornerColor: "#7e22ce",
 				cornerSize: 8,
@@ -165,6 +168,22 @@ const CreateFront = () => {
 		}
 	}, [activeComponent, canvas]);
 
+	const handleNext = () => {
+		if (canvas) {
+			// 현재 캔버스를 이미지로 저장
+			const dataURL = canvas.toDataURL({
+				format: "png",
+				quality: 4,
+			});
+
+			// localStorage에 저장
+			localStorage.setItem("cardFrontImage", dataURL);
+
+			// 다음 페이지로 이동
+			router.push("/create/effect");
+		}
+	};
+
 	// 초기화 (Clear)
 	const handleClear = () => {
 		if (canvas) {
@@ -183,79 +202,6 @@ const CreateFront = () => {
 			canvas.insertAt(whiteBg, 0, false);
 			canvas.renderAll();
 			setShowClearConfirm(false);
-		}
-	};
-
-	// 기존 함수들...
-	const saveToJSON = () => {
-		if (canvas) {
-			const json = canvas.toJSON(["data", "selectable", "evented"]);
-			localStorage.setItem("canvasData", JSON.stringify(json));
-			console.log("Canvas saved as JSON");
-		}
-	};
-
-	const loadFromJSON = () => {
-		if (canvas) {
-			const savedData = localStorage.getItem("canvasData");
-			if (savedData) {
-				canvas.loadFromJSON(savedData, () => {
-					// 배경과 테두리의 속성 복원
-					canvas.getObjects().forEach((obj) => {
-						if (obj.data?.type === "background" || obj.data?.type === "border") {
-							obj.set({
-								selectable: false,
-								evented: false,
-							});
-						}
-					});
-					canvas.renderAll();
-					console.log("Canvas loaded from JSON");
-				});
-			}
-		}
-	};
-
-	const saveAsImage = () => {
-		if (canvas) {
-			const dataURL = canvas.toDataURL({
-				format: "png",
-				quality: 1,
-			});
-
-			const link = document.createElement("a");
-			link.download = "canvas-image.png";
-			link.href = dataURL;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
-	};
-
-	const uploadToServer = async () => {
-		if (canvas) {
-			const dataURL = canvas.toDataURL({
-				format: "png",
-				quality: 1,
-			});
-
-			try {
-				const response = await fetch("/api/upload", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ image: dataURL }),
-				});
-
-				if (response.ok) {
-					console.log("Image uploaded successfully");
-				} else {
-					console.error("Failed to upload image");
-				}
-			} catch (error) {
-				console.error("Error uploading image:", error);
-			}
 		}
 	};
 
@@ -324,35 +270,19 @@ const CreateFront = () => {
 				</div>
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[320px] pl-4 pr-4 pt-4 pb-4 mb-12">
+			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[320px] pl-4 pr-4 pt-4 pb-4 ">
 				{renderActiveComponent()}
 			</div>
 
-			<div className="mt-4 flex gap-2">
-				<button
-					onClick={saveToJSON}
-					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
-				>
-					임시 저장
-				</button>
-				<button
-					onClick={loadFromJSON}
-					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
-				>
-					불러오기
-				</button>
-				<button
-					onClick={saveAsImage}
-					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
-				>
-					이미지로 저장
-				</button>
-				<button
-					onClick={uploadToServer}
-					className="px-4 py-2 bg-ddubokPurple text-white rounded-lg"
-				>
-					서버에 저장
-				</button>
+			<div className="mt-6 w-full flex justify-center mb-8">
+				<Button
+					text="다음으로"
+					color="green"
+					size="long"
+					font="regular"
+					shadow="green"
+					onClick={() => setShowNextConfirm(true)}
+				/>
 			</div>
 
 			{/* 초기화 확인 모달 */}
@@ -405,6 +335,37 @@ const CreateFront = () => {
 							font="regular"
 							shadow="red"
 							onClick={handleClear}
+						/>
+					</div>
+				</Modal>
+			)}
+
+			{showNextConfirm && (
+				<Modal>
+					<h3 className="text-lg font-nexonBold mb-4">앞면 꾸미기 완료</h3>
+					<p className="text-gray-600 mb-6 font-nexonRegular">
+						다음으로 넘어가면 더 이상 수정할 수 없습니다.
+						<br />
+						다음 단계로 이동하시겠습니까?
+					</p>
+					<div className="flex justify-end gap-2">
+						<Button
+							text="취소"
+							color="gray"
+							size="small"
+							font="regular"
+							shadow="gray"
+							onClick={() => {
+								setShowNextConfirm(false);
+							}}
+						/>
+						<Button
+							text="다음으로"
+							color="green"
+							size="small"
+							font="regular"
+							shadow="green"
+							onClick={handleNext}
 						/>
 					</div>
 				</Modal>

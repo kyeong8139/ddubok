@@ -103,7 +103,7 @@ const Create = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center w-full h-full">
-					<div className="text-white font-nexonBold text-2xl mt-10">행운 카드 만들기</div>
+					<div className="text-white font-nexonBold text-2xl mt-10">행운 카드 선택</div>
 
 					<div className="w-full flex items-center justify-center mt-8">
 						<div className="w-full max-w-[480px]">
