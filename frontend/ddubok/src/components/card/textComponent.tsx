@@ -15,6 +15,10 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const fonts = [
 		{ name: "NEXON Lv1 Gothic Bold", label: "넥슨 고딕 볼드" },
 		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
 	];
 
 	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#7e22ce"];
@@ -171,14 +175,14 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	};
 
 	return (
-		<div className="w-full space-y-6">
+		<div className="w-full  flex flex-col">
 			<div className="space-y-2">
 				<p className="text-sm font-medium">폰트 선택</p>
-				<div className="grid grid-cols-2 gap-2">
+				<div className="flex overflow-x-auto space-x-2 whitespace-nowrap scrollbar-hide">
 					{fonts.map((font) => (
 						<button
 							key={font.name}
-							className={`px-4 py-2 rounded-lg border-2 ${
+							className={`px-4 py-2 rounded-lg border-2 flex-shrink-0 ${
 								fontFamily === font.name ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
 							}`}
 							style={{ fontFamily: font.name }}
