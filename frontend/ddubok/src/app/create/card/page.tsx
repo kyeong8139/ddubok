@@ -314,7 +314,7 @@ const CreateFront = () => {
 							}}
 						/>
 						<Button
-							text="다음으로"
+							text="다음"
 							color="green"
 							size="small"
 							font="regular"
