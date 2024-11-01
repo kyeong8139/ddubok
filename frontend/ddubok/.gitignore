@@ -38,3 +38,5 @@ next-env.d.ts
 #build
 public/sw.js*
 public/workbox-*.js*
+
+.env

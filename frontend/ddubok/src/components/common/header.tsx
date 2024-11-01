@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 import Hamburger from "@components/common/hamburger";
 import Menu from "@components/common/menu";
@@ -28,19 +28,21 @@ const Header = () => {
 					</div>
 				);
 			case "/create":
+			case "/share":
 				return (
 					<div className="flex justify-center items-center h-full">
 						<Image
 							src="/assets/ddubok.png"
 							alt="ddubok"
-							width={56}
-							height={56}
-							objectFit="contain"
+							width={72}
+							height={72}
 						/>
 					</div>
 				);
-			case "/admin":
-			case "/collection":
+			case "/admin/user":
+			case "/admin/report":
+			case "/admin/setting":
+			case "/book":
 			case "/fortune":
 				return (
 					<div className="flex justify-between items-center h-full">
@@ -52,6 +54,16 @@ const Header = () => {
 						<Hamburger />
 					</div>
 				);
+			case "/login":
+				return (
+					<div className="flex justify-start items-center h-full">
+						<CaretLeft
+							size={24}
+							color="white"
+							onClick={() => router.back()}
+						/>
+					</div>
+				);
 			default:
 				return null;
 		}
@@ -60,7 +72,7 @@ const Header = () => {
 	return (
 		<div
 			id="header"
-			className="max-w-[480px] w-full fixed top-0"
+			className="max-w-[480px] w-full fixed top-0 bg-ddubokBackground z-10"
 		>
 			<div className="h-14 px-4">{renderHeaderContent()}</div>
 			<div

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import Header from "@components/common/header";
 import { MenuProvider } from "@context/menu-context";
+import { ModalProvider } from "@context/modal-context";
 
 import "./globals.css";
 
@@ -53,8 +54,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					}}
 				>
 					<MenuProvider>
-						<Header />
-						<div className="mt-14">{children}</div>
+						<ModalProvider>
+							<Header />
+							<div className="mt-14">{children}</div>
+						</ModalProvider>
 					</MenuProvider>
 				</div>
 			</body>

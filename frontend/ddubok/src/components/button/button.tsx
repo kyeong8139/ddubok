@@ -19,7 +19,7 @@ const Button = (props: IButtonProps) => {
 				</>
 			) : (
 				<>
-					<span className={`${fontClass[font]} text-lg`}>{text}</span>
+					<span className={`${fontClass[font]}`}>{text}</span>
 				</>
 			)}
 		</button>

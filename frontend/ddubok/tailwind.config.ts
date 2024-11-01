@@ -10,11 +10,15 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
-			height: {
+			spacing: {
 				"0.25": "0.0625rem",
 				"0.375": "0.09375rem",
 				"0.5": "0.125rem",
+				"17": "4.25rem",
 				"18": "4.5rem",
+			},
+			blur: {
+				custom: "8px",
 			},
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -18,6 +18,7 @@ const nextConfig = {
 
 module.exports = withPWA({
 	dest: "public",
+	output: "standalone",
 	...nextConfig,
 });
 module.exports = nextConfig;
