@@ -12,10 +12,9 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json* .npmrc* ./
 
 # 설치하고 캐시 정리
-RUN npm ci && \
-    npm cache clean --force && \
-    rm -rf node_modules && \
-    rm -f package-lock.json
+RUN rm -rf node_modules && \
+    rm -f package-lock.json && \
+    npm ci
 
 
 # 단계 3: 애플리케이션 빌드
