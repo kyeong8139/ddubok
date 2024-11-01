@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fabric } from "fabric";
 
 interface TextComponentProps {
@@ -11,17 +11,29 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
 	const [selectedText, setSelectedText] = useState<fabric.IText | null>(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [startX, setStartX] = useState(0);
+	const [scrollLeft, setScrollLeft] = useState(0);
+	const sliderRef = useRef<HTMLDivElement>(null);
 
 	const fonts = [
-		{ name: "NEXON Lv1 Gothic Bold", label: "넥슨 고딕 볼드" },
-		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
-		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
-		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
-		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
-		{ name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ id: 1, name: "NEXON Lv1 Gothic Bold", label: "넥슨 고딕" },
+		{ id: 2, name: "PyeongChangPeace-Bold", label: "평창평화체" },
+		{ id: 3, name: "CookieRun-Regular", label: "쿠키런" },
 	];
 
-	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#7e22ce"];
+	const colors = [
+		"#000000",
+		"#ffffff",
+		"#ff0000",
+		"#00ff00",
+		"#0000ff",
+		"#ffff00",
+		"#ff00ff",
+		"#00ffff",
+		"#ff9900",
+		"#9900ff",
+	];
 
 	useEffect(() => {
 		if (!canvas) return;
@@ -70,6 +82,26 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			selectedText.set("fill", newColor);
 			canvas.renderAll();
 		}
+	};
+
+	const handleMouseDown = (e: React.MouseEvent) => {
+		setIsDragging(true);
+		if (sliderRef.current) {
+			setStartX(e.pageX - sliderRef.current.offsetLeft);
+			setScrollLeft(sliderRef.current.scrollLeft);
+		}
+	};
+
+	const handleMouseUp = () => {
+		setIsDragging(false);
+	};
+
+	const handleMouseMove = (e: React.MouseEvent) => {
+		if (!isDragging || !sliderRef.current) return;
+		e.preventDefault();
+		const x = e.pageX - sliderRef.current.offsetLeft;
+		const walk = (x - startX) * 2;
+		sliderRef.current.scrollLeft = scrollLeft - walk;
 	};
 
 	const addText = () => {
@@ -175,27 +207,9 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	};
 
 	return (
-		<div className="w-full  flex flex-col">
+		<div className="w-full flex flex-col h-full">
 			<div className="space-y-2">
-				<p className="text-sm font-medium">폰트 선택</p>
-				<div className="flex overflow-x-auto space-x-2 whitespace-nowrap scrollbar-hide">
-					{fonts.map((font) => (
-						<button
-							key={font.name}
-							className={`px-4 py-2 rounded-lg border-2 flex-shrink-0 ${
-								fontFamily === font.name ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
-							}`}
-							style={{ fontFamily: font.name }}
-							onClick={() => handleFontChange(font.name)}
-						>
-							{font.label}
-						</button>
-					))}
-				</div>
-			</div>
-
-			<div className="space-y-2">
-				<p className="text-sm font-medium">글자 색상</p>
+				<p className="text-base font-nexonRegular">색상</p>
 				<div className="grid grid-cols-5 gap-2">
 					{colors.map((color) => (
 						<button
@@ -209,10 +223,34 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 					))}
 				</div>
 			</div>
+			<div className="space-y-2">
+				<p className="text-base font-nexonRegular mt-4">폰트</p>
+				<div
+					ref={sliderRef}
+					className="flex overflow-x-auto space-x-2 whitespace-nowrap scrollbar-hide select-none cursor-grab active:cursor-grabbing"
+					onMouseDown={handleMouseDown}
+					onMouseUp={handleMouseUp}
+					onMouseLeave={handleMouseUp}
+					onMouseMove={handleMouseMove}
+				>
+					{fonts.map((font) => (
+						<button
+							key={font.id}
+							className={`px-4 py-2 rounded-lg border-2 flex-shrink-0 ${
+								fontFamily === font.name ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
+							}`}
+							style={{ fontFamily: font.name }}
+							onClick={() => handleFontChange(font.name)}
+						>
+							{font.label}
+						</button>
+					))}
+				</div>
+			</div>
 
 			<button
 				onClick={addText}
-				className="w-full px-4 py-2 bg-ddubokPurple text-white rounded-lg"
+				className="w-full px-4 py-2 bg-ddubokPurple text-white rounded-lg mt-8 font-nexonRegular"
 			>
 				텍스트 추가
 			</button>
