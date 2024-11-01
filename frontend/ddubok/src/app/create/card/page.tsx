@@ -7,7 +7,9 @@ import StickerComponent from "@components/card/stickerComponent";
 import TextComponent from "@components/card/textComponent";
 import BrushComponent from "@components/card/brushComponent";
 import BorderComponent from "@components/card/borderComponent";
-import EffectComponent from "@components/card/effectComponent";
+import Modal from "@components/common/modal";
+import Button from "@components/button/button";
+import { Trash } from "@phosphor-icons/react";
 
 const CreateFront = () => {
 	const [activeComponent, setActiveComponent] = useState<string>("background");
@@ -156,8 +158,6 @@ const CreateFront = () => {
 				return <BrushComponent canvas={canvas} />;
 			case "border":
 				return <BorderComponent canvas={canvas} />;
-			// case "effect":
-			// 	return <EffectComponent />;
 			default:
 				return null;
 		}
@@ -165,47 +165,50 @@ const CreateFront = () => {
 
 	return (
 		<div className="flex flex-col items-center w-full h-full">
-			<div className="flex justify-between w-[280px] mb-4">
-				<button
-					onClick={() => setShowClearConfirm(true)}
-					className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-				>
-					초기화
-				</button>
-			</div>
-
 			<canvas
 				id="canvas"
 				className="rounded-lg"
 			></canvas>
 
-			<div className="mt-10 flex w-[320px]">
-				{["background", "border", "sticker", "text", "brush"].map((value) => (
-					<label
-						key={value}
-						className="flex items-center cursor-pointer"
-					>
-						<input
-							type="radio"
-							value={value}
-							checked={activeComponent === value}
-							onChange={() => setActiveComponent(value)}
-							className="hidden"
-						/>
-						<p
-							className={`p-2 border-2 border-black rounded-lg font-nexonBold text-xs ${
-								activeComponent === value ? "bg-ddubokPurple" : "bg-white"
-							}`}
+			<div className="mt-6 flex w-[320px] place-content-between">
+				<div className="flex">
+					{["background", "border", "sticker", "text", "brush"].map((value) => (
+						<label
+							key={value}
+							className="flex items-center cursor-pointer"
 						>
-							{value === "background" && "배경"}
-							{value === "border" && "테두리"}
-							{value === "sticker" && "스티커"}
-							{value === "text" && "텍스트"}
-							{value === "brush" && "브러쉬"}
-							{/* {value === "effect" && "효과"} */}
-						</p>
-					</label>
-				))}
+							<input
+								type="radio"
+								value={value}
+								checked={activeComponent === value}
+								onChange={() => setActiveComponent(value)}
+								className="hidden"
+							/>
+							<p
+								className={`p-2 border-2 border-black rounded-lg font-nexonBold text-xs ${
+									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
+								}`}
+							>
+								{value === "background" && "배경"}
+								{value === "border" && "테두리"}
+								{value === "sticker" && "스티커"}
+								{value === "text" && "텍스트"}
+								{value === "brush" && "브러쉬"}
+							</p>
+						</label>
+					))}
+				</div>
+				<div>
+					<button
+						onClick={() => setShowClearConfirm(true)}
+						className="p-2 rounded-lg"
+					>
+						<Trash
+							size={20}
+							color="#6EFFBF"
+						/>
+					</button>
+				</div>
 			</div>
 
 			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[320px] pl-4 pr-4 pt-4 pb-4 mb-12">
@@ -240,7 +243,7 @@ const CreateFront = () => {
 			</div>
 
 			{/* 초기화 확인 모달 */}
-			{showClearConfirm && (
+			{/* {showClearConfirm && (
 				<div className="fixed inset-0 flex items-center justify-center z-50">
 					<div
 						className="fixed inset-0 bg-black bg-opacity-50"
@@ -263,8 +266,35 @@ const CreateFront = () => {
 								초기화
 							</button>
 						</div>
-					</div>
+					</div>	
 				</div>
+			)} */}
+
+			{showClearConfirm && (
+				<Modal>
+					<h3 className="text-lg font-nexonBold mb-4">정말 초기화하시겠습니까?</h3>
+					<p className="text-gray-600 mb-6 font-nexonRegular">모든 작업내용이 삭제됩니다.</p>
+					<div className="flex justify-end gap-2">
+						<Button
+							text="취소"
+							color="gray"
+							size="small"
+							font="regular"
+							shadow="gray"
+							onClick={() => {
+								setShowClearConfirm(false);
+							}}
+						/>
+						<Button
+							text="초기화"
+							color="red"
+							size="small"
+							font="regular"
+							shadow="red"
+							onClick={handleClear}
+						/>
+					</div>
+				</Modal>
 			)}
 		</div>
 	);

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { fabric } from "fabric";
+import Button from "@components/button/button";
 
 interface TextComponentProps {
 	canvas?: fabric.Canvas | null;
@@ -248,12 +249,22 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 				</div>
 			</div>
 
-			<button
+			{/* <button
 				onClick={addText}
 				className="w-full px-4 py-2 bg-ddubokPurple text-white rounded-lg mt-8 font-nexonRegular"
 			>
 				텍스트 추가
-			</button>
+			</button> */}
+			<div className="mt-8 flex w-full justify-center">
+				<Button
+					text="텍스트 추가"
+					color="purple"
+					size="semiLong"
+					font="regular"
+					shadow="purple"
+					onClick={addText}
+				/>
+			</div>
 		</div>
 	);
 };
