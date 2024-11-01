@@ -23,7 +23,119 @@ const CreateFront = () => {
 			height: 495,
 			isDrawingMode: false,
 		});
-		setCanvas(newCanvas);
+
+		// 선택 스타일 설정
+		const setSelectionStyles = () => {
+			// 기본 선택 스타일 설정
+			newCanvas.set({
+				borderColor: "#7e22ce",
+				cornerColor: "#7e22ce",
+				cornerSize: 8,
+				cornerStyle: "circle",
+				transparentCorners: false,
+				padding: 10,
+			});
+
+			// 삭제 버튼용 커스텀 컨트롤 생성
+			const deleteControl = new fabric.Control({
+				x: 0.5,
+				y: -0.5,
+				offsetY: 0,
+				offsetX: 0,
+				cursorStyle: "pointer",
+				mouseUpHandler: function (eventData, transform) {
+					const target = transform.target;
+					if (target instanceof fabric.ActiveSelection) {
+						const objects = target.getObjects();
+						objects.forEach((obj) => newCanvas.remove(obj));
+						// 선택 해제
+						newCanvas.discardActiveObject();
+					} else {
+						newCanvas.remove(target);
+					}
+					newCanvas.requestRenderAll();
+					return true;
+				},
+				render: function (ctx, left, top, styleOverride, fabricObject) {
+					const size = 24;
+					ctx.save();
+					ctx.translate(left, top);
+
+					// 원형 배경
+					ctx.beginPath();
+					ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+					ctx.fillStyle = "white";
+					ctx.fill();
+					ctx.strokeStyle = "#7e22ce";
+					ctx.lineWidth = 1;
+					ctx.stroke();
+
+					// X 표시
+					ctx.fillStyle = "#7e22ce";
+					ctx.font = "16px Arial";
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.fillText("×", 0, 0);
+
+					ctx.restore();
+				},
+			});
+
+			// ActiveSelection(다중 선택) 스타일 및 컨트롤 설정
+			if (fabric.ActiveSelection) {
+				fabric.ActiveSelection.prototype.set({
+					borderColor: "#7e22ce",
+					cornerColor: "#7e22ce",
+					cornerSize: 8,
+					cornerStyle: "circle",
+					transparentCorners: false,
+					padding: 10,
+				});
+
+				// ActiveSelection에 삭제 컨트롤 추가
+				fabric.ActiveSelection.prototype.controls = {
+					...fabric.ActiveSelection.prototype.controls,
+					deleteControl: deleteControl,
+				};
+			}
+
+			// 일반 객체에도 동일한 삭제 컨트롤 적용
+			fabric.Object.prototype.controls.deleteControl = deleteControl;
+		};
+
+		setSelectionStyles();
+
+		// selection:created 이벤트에 대한 핸들러
+		newCanvas.on("selection:created", function (e) {
+			const selection = e.target;
+			if (selection) {
+				selection.set({
+					borderColor: "#7e22ce",
+					cornerColor: "#7e22ce",
+					cornerSize: 8,
+					cornerStyle: "circle",
+					transparentCorners: false,
+					padding: 10,
+				});
+				newCanvas.requestRenderAll();
+			}
+		});
+
+		// selection:updated 이벤트에 대한 핸들러 (선택이 변경될 때)
+		newCanvas.on("selection:updated", function (e) {
+			const selection = e.target;
+			if (selection) {
+				selection.set({
+					borderColor: "#7e22ce",
+					cornerColor: "#7e22ce",
+					cornerSize: 8,
+					cornerStyle: "circle",
+					transparentCorners: false,
+					padding: 10,
+				});
+				newCanvas.requestRenderAll();
+			}
+		});
 
 		// 초기 흰색 배경 설정
 		const whiteBg = new fabric.Rect({
@@ -37,6 +149,7 @@ const CreateFront = () => {
 
 		newCanvas.insertAt(whiteBg, 0, false);
 		newCanvas.renderAll();
+		setCanvas(newCanvas);
 
 		// 클린업: 컴포넌트 언마운트 시 캔버스 해제
 		return () => {
