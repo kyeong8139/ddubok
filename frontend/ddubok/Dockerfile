@@ -15,7 +15,7 @@ COPY package.json package-lock.json* .npmrc* ./
 RUN npm ci && \
     npm cache clean --force && \
     rm -rf node_modules && \
-    rm -f package-lock.json && \
+    rm -f package-lock.json
 
 
 # 단계 3: 애플리케이션 빌드
