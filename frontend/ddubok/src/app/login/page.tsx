@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import LoginButton from "@components/button/loginButton";
+import { kakaoLogin } from "@lib/api/login-api";
 
 import { Clover } from "@phosphor-icons/react";
 
@@ -35,6 +36,7 @@ const Login = () => {
 						shadow="kakao"
 						width={24}
 						height={24}
+						onClick={kakaoLogin}
 					/>
 					<LoginButton
 						image="/assets/naver.png"

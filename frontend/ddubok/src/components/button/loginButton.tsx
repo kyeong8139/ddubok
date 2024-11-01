@@ -4,12 +4,13 @@ import { ILoginButtonProps } from "@interface/components/loginButton";
 import { colorClass, shadowClass } from "@styles/loginButton";
 
 const LoginButton = (props: ILoginButtonProps) => {
-	const { image, color, shadow, width, height } = props;
+	const { image, color, shadow, width, height, onClick } = props;
 
 	return (
 		<button
 			id="login-button"
 			className={`w-14 h-14 flex justify-center items-center border border-solid border-black rounded-full ${colorClass[color]} ${shadowClass[shadow]}`}
+			onClick={onClick}
 		>
 			<Image
 				src={image}

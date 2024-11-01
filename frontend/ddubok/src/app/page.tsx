@@ -2,11 +2,14 @@
 
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { hasCookie } from "cookies-next";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
+import { reissue } from "@lib/api/login-api";
+import useAuthStore from "@store/auth-store";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -15,6 +18,24 @@ import "slick-carousel/slick/slick-theme.css";
 const Home = () => {
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(true);
+	const accessToken = useAuthStore((state) => state.accessToken);
+	const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const checkAccessToken = async () => {
+			try {
+				const response = await reissue();
+				const { accessToken: newAccessToken } = response.data;
+				setAccessToken(newAccessToken);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		if (hasCookie("refresh") && !accessToken) checkAccessToken();
+	}, []);
 
 	const settings = {
 		infinite: true,
