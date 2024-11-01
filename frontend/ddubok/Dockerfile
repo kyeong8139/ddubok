@@ -1,8 +1,8 @@
 # 단계 1: Base 이미지
-FROM node:20.18-alpine AS base
+FROM node:20.18.0-slim AS base
 
 # 기본 의존성 설치
-RUN apk add --no-cache libc6-compat
+RUN apt-get update && apt-get install -y libc6-dev
 
 # 단계 2: 의존성 설치
 FROM base AS deps
