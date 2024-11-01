@@ -3,12 +3,14 @@ export const colorClass = {
 	green: "bg-ddubokGreen",
 	gray: "bg-ddubokGray",
 	gradient: "bg-gradient-to-r from-ddubokPurple to-ddubokGreen",
+	red: "bg-red-500",
 };
 
 export const sizeClass = {
 	small: "w-20 py-2",
 	short: "w-36 h-18",
 	long: "w-[calc(100%-64px)] h-14",
+	semiLong: "w-full px-4 py-2",
 };
 
 export const fontClass = {
@@ -23,4 +25,5 @@ export const shadowClass = {
 	green: "shadow-custom-green",
 	gray: "shadow-custom-gray",
 	gradient: "shadow-custom-gradient",
+	red: "shadow-custom-red",
 };
