@@ -1,7 +1,10 @@
 "use client";
+
 import React, { useState } from "react";
-import { fabric } from "fabric";
 import { chunk } from "lodash";
+import Image from "next/image";
+
+import { fabric } from "fabric";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
 const stickerImages = [
@@ -57,7 +60,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 
 			const baseControls = fabric.Object.prototype.controls;
 
-			// 삭제 버튼용 커스텀 컨트롤 생성
 			fabric.Object.prototype.controls.deleteControl = new fabric.Control({
 				x: 0.5,
 				y: -0.5,
@@ -75,7 +77,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 					ctx.save();
 					ctx.translate(left, top);
 
-					// 원형 배경
 					ctx.beginPath();
 					ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
 					ctx.fillStyle = "white";
@@ -84,7 +85,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 					ctx.lineWidth = 1;
 					ctx.stroke();
 
-					// X 표시
 					ctx.fillStyle = "#7e22ce";
 					ctx.font = "16px Arial";
 					ctx.textAlign = "center";
@@ -95,11 +95,10 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 				},
 			});
 
-			// 커스텀 컨트롤 설정
 			img.controls = {
 				...baseControls,
-				mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
-				deleteControl: fabric.Object.prototype.controls.deleteControl, // 삭제 버튼 추가
+				mtr: new fabric.Control({ visible: false }),
+				deleteControl: fabric.Object.prototype.controls.deleteControl,
 				br: new fabric.Control({
 					x: 0.5,
 					y: 0.5,
@@ -139,11 +138,15 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 							onClick={() => addSticker(imageUrl)}
 						>
 							<div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-ddubokPurple transition-all">
-								<img
-									src={imageUrl}
-									alt={`스티커 ${index + 1}`}
-									className="w-full h-full object-contain"
-								/>
+								<div className="relative w-full h-full">
+									<Image
+										src={imageUrl}
+										alt={`스티커 ${index + 1}`}
+										fill
+										sizes="64px"
+										className="object-contain"
+									/>
+								</div>
 							</div>
 						</div>
 					))}
@@ -154,7 +157,7 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 						disabled={currentPage === 0}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-                            ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
+              ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretLeft
 							size={24}
@@ -178,7 +181,7 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
 						disabled={currentPage === totalPages - 1}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-                            ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
+              ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretRight
 							size={24}

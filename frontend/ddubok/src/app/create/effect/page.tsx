@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 
+import Image from "next/image";
+
 const CreateEffect = () => {
 	const [frontImage, setFrontImage] = useState<string | null>(null);
 
 	useEffect(() => {
-		// localStorage에서 이미지 불러오기
 		const savedImage = localStorage.getItem("cardFrontImage");
 		if (savedImage) {
 			setFrontImage(savedImage);
@@ -17,10 +18,12 @@ const CreateEffect = () => {
 		<div className="flex flex-col items-center w-full h-full">
 			{frontImage ? (
 				<div className="w-[280px] h-[495px]">
-					<img
+					<Image
 						src={frontImage}
 						alt="카드 앞면"
-						className="w-full h-full object-contain rounded-lg"
+						width={280}
+						height={495}
+						className="object-contain rounded-lg"
 					/>
 				</div>
 			) : (

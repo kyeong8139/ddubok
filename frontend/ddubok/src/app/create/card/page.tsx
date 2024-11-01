@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { fabric } from "fabric";
+import { useRouter } from "next/navigation";
+
 import BackgroundComponent from "@components/card/backgroundComponent";
 import StickerComponent from "@components/card/stickerComponent";
 import TextComponent from "@components/card/textComponent";
@@ -9,8 +10,9 @@ import BrushComponent from "@components/card/brushComponent";
 import BorderComponent from "@components/card/borderComponent";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
+
+import { fabric } from "fabric";
 import { Trash } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
 
 const CreateFront = () => {
 	const router = useRouter();
@@ -19,7 +21,6 @@ const CreateFront = () => {
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
 
-	// 캔버스 초기화
 	useEffect(() => {
 		const newCanvas = new fabric.Canvas("canvas", {
 			width: 280,
@@ -27,9 +28,7 @@ const CreateFront = () => {
 			isDrawingMode: false,
 		});
 
-		// 선택 스타일 설정
 		const setSelectionStyles = () => {
-			// 기본 선택 스타일 설정
 			(newCanvas as any).set({
 				borderColor: "#7e22ce",
 				cornerColor: "#7e22ce",
@@ -39,7 +38,6 @@ const CreateFront = () => {
 				padding: 10,
 			});
 
-			// 삭제 버튼용 커스텀 컨트롤 생성
 			const deleteControl = new fabric.Control({
 				x: 0.5,
 				y: -0.5,
@@ -51,7 +49,6 @@ const CreateFront = () => {
 					if (target instanceof fabric.ActiveSelection) {
 						const objects = target.getObjects();
 						objects.forEach((obj) => newCanvas.remove(obj));
-						// 선택 해제
 						newCanvas.discardActiveObject();
 					} else {
 						newCanvas.remove(target);
@@ -64,7 +61,6 @@ const CreateFront = () => {
 					ctx.save();
 					ctx.translate(left, top);
 
-					// 원형 배경
 					ctx.beginPath();
 					ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
 					ctx.fillStyle = "white";
@@ -73,7 +69,6 @@ const CreateFront = () => {
 					ctx.lineWidth = 1;
 					ctx.stroke();
 
-					// X 표시
 					ctx.fillStyle = "#7e22ce";
 					ctx.font = "16px Arial";
 					ctx.textAlign = "center";
@@ -84,7 +79,6 @@ const CreateFront = () => {
 				},
 			});
 
-			// ActiveSelection(다중 선택) 스타일 및 컨트롤 설정
 			if (fabric.ActiveSelection) {
 				fabric.ActiveSelection.prototype.set({
 					borderColor: "#7e22ce",
@@ -95,20 +89,17 @@ const CreateFront = () => {
 					padding: 10,
 				});
 
-				// ActiveSelection에 삭제 컨트롤 추가
 				fabric.ActiveSelection.prototype.controls = {
 					...fabric.ActiveSelection.prototype.controls,
 					deleteControl: deleteControl,
 				};
 			}
 
-			// 일반 객체에도 동일한 삭제 컨트롤 적용
 			fabric.Object.prototype.controls.deleteControl = deleteControl;
 		};
 
 		setSelectionStyles();
 
-		// selection:created 이벤트에 대한 핸들러
 		newCanvas.on("selection:created", function (e) {
 			const selection = e.target;
 			if (selection) {
@@ -124,7 +115,6 @@ const CreateFront = () => {
 			}
 		});
 
-		// selection:updated 이벤트에 대한 핸들러 (선택이 변경될 때)
 		newCanvas.on("selection:updated", function (e) {
 			const selection = e.target;
 			if (selection) {
@@ -140,7 +130,6 @@ const CreateFront = () => {
 			}
 		});
 
-		// 초기 흰색 배경 설정
 		const whiteBg = new fabric.Rect({
 			width: newCanvas.width,
 			height: newCanvas.height,
@@ -154,7 +143,6 @@ const CreateFront = () => {
 		newCanvas.renderAll();
 		setCanvas(newCanvas);
 
-		// 클린업: 컴포넌트 언마운트 시 캔버스 해제
 		return () => {
 			newCanvas.dispose();
 		};
@@ -170,26 +158,20 @@ const CreateFront = () => {
 
 	const handleNext = () => {
 		if (canvas) {
-			// 현재 캔버스를 이미지로 저장
 			const dataURL = canvas.toDataURL({
 				format: "png",
 				quality: 4,
 			});
 
-			// localStorage에 저장
 			localStorage.setItem("cardFrontImage", dataURL);
-
-			// 다음 페이지로 이동
 			router.push("/create/effect");
 		}
 	};
 
-	// 초기화 (Clear)
 	const handleClear = () => {
 		if (canvas) {
 			canvas.clear();
 
-			// 초기 흰색 배경 다시 설정
 			const whiteBg = new fabric.Rect({
 				width: canvas.width,
 				height: canvas.height,
@@ -284,34 +266,6 @@ const CreateFront = () => {
 					onClick={() => setShowNextConfirm(true)}
 				/>
 			</div>
-
-			{/* 초기화 확인 모달 */}
-			{/* {showClearConfirm && (
-				<div className="fixed inset-0 flex items-center justify-center z-50">
-					<div
-						className="fixed inset-0 bg-black bg-opacity-50"
-						onClick={() => setShowClearConfirm(false)}
-					/>
-					<div className="relative bg-white rounded-lg p-6 max-w-[320px] w-full mx-4">
-						<h3 className="text-lg font-semibold mb-4">정말 초기화하시겠습니까?</h3>
-						<p className="text-gray-600 mb-6">모든 작업내용이 삭제됩니다.</p>
-						<div className="flex justify-end gap-2">
-							<button
-								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg"
-								onClick={() => setShowClearConfirm(false)}
-							>
-								취소
-							</button>
-							<button
-								className="px-4 py-2 bg-red-500 text-white rounded-lg"
-								onClick={handleClear}
-							>
-								초기화
-							</button>
-						</div>
-					</div>	
-				</div>
-			)} */}
 
 			{showClearConfirm && (
 				<Modal>

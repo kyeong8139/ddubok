@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { chunk } from "lodash";
+
+import "cropperjs/dist/cropper.css";
 import { fabric } from "fabric";
 import { Cropper } from "react-cropper";
-import "cropperjs/dist/cropper.css";
-import { chunk } from "lodash";
 import { CaretLeft, CaretRight, ImageSquare, X } from "@phosphor-icons/react";
 
 type BackgroundUploadItem = {
@@ -252,13 +254,18 @@ const BackgroundComponent: React.FC<BackgroundComponentProps> = ({ canvas }) => 
 					/>
 					<div
 						className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-              ${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+					${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 					>
-						<img
-							src={item.url}
-							alt={`배경 ${index + 1}`}
-							className="w-full h-full object-cover"
-						/>
+						<div className="relative w-full h-full">
+							<Image
+								src={item.url}
+								alt={`배경 ${index + 1}`}
+								fill
+								sizes="64px"
+								className="object-cover"
+								style={{ width: "100%", height: "100%" }}
+							/>
+						</div>
 					</div>
 				</label>
 			);

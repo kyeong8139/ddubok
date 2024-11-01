@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
+import { Eraser, PaintBrush } from "@phosphor-icons/react";
 import { Canvas } from "fabric/fabric-impl";
 import { fabric } from "fabric";
 import { IEvent } from "fabric/fabric-impl";
-import { Eraser, PaintBrush } from "@phosphor-icons/react";
 
 interface BrushComponentProps {
 	canvas: Canvas | null;
 }
 
-// fabric.js의 IEvent를 확장하여 path:created 이벤트를 위한 타입 정의
 interface IPathCreatedEvent extends IEvent<Event> {
 	path: fabric.Path;
 }
@@ -35,10 +35,8 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 
 	useEffect(() => {
 		if (canvas) {
-			// 기본 컨트롤 설정 저장
 			const baseControls = fabric.Object.prototype.controls;
 
-			// 삭제 버튼 컨트롤 생성
 			fabric.Object.prototype.controls.deleteControl = new fabric.Control({
 				x: 0.5,
 				y: -0.5,
@@ -56,7 +54,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 					ctx.save();
 					ctx.translate(left, top);
 
-					// 원형 배경
 					ctx.beginPath();
 					ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
 					ctx.fillStyle = "white";
@@ -65,7 +62,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 					ctx.lineWidth = 1;
 					ctx.stroke();
 
-					// X 표시
 					ctx.fillStyle = "#7e22ce";
 					ctx.font = "16px Arial";
 					ctx.textAlign = "center";
@@ -76,15 +72,13 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 				},
 			});
 
-			// 브러시 스트로크 종료 시 이벤트 처리
 			canvas.on("path:created", function (e: IPathCreatedEvent) {
 				const path = e.path;
 
-				// 컨트롤 설정
 				path.controls = {
 					...baseControls,
-					mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
-					deleteControl: fabric.Object.prototype.controls.deleteControl, // 삭제 버튼
+					mtr: new fabric.Control({ visible: false }),
+					deleteControl: fabric.Object.prototype.controls.deleteControl,
 					br: new fabric.Control({
 						x: 0.5,
 						y: 0.5,
@@ -107,7 +101,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 					}),
 				};
 
-				// path 객체에 속성 설정
 				path.set({
 					selectable: true,
 					evented: true,
@@ -123,9 +116,8 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 				});
 
 				canvas.renderAll();
-			} as any); // 임시로 타입 어설션 사용
+			} as any);
 
-			// 컴포넌트 언마운트 시 이벤트 리스너 제거
 			return () => {
 				canvas.off("path:created");
 				if (canvas) {
@@ -138,7 +130,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 		}
 	}, [canvas]);
 
-	// 컴포넌트 마운트 시 초기 설정
 	useEffect(() => {
 		if (canvas) {
 			canvas.freeDrawingBrush.color = brushColor;
@@ -179,7 +170,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 		setIsErasing(!isErasing);
 
 		if (!isErasing) {
-			// 지우개 모드 활성화
 			canvas.isDrawingMode = false;
 
 			canvas.on("mouse:down", () => {

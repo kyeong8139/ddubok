@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { fabric } from "fabric";
+
 import Button from "@components/button/button";
+
+import { fabric } from "fabric";
 
 interface TextComponentProps {
 	canvas?: fabric.Canvas | null;
@@ -39,7 +41,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 	useEffect(() => {
 		if (!canvas) return;
 
-		// 객체 선택 이벤트 핸들러
 		const handleSelection = (e: any) => {
 			const selectedObject = canvas.getActiveObject();
 			if (selectedObject && selectedObject.type === "i-text") {
@@ -51,7 +52,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			}
 		};
 
-		// 선택 해제 이벤트 핸들러
 		const handleDeselection = () => {
 			setSelectedText(null);
 		};
@@ -67,7 +67,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 		};
 	}, [canvas]);
 
-	// 폰트 변경 함수
 	const handleFontChange = (newFont: string) => {
 		setFontFamily(newFont);
 		if (selectedText && canvas) {
@@ -76,7 +75,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 		}
 	};
 
-	// 색상 변경 함수
 	const handleColorChange = (newColor: string) => {
 		setTextColor(newColor);
 		if (selectedText && canvas) {
@@ -130,14 +128,11 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 		canvas.add(text);
 		canvas.setActiveObject(text);
 
-		// 텍스트 객체가 추가된 후 편집 모드 시작
 		text.enterEditing();
 		text.selectAll();
 
-		// 커스텀 컨트롤 설정
 		const baseControls = fabric.Object.prototype.controls;
 
-		// 삭제 버튼용 커스텀 컨트롤 생성
 		fabric.Object.prototype.controls.deleteControl = new fabric.Control({
 			x: 0.5,
 			y: -0.5,
@@ -157,7 +152,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 				ctx.save();
 				ctx.translate(left, top);
 
-				// 원형 배경
 				ctx.beginPath();
 				ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
 				ctx.fillStyle = "white";
@@ -166,7 +160,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 				ctx.lineWidth = 1;
 				ctx.stroke();
 
-				// X 표시
 				ctx.fillStyle = "#7e22ce";
 				ctx.font = "bold 16px Arial";
 				ctx.textAlign = "center";
@@ -177,11 +170,10 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			},
 		});
 
-		// 컨트롤 설정
 		text.controls = {
 			...baseControls,
-			mtr: new fabric.Control({ visible: false }), // 상단 회전 컨트롤 숨기기
-			deleteControl: fabric.Object.prototype.controls.deleteControl, // 삭제 버튼
+			mtr: new fabric.Control({ visible: false }),
+			deleteControl: fabric.Object.prototype.controls.deleteControl,
 			br: new fabric.Control({
 				x: 0.5,
 				y: 0.5,
@@ -248,13 +240,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 					))}
 				</div>
 			</div>
-
-			{/* <button
-				onClick={addText}
-				className="w-full px-4 py-2 bg-ddubokPurple text-white rounded-lg mt-8 font-nexonRegular"
-			>
-				텍스트 추가
-			</button> */}
 			<div className="mt-8 flex w-full justify-center">
 				<Button
 					text="텍스트 추가"

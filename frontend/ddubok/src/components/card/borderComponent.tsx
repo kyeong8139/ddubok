@@ -1,10 +1,12 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
+
 import { fabric } from "fabric";
 import { chunk } from "lodash";
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 
-// 테두리 이미지 URL 목록
 const borderImages = [
 	"/assets/border/border_1.png",
 	"/assets/border/border_2.png",
@@ -29,7 +31,7 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 	const [currentPage, setCurrentPage] = useState(0);
 
 	const itemsPerPage = 8;
-	const pages = chunk([null, ...borderImages], itemsPerPage); // null을 첫 번째 항목으로 추가
+	const pages = chunk([null, ...borderImages], itemsPerPage);
 	const totalPages = Math.ceil((borderImages.length + 1) / itemsPerPage);
 
 	useEffect(() => {
@@ -72,20 +74,17 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 	const setBorder = (imageUrl: string | null) => {
 		if (!canvas) return;
 
-		// 기존 테두리 제거
 		const existingBorder = canvas.getObjects().find((obj) => obj.data?.type === "border");
 		if (existingBorder) {
 			canvas.remove(existingBorder);
 		}
 
-		// imageUrl이 null이면 테두리를 제거만 하고 끝냄
 		if (imageUrl === null) {
 			setSelectedBorder(null);
 			canvas.renderAll();
 			return;
 		}
 
-		// 새 테두리 추가
 		fabric.Image.fromURL(imageUrl, (img) => {
 			img.set({
 				scaleX: canvas.width! / img.width!,
@@ -118,7 +117,7 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 						/>
 						<div
 							className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all bg-white flex items-center justify-center
-                ${selectedBorder === null ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+               ${selectedBorder === null ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 						>
 							<X
 								size={24}
@@ -128,7 +127,6 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 						</div>
 					</label>
 
-					{/* 테두리 옵션들 */}
 					{borderImages
 						.slice(currentPage * (itemsPerPage - 1), (currentPage + 1) * (itemsPerPage - 1))
 						.map((imageUrl, index) => (
@@ -144,13 +142,17 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 								/>
 								<div
 									className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-                  ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+                 ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 								>
-									<img
-										src={imageUrl}
-										alt={`테두리 ${index + 1}`}
-										className="w-full h-full object-contain"
-									/>
+									<div className="relative w-full h-full">
+										<Image
+											src={imageUrl}
+											alt={`테두리 ${index + 1}`}
+											fill
+											sizes="64px"
+											className="object-contain"
+										/>
+									</div>
 								</div>
 							</label>
 						))}
@@ -161,7 +163,7 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 						disabled={currentPage === 0}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-              ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
+             ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretLeft
 							size={24}
@@ -185,7 +187,7 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 						onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
 						disabled={currentPage === totalPages - 1}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-              ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
+             ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretRight
 							size={24}
