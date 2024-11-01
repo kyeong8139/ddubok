@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { IBorderComponentProps } from "@interface/components/border";
 
 import { fabric } from "fabric";
 import { chunk } from "lodash";
@@ -22,11 +23,7 @@ const borderImages = [
 	"/assets/border/border_12.png",
 ];
 
-interface BorderComponentProps {
-	canvas?: fabric.Canvas | null;
-}
-
-const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
+function BorderComponent({ canvas }: IBorderComponentProps) {
 	const [selectedBorder, setSelectedBorder] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(0);
 
@@ -199,6 +196,6 @@ const BorderComponent: React.FC<BorderComponentProps> = ({ canvas }) => {
 			</div>
 		</div>
 	);
-};
+}
 
 export default BorderComponent;

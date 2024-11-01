@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { chunk } from "lodash";
 import Image from "next/image";
+import { IStickerComponentProps } from "@interface/components/sticker";
 
 import { fabric } from "fabric";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
@@ -22,11 +23,7 @@ const stickerImages = [
 	"/assets/stickers/sticker_12.png",
 ];
 
-interface StickerComponentProps {
-	canvas?: fabric.Canvas | null;
-}
-
-const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
+function StickerComponent({ canvas }: IStickerComponentProps) {
 	const [currentPage, setCurrentPage] = useState(0);
 	const itemsPerPage = 8;
 	const pages = chunk(stickerImages, itemsPerPage);
@@ -193,6 +190,6 @@ const StickerComponent: React.FC<StickerComponentProps> = ({ canvas }) => {
 			</div>
 		</div>
 	);
-};
+}
 
 export default StickerComponent;

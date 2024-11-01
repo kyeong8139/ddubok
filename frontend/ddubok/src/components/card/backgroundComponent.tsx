@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { chunk } from "lodash";
+import { IBackgroundComponentProps } from "@interface/components/background";
 
 import "cropperjs/dist/cropper.css";
 import { fabric } from "fabric";
@@ -37,11 +38,7 @@ const backgroundImages = [
 	"/assets/background/bg_12.jpg",
 ];
 
-interface BackgroundComponentProps {
-	canvas?: fabric.Canvas | null;
-}
-
-const BackgroundComponent: React.FC<BackgroundComponentProps> = ({ canvas }) => {
+function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 	const [selectedBackground, setSelectedBackground] = useState<string>("white");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [image, setImage] = useState<string>("");
@@ -211,7 +208,7 @@ const BackgroundComponent: React.FC<BackgroundComponentProps> = ({ canvas }) => 
 								color="#6b7280"
 								weight="light"
 							/>
-							<span className="text-xs text-gray-500">업로드</span>
+							<span className="text-xs text-gray-500 font-nexonRegular">업로드</span>
 						</div>
 					</div>
 				</label>
@@ -375,6 +372,6 @@ const BackgroundComponent: React.FC<BackgroundComponentProps> = ({ canvas }) => 
 			)}
 		</div>
 	);
-};
+}
 
 export default BackgroundComponent;

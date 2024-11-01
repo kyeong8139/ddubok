@@ -1,16 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { ITextComponentProps } from "@interface/components/text";
 
 import Button from "@components/button/button";
 
 import { fabric } from "fabric";
 
-interface TextComponentProps {
-	canvas?: fabric.Canvas | null;
-}
-
-const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
+function TextComponent({ canvas }: ITextComponentProps) {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
 	const [selectedText, setSelectedText] = useState<fabric.IText | null>(null);
@@ -252,6 +249,6 @@ const TextComponent: React.FC<TextComponentProps> = ({ canvas }) => {
 			</div>
 		</div>
 	);
-};
+}
 
 export default TextComponent;

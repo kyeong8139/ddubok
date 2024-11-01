@@ -1,21 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { IBrushComponentProps, IPathCreatedEvent } from "@interface/components/brush";
 
 import { Eraser, PaintBrush } from "@phosphor-icons/react";
-import { Canvas } from "fabric/fabric-impl";
 import { fabric } from "fabric";
-import { IEvent } from "fabric/fabric-impl";
 
-interface BrushComponentProps {
-	canvas: Canvas | null;
-}
-
-interface IPathCreatedEvent extends IEvent<Event> {
-	path: fabric.Path;
-}
-
-const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
+function BrushComponent({ canvas }: IBrushComponentProps) {
 	const [brushColor, setBrushColor] = useState("#000000");
 	const [brushSize, setBrushSize] = useState(5);
 	const [isErasing, setIsErasing] = useState(false);
@@ -275,6 +266,6 @@ const BrushComponent: React.FC<BrushComponentProps> = ({ canvas }) => {
 			</div>
 		</div>
 	);
-};
+}
 
 export default BrushComponent;
