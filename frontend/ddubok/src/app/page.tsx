@@ -3,7 +3,7 @@
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { getCookie, hasCookie } from "cookies-next";
+import Cookies from "js-cookie";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
@@ -29,9 +29,9 @@ const Home = () => {
 		const checkAccessToken = async () => {
 			try {
 				console.log(2);
-				console.log(hasCookie("refresh"));
+				console.log(Cookies.get("refresh"));
 
-				if (hasCookie("refresh") && !accessToken) {
+				if (Cookies.get("refresh") && !accessToken) {
 					const response = await reissue();
 					const newAccessToken = response.headers.authorization;
 					setAccessToken(newAccessToken);
