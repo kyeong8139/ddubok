@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { hasCookie } from "cookies-next";
 
 import Button from "@components/button/button";
@@ -23,17 +23,22 @@ const Home = () => {
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
+		console.log(1);
 
 		const checkAccessToken = async () => {
 			try {
+				console.log(2);
 				const response = await reissue();
-				const { accessToken: newAccessToken } = response.data;
+				const newAccessToken = response.headers.Authorization;
 				setAccessToken(newAccessToken);
+				console.log(accessToken);
+				console.log(3);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
+		console.log(4);
 		if (hasCookie("refresh") && !accessToken) checkAccessToken();
 	}, []);
 
