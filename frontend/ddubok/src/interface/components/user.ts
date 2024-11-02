@@ -4,3 +4,9 @@ export interface IUserProps {
 	state: string;
 	role: string;
 }
+
+export interface IUserDto {
+	id: number;
+	nickname: string;
+	role: string;
+}

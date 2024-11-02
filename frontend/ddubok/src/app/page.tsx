@@ -29,6 +29,7 @@ const Home = () => {
 				const response = await reissue();
 				const { accessToken: newAccessToken } = response.data;
 				setAccessToken(newAccessToken);
+				console.log(newAccessToken);
 			} catch (error) {
 				console.error(error);
 			}
