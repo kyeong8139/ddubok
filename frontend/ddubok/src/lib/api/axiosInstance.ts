@@ -1,7 +1,6 @@
 import axios from "axios";
-import Router from "next/router";
 
-import { reissue } from "@lib/api/login-api";
+import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
 
 const axiosInstance = axios.create({
@@ -31,10 +30,9 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			const refreshResponse = await fetch(`/api/get-refresh-token`);
-			const data = await refreshResponse.json();
+			const refreshResponse = await checkRefreshToken();
 
-			if (data.refreshToken) {
+			if (refreshResponse.status === 200) {
 				try {
 					const response = await reissue();
 					const newAcessToken = response.headers.authorization;
@@ -45,11 +43,9 @@ axiosInstance.interceptors.response.use(
 					return axiosInstance(originalRequest);
 				} catch (error) {
 					console.error("accessToken 재발급 실패");
-					Router.push("/login");
 				}
 			} else {
 				console.log("refreshToken 없음");
-				Router.push("/login");
 			}
 		}
 
