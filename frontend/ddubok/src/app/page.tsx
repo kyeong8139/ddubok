@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import Button from "@components/button/button";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
-import { reissue } from "@lib/api/login-api";
+import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
 
 import Slider from "react-slick";
@@ -17,18 +17,23 @@ import "slick-carousel/slick/slick-theme.css";
 const Home = () => {
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(true);
-	const [refreshToken, setRefershToken] = useState<string | null>(null);
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
 	useEffect(() => {
 		const getRefreshToken = async () => {
 			try {
-				const response = await fetch(`/api/get-refresh-token`);
-				console.log(response);
-				const data = await response.json();
-				setRefershToken(data.refreshToken);
-				console.log(data.refreshToken);
+				const refreshResponse = await checkRefreshToken();
+
+				if (refreshResponse.status === 200) {
+					const response = await reissue();
+					const newAccessToken = response.headers.authorization;
+					setAccessToken(newAccessToken);
+				} else if (refreshResponse.status === 800) {
+					console.error("800: INVALID_REFRESH_TOKEN");
+				} else {
+					console.error("ERROR");
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -36,26 +41,6 @@ const Home = () => {
 
 		getRefreshToken();
 	});
-
-	useEffect(() => {
-		if (typeof window === "undefined") return;
-
-		const checkAccessToken = async () => {
-			try {
-				if (refreshToken && !accessToken) {
-					const response = await reissue();
-					const newAccessToken = response.headers.authorization;
-					setAccessToken(newAccessToken);
-					console.log(accessToken);
-					console.log(3);
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		checkAccessToken();
-	}, []);
 
 	const settings = {
 		infinite: true,
@@ -232,16 +217,29 @@ const Home = () => {
 						className="my-12 flex flex-col items-center"
 					>
 						<p className="mb-4">나의 행운카드를 모아보고 싶다면?</p>
-						<Button
-							text="회원가입하고 이용하기"
-							color="gradient"
-							size="long"
-							font="bold"
-							shadow="gradient"
-							onClick={() => {
-								(router as any).push("/login");
-							}}
-						/>
+						{accessToken ? (
+							<Button
+								text="회원가입하고 이용하기"
+								color="gradient"
+								size="long"
+								font="bold"
+								shadow="gradient"
+								onClick={() => {
+									(router as any).push("/login");
+								}}
+							/>
+						) : (
+							<Button
+								text="행운 카드북 보러가기"
+								color="gradient"
+								size="long"
+								font="bold"
+								shadow="gradient"
+								onClick={() => {
+									(router as any).push("/book");
+								}}
+							/>
+						)}
 					</div>
 					<div
 						id="home-05"

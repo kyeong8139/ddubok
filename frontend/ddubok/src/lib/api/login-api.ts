@@ -9,6 +9,11 @@ export const reissue = async () => {
 	return axiosInstance.post(`auth/reissue`);
 };
 
+// 리프레시 토큰 확인
+export const checkRefreshToken = async () => {
+	return axiosInstance.get(`auth/check-refresh-token`);
+};
+
 // 로그인
 export const kakaoLogin = () => {
 	window.location.href = `${baseURL}/kakao`;
