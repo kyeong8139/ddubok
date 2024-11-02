@@ -1,9 +1,9 @@
 import axios from "axios";
-import { hasCookie } from "cookies-next";
 import Router from "next/router";
 
 import { reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
+import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			if (hasCookie("refresh")) {
+			if (Cookies.get("refresh")) {
 				try {
 					const response = await reissue();
 					const newAcessToken = response.headers.authorization;
