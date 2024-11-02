@@ -1,5 +1,4 @@
 import axios from "axios";
-import { hasCookie } from "cookies-next";
 import Router from "next/router";
 
 import { reissue } from "@lib/api/login-api";
@@ -32,10 +31,13 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			if (hasCookie("refresh")) {
+			const refreshResponse = await fetch("/api/get-refresh-token");
+			const data = await refreshResponse.json();
+
+			if (data.refresh) {
 				try {
 					const response = await reissue();
-					const newAcessToken = response.headers.Authorization;
+					const newAcessToken = response.headers.authorization;
 
 					useAuthStore.getState().setAccessToken(newAcessToken);
 
