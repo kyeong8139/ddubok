@@ -11,6 +11,7 @@ const CreateEffect = () => {
 
 	useEffect(() => {
 		setIsLoading(false);
+		console.log(selectedImage);
 	}, []);
 
 	if (isLoading) {
@@ -38,6 +39,9 @@ const CreateEffect = () => {
 					<p className="text-gray-500">이전 페이지에서 이미지를 먼저 생성해주세요</p>
 				</div>
 			)}
+			<div className="bg-white mt-8 rounded-lg flex flex-col justify-center items-center w-[320px] h-[320px] pl-4 pr-4 pt-4 pb-4 ">
+				효과선택
+			</div>
 		</div>
 	);
 };
