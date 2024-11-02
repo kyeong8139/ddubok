@@ -3,7 +3,7 @@ package com.ddubok.api.report.entity;
 import com.ddubok.api.report.exception.InvalidTypeException;
 import java.util.Arrays;
 
-public enum Type {
+public enum ReportType {
 
     VILIFICATION("비속어"),
     ADVERTISMENT("광고"),
@@ -14,7 +14,7 @@ public enum Type {
 
     private final String typeName;
 
-    Type(String typeName) {
+    ReportType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -22,7 +22,7 @@ public enum Type {
         return this.typeName;
     }
 
-    public static Type fromTypeName(String typeName) {
+    public static ReportType fromTypeName(String typeName) {
         return Arrays.stream(values())
             .filter(type -> type.toTypeName().equals(typeName))
             .findFirst()
