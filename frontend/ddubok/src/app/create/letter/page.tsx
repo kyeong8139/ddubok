@@ -19,7 +19,7 @@ interface SendCardResponse {
 const CreateBack = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const type = searchParams.get("type");
+	const type = searchParams?.get("type");
 
 	const [letterContent, setLetterContent] = useState("");
 	const [isLoading, setIsLoading] = useState(false);

@@ -18,7 +18,7 @@ import { Trash } from "@phosphor-icons/react";
 const CreateFront = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const type = searchParams.get("type");
+	const type = searchParams?.get("type");
 
 	const [activeComponent, setActiveComponent] = useState<string>("background");
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
