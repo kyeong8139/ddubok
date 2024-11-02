@@ -25,27 +25,30 @@ const Home = () => {
 		if (typeof window === "undefined") return;
 		console.log(1);
 		console.log(accessToken);
-		console.log(hasCookie("refresh"));
-		console.log(getCookie("refresh"));
 
 		const checkAccessToken = async () => {
 			try {
 				console.log(2);
-				const response = await reissue();
-				const newAccessToken = response.headers.authorization;
-				setAccessToken(newAccessToken);
-				console.log(accessToken);
-				console.log(3);
+				console.log(hasCookie("refresh"));
+
+				if (hasCookie("refresh") && !accessToken) {
+					const response = await reissue();
+					const newAccessToken = response.headers.authorization;
+					setAccessToken(newAccessToken);
+					console.log(accessToken);
+					console.log(3);
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
 
-		console.log(4);
-		if (hasCookie("refresh") && !accessToken) {
+		const timeoutId = setTimeout(() => {
+			console.log(4);
 			checkAccessToken();
-			console.log(5);
-		}
+		}, 100);
+
+		return () => clearTimeout(timeoutId);
 	}, []);
 
 	const settings = {
