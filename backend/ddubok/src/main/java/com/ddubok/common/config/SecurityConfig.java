@@ -123,7 +123,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/get-refresh-token", "/api/v1/auth/reissue").permitAll()
+                .requestMatchers("/api/v1/auth/check-refresh-token", "/api/v1/auth/reissue").permitAll()
                 .anyRequest().authenticated()
             );
 
