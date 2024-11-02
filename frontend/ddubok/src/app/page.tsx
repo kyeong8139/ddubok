@@ -27,8 +27,8 @@ const Home = () => {
 				const response = await fetch(`/api/get-refresh-token`);
 				console.log(response);
 				const data = await response.json();
-				setRefershToken(data.refersh);
-				console.log(data.refresh);
+				setRefershToken(data.refreshToken);
+				console.log(data.refreshToken);
 			} catch (error) {
 				console.error(error);
 			}
