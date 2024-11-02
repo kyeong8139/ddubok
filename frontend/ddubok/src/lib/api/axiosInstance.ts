@@ -32,7 +32,10 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			if (Cookies.get("refresh")) {
+			const refreshResponse = await fetch("/api/get-refresh-token");
+			const data = await refreshResponse.json();
+
+			if (data.refresh) {
 				try {
 					const response = await reissue();
 					const newAcessToken = response.headers.authorization;

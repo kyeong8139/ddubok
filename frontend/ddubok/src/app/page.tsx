@@ -3,7 +3,6 @@
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import Cookies from "js-cookie";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
@@ -18,20 +17,31 @@ import "slick-carousel/slick/slick-theme.css";
 const Home = () => {
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(true);
+	const [refreshToken, setRefershToken] = useState<string | null>(null);
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
 	useEffect(() => {
+		const getRefreshToken = async () => {
+			try {
+				const response = await fetch(`/api/get-refresh-token`);
+				const data = await response.json();
+				setRefershToken(data.refersh);
+				console.log(data.refresh);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		getRefreshToken();
+	});
+
+	useEffect(() => {
 		if (typeof window === "undefined") return;
-		console.log(1);
-		console.log(accessToken);
 
 		const checkAccessToken = async () => {
 			try {
-				console.log(2);
-				console.log(Cookies.get("refresh"));
-
-				if (Cookies.get("refresh") && !accessToken) {
+				if (refreshToken && !accessToken) {
 					const response = await reissue();
 					const newAccessToken = response.headers.authorization;
 					setAccessToken(newAccessToken);
@@ -43,12 +53,7 @@ const Home = () => {
 			}
 		};
 
-		const timeoutId = setTimeout(() => {
-			console.log(4);
-			checkAccessToken();
-		}, 100);
-
-		return () => clearTimeout(timeoutId);
+		checkAccessToken();
 	}, []);
 
 	const settings = {
