@@ -67,4 +67,22 @@ public class AuthServiceImpl implements AuthService {
         response.setHeader("Authorization", newAccess);
 
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void checkRefreshToken(HttpServletRequest request) {
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(REFRESH_TOKEN_COOKIE_NAME)) {
+                refresh = cookie.getValue();
+            }
+        }
+
+        if(refresh == null) {
+            throw new InvalidRefreshTokenException("Refresh cookie not found");
+        }
+    }
 }
