@@ -7,4 +7,5 @@ export interface IButtonProps {
 	font: keyof typeof fontClass;
 	shadow: keyof typeof shadowClass;
 	onClick: () => void;
+	disabled?: boolean;
 }
