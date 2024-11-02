@@ -15,7 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 const Create = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const type = searchParams.get("type");
+	const type = searchParams?.get("type");
 
 	const { setSelectedImage, setUserName } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
