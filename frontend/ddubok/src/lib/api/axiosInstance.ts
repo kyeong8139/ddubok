@@ -3,7 +3,6 @@ import Router from "next/router";
 
 import { reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
-import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -32,7 +31,10 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			if (Cookies.get("refresh")) {
+			const refreshResponse = await fetch("/api/get-refresh-token");
+			const data = await refreshResponse.json();
+
+			if (data.refresh) {
 				try {
 					const response = await reissue();
 					const newAcessToken = response.headers.authorization;
