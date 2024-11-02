@@ -24,6 +24,7 @@ const Home = () => {
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 		console.log(1);
+		console.log(accessToken);
 
 		const checkAccessToken = async () => {
 			try {
@@ -39,7 +40,10 @@ const Home = () => {
 		};
 
 		console.log(4);
-		if (hasCookie("refresh") && !accessToken) checkAccessToken();
+		if (hasCookie("refresh") && !accessToken) {
+			checkAccessToken();
+			console.log(5);
+		}
 	}, []);
 
 	const settings = {
