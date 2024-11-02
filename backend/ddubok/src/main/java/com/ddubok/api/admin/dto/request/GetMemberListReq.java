@@ -16,4 +16,6 @@ public class GetMemberListReq {
 
     private String searchName;
     private String state;
+    private int page = 0;
+    private int size = 50;
 }
