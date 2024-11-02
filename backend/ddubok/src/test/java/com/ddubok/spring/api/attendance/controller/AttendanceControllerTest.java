@@ -44,7 +44,7 @@ class AttendanceControllerTest extends ControllerTestSupport {
         given(attendanceService.getAttendanceHistoryThisMonth(anyLong(), anyInt(), anyInt()))
             .willReturn(historyRes);
 
-        // when      // then
+        // when & then
         mockMvc.perform(get("/api/v1/attendances"))
             .andDo(print())
             .andExpect(status().isOk())
