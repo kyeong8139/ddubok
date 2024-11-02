@@ -13,4 +13,10 @@ public interface AuthService {
      */
     void reissueToken(HttpServletRequest request, HttpServletResponse response);
 
+    /**
+     * RefreshToken의 유무를 판단한다.4
+     *
+     * @param request HTTP 요청 객체
+     */
+    void checkRefreshToken(HttpServletRequest request);
 }
