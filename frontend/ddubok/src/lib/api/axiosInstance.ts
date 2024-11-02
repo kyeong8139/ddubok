@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
 			if (hasCookie("refresh")) {
 				try {
 					const response = await reissue();
-					const { accessToken: newAcessToken } = response.data;
+					const newAcessToken = response.headers.Authorization;
 
 					useAuthStore.getState().setAccessToken(newAcessToken);
 
