@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { sendCard } from "@lib/api/card";
-import { useCardStore } from "@store/card-store";
 import Image from "next/image";
 
+import { sendCard } from "@lib/api/card";
+import { useCardStore } from "@store/card-store";
 import Button from "@components/button/button";
 
 interface SendCardResponse {
