@@ -13,6 +13,6 @@ public class ReportMemberReq {
 
     private Long cardId;
     private String title;
-    private String type;
+    private String reportType;
     private String content;
 }

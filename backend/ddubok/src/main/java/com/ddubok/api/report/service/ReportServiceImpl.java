@@ -8,7 +8,7 @@ import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.report.dto.request.ReportMemberReq;
 import com.ddubok.api.report.entity.Report;
-import com.ddubok.api.report.entity.Type;
+import com.ddubok.api.report.entity.ReportType;
 import com.ddubok.api.report.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,15 +31,15 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public Long reportMember(Long memberId, ReportMemberReq reportMemberReq) {
-        String stringType = reportMemberReq.getType();
-        Type type = Type.fromTypeName(stringType);
+        String stringType = reportMemberReq.getReportType();
+        ReportType reportType = ReportType.fromTypeName(stringType);
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException("유저 번호가 정확하지 않습니다."));
         Card card = cardRepository.findById(reportMemberReq.getCardId())
             .orElseThrow(() -> new CardNotFoundException("카드를 찾을 수 없습니다."));
         Report report = reportRepository.save(Report.builder()
             .title(reportMemberReq.getTitle())
-            .type(type)
+            .reportType(reportType)
             .content(reportMemberReq.getContent())
             .member(member)
             .card(card)
