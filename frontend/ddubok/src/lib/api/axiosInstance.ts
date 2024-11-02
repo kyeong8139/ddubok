@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			const refreshResponse = await fetch("/api/get-refresh-token");
+			const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_FETCH_URL}/get-refresh-token`);
 			const data = await refreshResponse.json();
 
 			if (data.refresh) {

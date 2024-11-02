@@ -24,7 +24,7 @@ const Home = () => {
 	useEffect(() => {
 		const getRefreshToken = async () => {
 			try {
-				const response = await fetch(`/api/get-refresh-token`);
+				const response = await fetch(`${process.env.NEXT_PUBLIC_FETCH_URL}/get-refresh-token`);
 				const data = await response.json();
 				setRefershToken(data.refersh);
 				console.log(data.refresh);
