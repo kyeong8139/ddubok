@@ -19,6 +19,14 @@ const CreateBack = () => {
 			alert("편지 내용을 입력해주세요.");
 			return;
 		}
+		if (!selectedImage) {
+			alert("잘못된 접근입니다.");
+			return;
+		}
+		if (!userName.trim()) {
+			alert("잘못된 접근입니다.");
+			return;
+		}
 
 		try {
 			setIsLoading(true);

@@ -10,6 +10,7 @@ import BrushComponent from "@components/card/brushComponent";
 import BorderComponent from "@components/card/borderComponent";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
+import { useCardStore } from "@store/card-store";
 
 import { fabric } from "fabric";
 import { Trash } from "@phosphor-icons/react";
@@ -20,6 +21,7 @@ const CreateFront = () => {
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
+	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
 
 	useEffect(() => {
 		const newCanvas = new fabric.Canvas("canvas", {
@@ -163,7 +165,8 @@ const CreateFront = () => {
 				quality: 4,
 			});
 
-			localStorage.setItem("cardFrontImage", dataURL);
+			// localStorage.setItem("cardFrontImage", dataURL);
+			setSelectedImage(dataURL);
 			router.push("/create/effect");
 		}
 	};
