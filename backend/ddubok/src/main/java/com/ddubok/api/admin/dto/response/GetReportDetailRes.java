@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class GetReportDetailRes {
 
     private String title;
-    private String type;
+    private String reportType;
     private Long cardId;
     private String content;
 }

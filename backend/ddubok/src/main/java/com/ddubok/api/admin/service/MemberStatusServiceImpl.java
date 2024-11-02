@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +40,12 @@ public class MemberStatusServiceImpl implements MemberStatusService {
     public List<GetMemberListRes> getMemberList(GetMemberListReq getMemberListReq) {
         String stateString = getMemberListReq.getState();
         String searchName = getMemberListReq.getSearchName();
-        List<Member> memberList = getMembersByConditions(stateString, searchName);
-        return memberList.stream()
+
+        Pageable pageable = PageRequest.of(getMemberListReq.getPage(), getMemberListReq.getSize(), Sort.by("id").descending());
+
+        Page<Member> memberPage = getMembersByConditions(stateString, searchName, pageable);
+
+        return memberPage.stream()
             .map(member -> GetMemberListRes.builder()
                 .memberId(member.getId())
                 .nickName(member.getNickname())
@@ -89,17 +97,17 @@ public class MemberStatusServiceImpl implements MemberStatusService {
             .build();
     }
 
-    private List<Member> getMembersByConditions(String stateString, String searchName){
+    private Page<Member> getMembersByConditions(String stateString, String searchName, Pageable pageable) {
         if(stateString == null) {
             if(searchName == null) {
-                return memberRepository.findAll();
+                return memberRepository.findAll(pageable);
             }
-            return memberRepository.findByNicknameContaining(searchName);
+            return memberRepository.findByNicknameContaining(searchName,pageable);
         }
         UserState userState = UserState.fromUserStateName(stateString);
         if(searchName == null) {
-            return memberRepository.findByState(userState);
+            return memberRepository.findByState(userState,pageable);
         }
-        return memberRepository.findByStateAndNickname(userState, searchName);
+        return memberRepository.findByStateAndNickname(userState, searchName,pageable);
     }
 }

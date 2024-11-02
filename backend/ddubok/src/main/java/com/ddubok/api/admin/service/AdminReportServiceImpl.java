@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,21 +34,22 @@ public class AdminReportServiceImpl implements AdminReportService {
     @Override
     public List<GetReportListRes> getAllReportList(GetReportListReq getReportListReq) {
         String stateString = getReportListReq.getState();
-        List<Report> reports = new ArrayList<>();
+        Pageable pageable = PageRequest.of(getReportListReq.getPage(), getReportListReq.getSize(), Sort.by("id").descending());
+        Page<Report> reports = null;
 
         if (stateString == null) {
-            reports = reportRepository.findAll();
+            reports = reportRepository.findAll(pageable);
         }
         if (stateString != null) {
             State state = State.fromName(stateString);
-            reports = reportRepository.findByState(state);
+            reports = reportRepository.findByState(state, pageable);
         }
 
         return reports.stream()
             .map(report -> GetReportListRes.builder()
                 .id(report.getId())
                 .title(report.getTitle())
-                .state(report.getState().toName())  // Enum을 문자열로 변환
+                .state(report.getState().toName())
                 .build())
             .collect(Collectors.toList());
     }
@@ -59,7 +64,7 @@ public class AdminReportServiceImpl implements AdminReportService {
         );
         return GetReportDetailRes.builder()
             .title(report.getTitle())
-            .type(report.getType().toTypeName())
+            .reportType(report.getReportType().toTypeName())
             .cardId(report.getCard().getId())
             .content(report.getContent())
             .build();

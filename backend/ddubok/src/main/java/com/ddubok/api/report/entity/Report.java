@@ -46,7 +46,7 @@ public class Report {
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private ReportType reportType;
     /**
      * 신고에 대한 내용
      */
@@ -93,9 +93,9 @@ public class Report {
      * @param card       신고된 카드
      */
     @Builder
-    public Report(String title, Type type,String content, Member member, Card card) {
+    public Report(String title, ReportType reportType,String content, Member member, Card card) {
         this.title = title;
-        this.type = type;
+        this.reportType = reportType;
         this.content = content;
         this.member = member;
         this.card = card;
