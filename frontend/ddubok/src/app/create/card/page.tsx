@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import BackgroundComponent from "@components/card/backgroundComponent";
 import StickerComponent from "@components/card/stickerComponent";
@@ -17,6 +17,9 @@ import { Trash } from "@phosphor-icons/react";
 
 const CreateFront = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const type = searchParams.get("type");
+
 	const [activeComponent, setActiveComponent] = useState<string>("background");
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -165,9 +168,8 @@ const CreateFront = () => {
 				quality: 4,
 			});
 
-			// localStorage.setItem("cardFrontImage", dataURL);
 			setSelectedImage(dataURL);
-			router.push("/create/effect");
+			router.push(`/create/letter?type=${type}`);
 		}
 	};
 

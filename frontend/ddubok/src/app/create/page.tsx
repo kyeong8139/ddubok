@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCardStore } from "@store/card-store";
 import Card from "@components/card/card";
@@ -14,6 +14,9 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Create = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const type = searchParams.get("type");
+
 	const { setSelectedImage, setUserName } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
@@ -22,9 +25,9 @@ const Create = () => {
 
 	const cardImages = useMemo(
 		() => [
+			{ image: "", effect: 0 },
 			{ image: "/assets/examplCard1.png", effect: 0 },
 			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "", effect: 0 },
 		],
 		[],
 	);
@@ -56,9 +59,9 @@ const Create = () => {
 		setUserName(finalUserName);
 
 		if (selectedImage) {
-			router.push("/create/letter");
+			router.push(`/create/letter?type=${type}`);
 		} else {
-			router.push("/create/card");
+			router.push(`/create/card?type=${type}`);
 		}
 	};
 
@@ -103,7 +106,9 @@ const Create = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center w-full h-full">
-					<div className="text-white font-nexonBold text-2xl mt-10">행운 카드 선택</div>
+					<div className="text-white font-nexonBold text-2xl mt-10">
+						{type === "request" ? "행운 요청 카드 선택" : "행운 카드 선택"}
+					</div>
 
 					<div className="w-full flex items-center justify-center mt-8">
 						<div className="w-full max-w-[480px]">

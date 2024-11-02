@@ -4,11 +4,22 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@components/button/button";
 import { sendCard } from "@lib/api/card";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCardStore } from "@store/card-store";
+
+interface SendCardResponse {
+	code: string;
+	message: string;
+	data: {
+		cardId: number;
+	};
+}
 
 const CreateBack = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const type = searchParams.get("type");
+
 	const [letterContent, setLetterContent] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const { selectedImage, userName } = useCardStore();
@@ -30,10 +41,11 @@ const CreateBack = () => {
 
 		try {
 			setIsLoading(true);
-			const response = await sendCard(letterContent, userName, 1, selectedImage);
+			const response = (await sendCard(letterContent, userName, 1, selectedImage)) as SendCardResponse;
 
 			if (response.code === "200") {
-				alert("카드가 성공적으로 전송되었습니다!");
+				const cardId = response.data.cardId;
+				router.push(`/cards/${cardId}?type=${type}`);
 			}
 		} catch (error) {
 			console.error("카드 전송 중 오류 발생:", error);
@@ -72,7 +84,7 @@ const CreateBack = () => {
 
 			<div className="w-full mt-10 flex justify-center">
 				<Button
-					text={isLoading ? "전송 중..." : "전송하기"}
+					text={isLoading ? "전송 중..." : type === "normal" ? "완성하기" : "전송하기"}
 					color="green"
 					size="long"
 					font="bold"
