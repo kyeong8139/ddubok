@@ -3,7 +3,7 @@
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { hasCookie } from "cookies-next";
+import { getCookie, hasCookie } from "cookies-next";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
@@ -25,6 +25,8 @@ const Home = () => {
 		if (typeof window === "undefined") return;
 		console.log(1);
 		console.log(accessToken);
+		console.log(hasCookie("refresh"));
+		console.log(getCookie("refresh"));
 
 		const checkAccessToken = async () => {
 			try {
