@@ -61,6 +61,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						gtag('config', 'G-776Q6TRWEQ');
 					`}
 				</Script>
+				<meta
+					http-equiv="Content-Security-Policy"
+					content="upgrade-insecure-requests"
+				></meta>
 			</head>
 			<body
 				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
