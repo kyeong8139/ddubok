@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
 			const refreshResponse = await fetch(`/api/get-refresh-token`);
 			const data = await refreshResponse.json();
 
-			if (data.refresh) {
+			if (data.refreshToken) {
 				try {
 					const response = await reissue();
 					const newAcessToken = response.headers.authorization;
