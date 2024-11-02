@@ -1,25 +1,32 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
 import Image from "next/image";
+import { useCardStore } from "@store/card-store";
+import Loading from "@components/common/loading";
 
 const CreateEffect = () => {
-	const [frontImage, setFrontImage] = useState<string | null>(null);
+	const selectedImage = useCardStore((state) => state.selectedImage);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		const savedImage = localStorage.getItem("cardFrontImage");
-		if (savedImage) {
-			setFrontImage(savedImage);
-		}
+		setIsLoading(false);
 	}, []);
+
+	if (isLoading) {
+		return (
+			<div className="flex w-full h-screen items-center justify-center">
+				<Loading />
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex flex-col items-center w-full h-full">
-			{frontImage ? (
+			{selectedImage ? (
 				<div className="w-[280px] h-[495px]">
 					<Image
-						src={frontImage}
+						src={selectedImage}
 						alt="카드 앞면"
 						width={280}
 						height={495}
@@ -28,7 +35,7 @@ const CreateEffect = () => {
 				</div>
 			) : (
 				<div className="w-[280px] h-[495px] bg-gray-200 rounded-lg flex items-center justify-center">
-					<p className="text-gray-500">이미지를 불러올 수 없습니다.</p>
+					<p className="text-gray-500">이전 페이지에서 이미지를 먼저 생성해주세요</p>
 				</div>
 			)}
 		</div>
