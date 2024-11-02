@@ -30,7 +30,7 @@ const Home = () => {
 			try {
 				console.log(2);
 				const response = await reissue();
-				const newAccessToken = response.headers.Authorization;
+				const newAccessToken = response.headers.authorization;
 				setAccessToken(newAccessToken);
 				console.log(accessToken);
 				console.log(3);
