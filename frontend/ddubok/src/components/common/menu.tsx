@@ -1,14 +1,50 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import { CaretRight } from "@phosphor-icons/react";
+import { IUserDto } from "@interface/components/user";
+import { selectUser } from "@lib/api/user-api";
 import { decodeAccessToken } from "@lib/utils/authUtils";
 import useAuthStore from "@store/auth-store";
+
+import { CaretRight } from "@phosphor-icons/react";
 
 const Menu = () => {
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const decodedToken = accessToken ? decodeAccessToken(accessToken) : null;
+	const [user, setUser] = useState<IUserDto | null>(
+		decodedToken
+			? {
+					id: decodedToken.id,
+					nickname: "",
+					role: decodedToken.role,
+			  }
+			: null,
+	);
+
+	useEffect(() => {
+		const getUser = async () => {
+			if (decodedToken) {
+				try {
+					const response = await selectUser();
+					console.log(response.data);
+					setUser((prevUser) =>
+						prevUser
+							? {
+									...prevUser,
+									nickname: response.data.nickname,
+							  }
+							: null,
+					);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+		};
+
+		getUser();
+	}, [accessToken]);
 
 	return (
 		<div
@@ -29,7 +65,7 @@ const Menu = () => {
 							href="/mypage"
 							className="flex items-center mr-2 mb-4 font-nexonBold"
 						>
-							<span>{decodedToken.nickname.toString()} 님</span>
+							<span>{user?.nickname} 님</span>
 							<CaretRight
 								size={20}
 								weight="bold"
@@ -62,7 +98,7 @@ const Menu = () => {
 				)}
 				<div className="mx-6">
 					{decodedToken ? (
-						decodedToken.role === "user" ? (
+						decodedToken.role === "ROLE_USER" ? (
 							<ul>
 								<li className="mb-4">
 									<Link href="/book">행운 카드북</Link>
