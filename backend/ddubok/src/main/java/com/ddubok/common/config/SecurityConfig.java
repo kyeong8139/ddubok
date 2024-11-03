@@ -19,6 +19,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -70,6 +75,35 @@ public class SecurityConfig {
         return source;
     }
 
+    @Bean
+    public OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(
+        ClientRegistrationRepository clientRegistrationRepository) {
+
+        DefaultOAuth2AuthorizationRequestResolver resolver =
+            new DefaultOAuth2AuthorizationRequestResolver(
+                clientRegistrationRepository,
+                "/api/oauth2/authorization"
+            );
+
+        resolver.setAuthorizationRequestCustomizer(
+            authorizationRequestBuilder -> {
+                OAuth2AuthorizationRequest.Builder builder =
+                    (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
+
+                String registrationId = builder.build().getAttributes()
+                    .get(OAuth2ParameterNames.REGISTRATION_ID).toString();
+
+                if ("x".equals(registrationId)) {
+                    builder.additionalParameters(params ->
+                            params.put("code_challenge", "challenge"))
+                        .additionalParameters(params ->
+                            params.put("code_challenge_method", "plain"));
+                }
+            });
+
+        return resolver;
+    }
+
     /**
      * SecurityFilterChain을 구성한다.
      *
@@ -115,7 +149,10 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
+                .authorizationEndpoint(endPoint -> endPoint
+                    .authorizationRequestResolver(customAuthorizationRequestResolver(
+                        socialClientRegistrationConfig.clientRegistrationRepository()))
+                    .baseUri("/api/oauth2/authorization"))
                 .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
                 .successHandler(customOAuth2SuccessHandler)
                 .failureHandler(customOAuth2FailureHandler)
