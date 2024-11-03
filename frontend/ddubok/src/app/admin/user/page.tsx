@@ -25,12 +25,12 @@ const User = () => {
 
 	const userInfo = useMemo(
 		() => [
-			{ id: 1, nickname: "서민정닮은코딩주머니뀨", state: "활성", role: "사용자" },
-			{ id: 2, nickname: "다환궁예", state: "활성", role: "사용자" },
-			{ id: 3, nickname: "마일리지천만보경", state: "활성", role: "사용자" },
-			{ id: 4, nickname: "합성대마법사성혁", state: "활성", role: "사용자" },
-			{ id: 5, nickname: "관리자_김경민", state: "활성", role: "사용자" },
-			{ id: 6, nickname: "유니스", state: "활성", role: "사용자" },
+			{ memberId: 1, nickname: "서민정닮은코딩주머니뀨", state: "활성", role: "사용자" },
+			{ memberId: 2, nickname: "다환궁예", state: "활성", role: "사용자" },
+			{ memberId: 3, nickname: "마일리지천만보경", state: "활성", role: "사용자" },
+			{ memberId: 4, nickname: "합성대마법사성혁", state: "활성", role: "사용자" },
+			{ memberId: 5, nickname: "관리자_김경민", state: "활성", role: "사용자" },
+			{ memberId: 6, nickname: "유니스", state: "활성", role: "사용자" },
 		],
 		[],
 	); // 임시 데이터
@@ -83,10 +83,10 @@ const User = () => {
 						<tbody>
 							{userInfo.map((user) => (
 								<tr
-									key={user.id}
+									key={user.memberId}
 									className="text-center text-xs border-b-[1px] border-solid border-white"
 								>
-									<td className="px-2 py-[10px]">{user.id}</td>
+									<td className="px-2 py-[10px]">{user.memberId}</td>
 									<td className="px-2 py-[10px]">{user.nickname}</td>
 									<td className="px-2 py-[10px]">
 										<button
@@ -109,7 +109,7 @@ const User = () => {
 				<Modal>
 					<div className="flex justify-between text-sm mb-4">
 						<p className="font-nexonBold">아이디</p>
-						<p>{selectedUser?.id}</p>
+						<p>{selectedUser?.memberId}</p>
 					</div>
 					<div className="flex justify-between text-sm mb-4">
 						<p className="font-nexonBold">닉네임</p>
