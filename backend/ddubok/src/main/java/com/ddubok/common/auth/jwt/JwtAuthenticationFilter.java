@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         accessToken = jwtTokenUtil.extractToken(accessToken);
 
         if (jwtTokenUtil.isExpired(accessToken)) {
-            String message = "Invalid Access Token";
+            String message = "Invalid Access Token1";
             sendErrorResponse(response, message,
                 Integer.parseInt(ResponseCode.INVALID_ACCESS_TOKEN.getCode()));
             return;
@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String category = jwtTokenUtil.getCategory(accessToken);
 
         if (!category.equals("access")) {
-            String message = "Invalid Access Token";
+            String message = "Invalid Access Token2";
             sendErrorResponse(response, message,
                 Integer.parseInt(ResponseCode.INVALID_ACCESS_TOKEN.getCode()));
             return;
