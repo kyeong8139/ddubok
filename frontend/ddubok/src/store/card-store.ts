@@ -1,21 +1,19 @@
-// store/card-store.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface ICardState {
-	selectedImage: string | null;
-	userName: string;
-	setSelectedImage: (image: string | null) => void;
-	setUserName: (name: string) => void;
-}
+import { ICardState } from "@interface/store/card-store";
 
 export const useCardStore = create<ICardState>()(
 	persist(
 		(set) => ({
 			selectedImage: null,
 			userName: "",
+			letterContent: "",
+			cardId: null,
 			setSelectedImage: (image: string | null) => set({ selectedImage: image }),
 			setUserName: (name: string) => set({ userName: name }),
+			setLetterContent: (content: string) => set({ letterContent: content }),
+			setCardId: (id: number | null) => set({ cardId: id }),
 		}),
 		{
 			name: "card-storage",

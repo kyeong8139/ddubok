@@ -21,9 +21,8 @@ const CreateBack = () => {
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
 
-	const [letterContent, setLetterContent] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const { selectedImage, userName } = useCardStore();
+	const { selectedImage, userName, letterContent, setLetterContent, setCardId } = useCardStore();
 
 	const handleSendCard = async () => {
 		if (isLoading) return;
@@ -45,8 +44,8 @@ const CreateBack = () => {
 			const response = (await sendCard(letterContent, userName, 1, selectedImage)) as SendCardResponse;
 
 			if (response.code === "200") {
-				const cardId = response.data.cardId;
-				router.push(`/cards/${cardId}?type=${type}`);
+				setCardId(response.data.cardId);
+				router.push(`/cards/complete?type=${type}`);
 			}
 		} catch (error) {
 			console.error("카드 전송 중 오류 발생:", error);
@@ -70,10 +69,10 @@ const CreateBack = () => {
 						value={letterContent}
 						onChange={(e) => setLetterContent(e.target.value)}
 						className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                w-[206px] h-[398px] bg-transparent text-black 
-                                resize-none font-nexonRegular text-base
-                                focus:outline-none scrollbar-hide
-                                overflow-y-auto [&::-webkit-scrollbar]:hidden"
+                            w-[206px] h-[398px] bg-transparent text-black 
+                            resize-none font-nexonRegular text-base
+                            focus:outline-none scrollbar-hide
+                            overflow-y-auto [&::-webkit-scrollbar]:hidden"
 						placeholder="여기에 편지를 작성해주세요..."
 						maxLength={500}
 					/>
