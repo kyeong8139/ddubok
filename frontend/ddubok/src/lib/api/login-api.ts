@@ -9,8 +9,9 @@ const loginURL = process.env.NEXT_PUBLIC_LOGIN_URL;
 
 // 토큰 재발급
 export const reissue = async () => {
-	return axios.post(`${baseURL}/auth/reissue`, {
+	return axios.post(`${baseURL}/auth/reissue`, null, {
 		headers: { "Content-Type": "applicaion/json" },
+		withCredentials: true,
 	});
 };
 
