@@ -22,8 +22,8 @@ public class SocialClientRegistration {
     private String kakaoId;
     private String naverId;
     private String naverSecret;
-    private String metaId;
-    private String metaSecret;
+    private String xId;
+    private String xSecret;
     private String googleId;
     private String googleSecret;
 
@@ -55,16 +55,16 @@ public class SocialClientRegistration {
     }
 
     public ClientRegistration metaClientRegistration() {
-        return ClientRegistration.withRegistrationId("facebook")
-            .clientId(metaId)
-            .clientSecret(metaSecret)
+        return ClientRegistration.withRegistrationId("x")
+            .clientId(xId)
+            .clientSecret(xSecret)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .redirectUri("https://ddubok.com/api/login/oauth2/code/facebook")
+            .redirectUri("https://ddubok.com/api/login/oauth2/code/x")
             .scope()
-            .authorizationUri("https://www.facebook.com/v18.0/dialog/oauth")
-            .tokenUri("https://graph.facebook.com/v18.0/oauth/access_token")
-            .userInfoUri("https://graph.facebook.com/v18.0/me?fields=id,name,email,picture")
-            .userNameAttributeName("id")
+            .authorizationUri("https://twitter.com/i/oauth2/authorize")
+            .tokenUri("https://api.twitter.com/2/oauth2/token")
+            .userInfoUri("https://api.twitter.com/2/users/me")
+            .userNameAttributeName("data")
             .build();
     }
 

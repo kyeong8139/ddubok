@@ -2,9 +2,9 @@ package com.ddubok.common.auth.oauth;
 
 import com.ddubok.common.auth.dto.GoogleResponse;
 import com.ddubok.common.auth.dto.KakaoResponse;
-import com.ddubok.common.auth.dto.MetaResponse;
 import com.ddubok.common.auth.dto.NaverResponse;
 import com.ddubok.common.auth.dto.OAuth2Response;
+import com.ddubok.common.auth.dto.XResponse;
 import com.ddubok.common.auth.exception.UnsupportedOAuth2ProviderException;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class OAuth2ResponseFactory {
             case "google" -> new GoogleResponse(attributes);
             case "naver" -> new NaverResponse(attributes);
             case "kakao" -> new KakaoResponse(attributes);
-            case "facebook" -> new MetaResponse(attributes);
+            case "facebook" -> new XResponse(attributes);
             default -> throw new UnsupportedOAuth2ProviderException(
                 "해당 SNS(" + registrationId + ")는 지원하지 않습니다.");
         };

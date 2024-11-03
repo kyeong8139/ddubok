@@ -10,7 +10,7 @@ import java.util.Map;
  * Meta OAuth2 응답 속성:
  * - id: Meta 사용자 고유 ID
  */
-public class MetaResponse implements OAuth2Response {
+public class XResponse implements OAuth2Response {
 
     private final Map<String, Object> attributes;
 
@@ -19,7 +19,7 @@ public class MetaResponse implements OAuth2Response {
      *
      * @param attributes Meta에서 제공하는 사용자 속성 Map
      */
-    public MetaResponse(Map<String, Object> attributes) {
+    public XResponse(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
