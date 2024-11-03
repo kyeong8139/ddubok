@@ -1,11 +1,37 @@
-import { jwtDecode } from "jwt-decode";
+import { IUserDto } from "@interface/components/user";
 
-export const decodeAccessToken = (token: string) => {
+export const decodeBase64Url = (base64Url: string): string => {
 	try {
-		const decoded = jwtDecode<{ [key: string]: any }>(token);
-		return decoded;
+		const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+		const decodedData = atob(base64);
+		return decodeURIComponent(
+			decodedData
+				.split("")
+				.map((c) => {
+					return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+				})
+				.join(""),
+		);
 	} catch (error) {
-		console.error(error);
-		return null;
+		console.error("Error decoding base64 URL:", error);
+		return "";
+	}
+};
+
+export const getTokenInfo = (token: string): IUserDto => {
+	try {
+		const parts = token.split(" ");
+		if (parts.length === 2 && parts[0] === "Bearer") {
+			const jwtToken = parts[1];
+			const payloadBase64Url = jwtToken.split(".")[1];
+			const decodedPayload = decodeBase64Url(payloadBase64Url);
+			const decodedToken = JSON.parse(decodedPayload);
+			return { memberId: decodedToken.memberId, role: decodedToken.role };
+		} else {
+			throw new Error("Invalid token format");
+		}
+	} catch (error) {
+		console.error("Error decoding token:", error);
+		return { memberId: 0, role: "" };
 	}
 };

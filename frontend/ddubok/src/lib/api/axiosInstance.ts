@@ -1,4 +1,5 @@
 import axios from "axios";
+import Router from "next/router";
 
 import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
@@ -44,8 +45,10 @@ axiosInstance.interceptors.response.use(
 				} catch (error) {
 					console.error("accessToken 재발급 실패");
 				}
-			} else {
+			} else if (refreshResponse.status === 800) {
 				console.log("refreshToken 없음");
+				// 로그인이 만료되었으니 다시 하라고 해야함
+				Router.push("/login");
 			}
 		}
 

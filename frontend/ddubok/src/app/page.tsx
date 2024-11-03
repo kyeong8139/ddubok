@@ -30,9 +30,7 @@ const Home = () => {
 					const newAccessToken = response.headers.authorization;
 					setAccessToken(newAccessToken);
 				} else if (refreshResponse.status === 800) {
-					console.error("800: INVALID_REFRESH_TOKEN");
-				} else {
-					console.error("ERROR");
+					return;
 				}
 			} catch (error) {
 				console.error(error);
@@ -130,7 +128,7 @@ const Home = () => {
 								font="both"
 								shadow="purple"
 								onClick={() => {
-									router.push("/create");
+									router.push("/create?type=normal");
 								}}
 							/>
 							<Button

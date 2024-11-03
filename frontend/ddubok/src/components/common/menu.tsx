@@ -5,18 +5,18 @@ import { useEffect, useState } from "react";
 
 import { IUserDto } from "@interface/components/user";
 import { selectUser } from "@lib/api/user-api";
-import { decodeAccessToken } from "@lib/utils/authUtils";
+import { getTokenInfo } from "@lib/utils/authUtils";
 import useAuthStore from "@store/auth-store";
 
 import { CaretRight } from "@phosphor-icons/react";
 
 const Menu = () => {
 	const accessToken = useAuthStore((state) => state.accessToken);
-	const decodedToken = accessToken ? decodeAccessToken(accessToken) : null;
+	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<IUserDto | null>(
 		decodedToken
 			? {
-					id: decodedToken.id,
+					memberId: decodedToken.memberId,
 					nickname: "",
 					role: decodedToken.role,
 			  }
@@ -25,6 +25,9 @@ const Menu = () => {
 
 	useEffect(() => {
 		const getUser = async () => {
+			console.log(accessToken);
+			console.log(decodedToken);
+
 			if (decodedToken) {
 				try {
 					const response = await selectUser();
