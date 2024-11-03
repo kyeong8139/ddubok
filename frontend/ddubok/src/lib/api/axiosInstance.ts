@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
 
 					useAuthStore.getState().setAccessToken(newAcessToken);
 
-					originalRequest.headers["Authorization"] = `Bearer ${newAcessToken}`;
+					originalRequest.headers["Authorization"] = newAcessToken;
 					return axiosInstance(originalRequest);
 				} catch (error) {
 					console.error("accessToken 재발급 실패");
