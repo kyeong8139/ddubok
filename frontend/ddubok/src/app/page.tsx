@@ -24,6 +24,7 @@ const Home = () => {
 		const getRefreshToken = async () => {
 			try {
 				const refreshResponse = await checkRefreshToken();
+				console.log(refreshResponse);
 
 				if (refreshResponse.status === 200) {
 					const response = await reissue();
