@@ -16,6 +16,8 @@ public class GetMemberListReq {
 
     private String searchName;
     private String state;
+    @Builder.Default
     private int page = 0;
+    @Builder.Default
     private int size = 50;
 }
