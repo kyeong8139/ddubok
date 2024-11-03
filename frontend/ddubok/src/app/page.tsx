@@ -22,18 +22,22 @@ const Home = () => {
 
 	useEffect(() => {
 		const getRefreshToken = async () => {
+			let refreshResponse;
+
 			try {
-				const refreshResponse = await checkRefreshToken();
+				refreshResponse = await checkRefreshToken();
 				console.log(refreshResponse);
 
-				if (refreshResponse.status === 200) {
+				if (refreshResponse.data.code === 200) {
 					const response = await reissue();
 					const newAccessToken = response.headers.authorization;
 					setAccessToken(newAccessToken);
-				} else if (refreshResponse.status === 800) {
-					return;
 				}
 			} catch (error) {
+				if (refreshResponse && refreshResponse.data.code === 800) {
+					return;
+				}
+
 				console.error(error);
 			}
 		};
