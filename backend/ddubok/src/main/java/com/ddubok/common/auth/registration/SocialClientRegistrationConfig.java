@@ -5,7 +5,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 
 /**
- * OAuth2 클라이언트 등록 정보를 저장소에 구성하는 설정 클래스. 네이버, 카카오, 구글, 메타의 클라이언트 등록 정보를 메모리에 저장한다.
+ * OAuth2 클라이언트 등록 정보를 저장소에 구성하는 설정 클래스. 네이버, 카카오, 구글, X의 클라이언트 등록 정보를 메모리에 저장한다.
  */
 @Configuration
 public class SocialClientRegistrationConfig {
@@ -31,6 +31,6 @@ public class SocialClientRegistrationConfig {
             socialClientRegistration.naverClientRegistration(),
             socialClientRegistration.kakaoClientRegistration(),
             socialClientRegistration.googleClientRegistration(),
-            socialClientRegistration.metaClientRegistration());
+            socialClientRegistration.xClientRegistration());
     }
 }

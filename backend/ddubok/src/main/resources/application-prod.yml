@@ -29,8 +29,8 @@ spring:
     kakao-id: ${KAKAO_ID}
     naver-id: ${NAVER_ID}
     naver-secret: ${NAVER_SECRET}
-    meta-id: ${META_ID}
-    meta-secret: ${META_SECRET}
+    x-id: ${X_ID}
+    x-secret: ${X_SECRET}
     google-id: ${GOOGLE_ID}
     google-secret: ${GOOGLE_SECRET}
   jwt:

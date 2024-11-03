@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * 소셜 로그인 제공자들의 OAuth2 클라이언트 등록 정보를 관리하는 클래스. application.yml의 spring.social 설정값을 주입받는다.
  * <p>
- * 지원하는 소셜 로그인: - 카카오 - 네이버 - 메타 - 구글
+ * 지원하는 소셜 로그인: - 카카오 - 네이버 - X - 구글
  */
 @Component
 @Setter
@@ -22,8 +22,8 @@ public class SocialClientRegistration {
     private String kakaoId;
     private String naverId;
     private String naverSecret;
-    private String metaId;
-    private String metaSecret;
+    private String xId;
+    private String xSecret;
     private String googleId;
     private String googleSecret;
 
@@ -54,17 +54,17 @@ public class SocialClientRegistration {
             .build();
     }
 
-    public ClientRegistration metaClientRegistration() {
-        return ClientRegistration.withRegistrationId("facebook")
-            .clientId(metaId)
-            .clientSecret(metaSecret)
+    public ClientRegistration xClientRegistration() {
+        return ClientRegistration.withRegistrationId("x")
+            .clientId(xId)
+            .clientSecret(xSecret)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .redirectUri("https://ddubok.com/api/login/oauth2/code/facebook")
+            .redirectUri("https://ddubok.com/api/login/oauth2/code/x")
             .scope()
-            .authorizationUri("https://www.facebook.com/v18.0/dialog/oauth")
-            .tokenUri("https://graph.facebook.com/v18.0/oauth/access_token")
-            .userInfoUri("https://graph.facebook.com/v18.0/me?fields=id,name,email,picture")
-            .userNameAttributeName("id")
+            .authorizationUri("https://twitter.com/i/oauth2/authorize")
+            .tokenUri("https://api.twitter.com/2/oauth2/token")
+            .userInfoUri("https://api.twitter.com/2/users/me")
+            .userNameAttributeName("data")
             .build();
     }
 
