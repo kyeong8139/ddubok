@@ -29,7 +29,7 @@ const Home = () => {
 				const refreshResponse = await checkRefreshToken();
 				console.log(refreshResponse);
 
-				if (refreshResponse.data.code === 200) {
+				if (refreshResponse.data.code === "200") {
 					console.log(2);
 					const response = await reissue();
 					console.log(response.headers);
@@ -37,7 +37,7 @@ const Home = () => {
 					setAccessToken(newAccessToken);
 				}
 			} catch (error) {
-				if (axios.isAxiosError(error) && error.response?.data?.code === 800) {
+				if (axios.isAxiosError(error) && error.response?.data?.code === "800") {
 					return;
 				} else {
 					console.error(error);
