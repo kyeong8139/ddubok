@@ -217,17 +217,6 @@ const Home = () => {
 						<p className="mb-4">나의 행운카드를 모아보고 싶다면?</p>
 						{accessToken ? (
 							<Button
-								text="회원가입하고 이용하기"
-								color="gradient"
-								size="long"
-								font="bold"
-								shadow="gradient"
-								onClick={() => {
-									(router as any).push("/login");
-								}}
-							/>
-						) : (
-							<Button
 								text="행운 카드북 보러가기"
 								color="gradient"
 								size="long"
@@ -235,6 +224,17 @@ const Home = () => {
 								shadow="gradient"
 								onClick={() => {
 									(router as any).push("/book");
+								}}
+							/>
+						) : (
+							<Button
+								text="회원가입하고 이용하기"
+								color="gradient"
+								size="long"
+								font="bold"
+								shadow="gradient"
+								onClick={() => {
+									(router as any).push("/login");
 								}}
 							/>
 						)}
