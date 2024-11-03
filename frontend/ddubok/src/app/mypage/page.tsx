@@ -65,7 +65,6 @@ const Mypage = () => {
 			await updateUser(newNickname);
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
 			setIsEditing(false);
-			console.log("닉네임 수정하기");
 		} catch (error) {
 			console.error(error);
 		}
@@ -83,7 +82,6 @@ const Mypage = () => {
 
 	const removeUser = async () => {
 		try {
-			await logout();
 			await deleteUser();
 			clearAccessToken();
 			route.push("/");
