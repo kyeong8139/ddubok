@@ -1,8 +1,10 @@
 package com.ddubok.common.auth.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import java.util.Date;
 /**
  * JWT 토큰의 생성, 파싱, 검증을 처리하는 유틸리티 클래스. HS256 알고리즘을 사용하여 토큰을 서명한다.
  */
+@Slf4j
 @Component
 public class JwtTokenUtil {
 
@@ -90,7 +93,14 @@ public class JwtTokenUtil {
                 .getPayload()
                 .getExpiration()
                 .before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            log.error("JWT 검증 중 오류 발생: {}", e.getMessage(), e);
+            log.error("JWT 검증 중 오류 발생. Token: {}, Error: {}",
+                token.substring(0, Math.min(10, token.length())),
+                e.getMessage(),
+                e);
             return true;
         }
     }
