@@ -45,5 +45,11 @@ export const facebookLogin = () => {
 };
 
 // 로그아웃
+export const logout = async () => {
+	return axiosInstance.post(`/auth/logout`);
+};
 
 // 회원 탈퇴
+export const deleteUser = async () => {
+	return axiosInstance.delete(`/members`);
+};

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useContext, useEffect } from "react";
 
 import Hamburger from "@components/common/hamburger";
@@ -31,12 +32,14 @@ const Header = () => {
 			case "/share":
 				return (
 					<div className="flex justify-center items-center h-full">
-						<Image
-							src="/assets/ddubok.png"
-							alt="ddubok"
-							width={72}
-							height={72}
-						/>
+						<Link href="/">
+							<Image
+								src="/assets/ddubok.png"
+								alt="ddubok"
+								width={72}
+								height={72}
+							/>
+						</Link>
 					</div>
 				);
 			case "/admin/user":
@@ -44,6 +47,7 @@ const Header = () => {
 			case "/admin/setting":
 			case "/book":
 			case "/fortune":
+			case "/mypage":
 				return (
 					<div className="flex justify-between items-center h-full">
 						<CaretLeft
