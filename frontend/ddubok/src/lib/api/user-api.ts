@@ -8,3 +8,6 @@ export const selectUser = () => {
 };
 
 // 닉네임 변경
+export const updateUser = () => {
+	return axiosInstance.patch(`/members`);
+};
