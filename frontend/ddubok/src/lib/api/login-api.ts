@@ -9,10 +9,14 @@ const loginURL = process.env.NEXT_PUBLIC_LOGIN_URL;
 
 // 토큰 재발급
 export const reissue = async () => {
-	return axios.post(`${baseURL}/auth/reissue`, null, {
-		headers: { "Content-Type": "applicaion/json" },
-		withCredentials: true,
-	});
+	return axios.post(
+		`${baseURL}/auth/reissue`,
+		{},
+		{
+			headers: { "Content-Type": "applicaion/json" },
+			withCredentials: true,
+		},
+	);
 };
 
 // 리프레시 토큰 확인
