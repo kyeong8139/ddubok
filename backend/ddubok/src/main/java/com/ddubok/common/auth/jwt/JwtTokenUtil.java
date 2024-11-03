@@ -96,6 +96,7 @@ public class JwtTokenUtil {
         } catch (ExpiredJwtException e) {
             return true;
         } catch (JwtException e) {
+            log.error("accessToken : {}", token);
             log.error("JWT 검증 중 오류 발생: {}", e.getMessage(), e);
             log.error("JWT 검증 중 오류 발생. Token: {}, Error: {}",
                 token.substring(0, Math.min(10, token.length())),
