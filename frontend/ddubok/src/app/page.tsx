@@ -3,6 +3,7 @@
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
@@ -22,19 +23,18 @@ const Home = () => {
 
 	useEffect(() => {
 		const getRefreshToken = async () => {
-			let refreshResponse;
-
 			try {
-				refreshResponse = await checkRefreshToken();
+				const refreshResponse = await checkRefreshToken();
 				console.log(refreshResponse);
 
 				if (refreshResponse.data.code === 200) {
 					const response = await reissue();
+					console.log(response.headers);
 					const newAccessToken = response.headers.authorization;
 					setAccessToken(newAccessToken);
 				}
 			} catch (error) {
-				if (refreshResponse && refreshResponse.data.code === 800) {
+				if (axios.isAxiosError(error) && error.response?.data?.code === 800) {
 					return;
 				} else {
 					console.error(error);
