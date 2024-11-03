@@ -54,7 +54,7 @@ public class SocialClientRegistration {
             .build();
     }
 
-    public ClientRegistration metaClientRegistration() {
+    public ClientRegistration xClientRegistration() {
         return ClientRegistration.withRegistrationId("x")
             .clientId(xId)
             .clientSecret(xSecret)

@@ -31,6 +31,6 @@ public class SocialClientRegistrationConfig {
             socialClientRegistration.naverClientRegistration(),
             socialClientRegistration.kakaoClientRegistration(),
             socialClientRegistration.googleClientRegistration(),
-            socialClientRegistration.metaClientRegistration());
+            socialClientRegistration.xClientRegistration());
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum SocialProvider {
 
     KAKAO,
-    META,
+    X,
     GOOGLE,
     NAVER;
 
