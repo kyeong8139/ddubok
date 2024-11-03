@@ -26,8 +26,8 @@ spring:
     kakao-id: test-kakao-id
     naver-id: test-naver-id
     naver-secret: test-naver-secret
-    meta-id: test-meta-id
-    meta-secret: test-meta-secret
+    x-id: test-x-id
+    x-secret: text-x-secret
     google-id: test-google-id
     google-secret: test-google-secret
   jwt:
