@@ -28,6 +28,7 @@ const Menu = () => {
 			if (decodedToken) {
 				try {
 					const response = await selectUser();
+					console.log(response.data.data.nickname);
 					setUser((prevUser) =>
 						prevUser
 							? {
@@ -36,6 +37,7 @@ const Menu = () => {
 							  }
 							: null,
 					);
+					console.log(user);
 				} catch (error) {
 					console.error(error);
 				}
