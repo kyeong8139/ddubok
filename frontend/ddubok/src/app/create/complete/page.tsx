@@ -221,7 +221,7 @@ const CardDetail = () => {
 							>
 								<div className="w-12 h-12 relative mb-2">
 									<Image
-										src="/assets/kakao-icon.png"
+										src="/assets/kakao-circle.png"
 										alt="Kakao"
 										fill
 										className="rounded-full"
@@ -235,7 +235,7 @@ const CardDetail = () => {
 							>
 								<div className="w-12 h-12 relative mb-2">
 									<Image
-										src="/assets/facebook-icon.png"
+										src="/assets/facebook-circle.png"
 										alt="Facebook"
 										fill
 										className="rounded-full"
@@ -249,7 +249,7 @@ const CardDetail = () => {
 							>
 								<div className="w-12 h-12 relative mb-2">
 									<Image
-										src="/assets/x-icon.png"
+										src="/assets/x-circle.jpg"
 										alt="X (Twitter)"
 										fill
 										className="rounded-full"
