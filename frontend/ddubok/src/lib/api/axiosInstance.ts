@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
 			if (refreshResponse.status === 200) {
 				try {
 					const response = await reissue();
-					const newAcessToken = response.headers.authorization;
+					const newAcessToken = `Bearer ${response.headers.authorization}`;
 
 					useAuthStore.getState().setAccessToken(newAcessToken);
 

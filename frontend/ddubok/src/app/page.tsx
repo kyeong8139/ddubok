@@ -33,7 +33,7 @@ const Home = () => {
 					console.log(2);
 					const response = await reissue();
 					console.log(response.headers);
-					const newAccessToken = response.headers.authorization;
+					const newAccessToken = `Bearer ${response.headers.authorization}`;
 					setAccessToken(newAccessToken);
 				}
 			} catch (error) {
