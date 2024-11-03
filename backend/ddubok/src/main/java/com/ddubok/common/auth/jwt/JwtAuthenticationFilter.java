@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import java.io.IOException;
  * JWT 인증을 처리하는 필터 클래스. 모든 HTTP 요청에 대해 JWT 토큰을 검증하고 인증 정보를 설정한다. '/api/auth'와 '/oauth' 경로는 필터 검사에서
  * 제외
  */
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -50,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        log.error("before accessToken : {}", accessToken);
         accessToken = jwtTokenUtil.extractToken(accessToken);
 
         if (jwtTokenUtil.isExpired(accessToken)) {
