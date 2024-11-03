@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
-        if (!category.equals(REDIS_REFRESH_TOKEN_PREFIX)) {
+        if (!category.equals(REFRESH_TOKEN_COOKIE_NAME)) {
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
