@@ -21,7 +21,10 @@ export const reissue = async () => {
 
 // 리프레시 토큰 확인
 export const checkRefreshToken = async () => {
-	return axiosInstance.get(`auth/check-refresh-token`);
+	return axios.get(`${baseURL}/auth/check-refresh-token`, {
+		headers: { "Content-Type": "application/json" },
+		withCredentials: true,
+	});
 };
 
 // 로그인
