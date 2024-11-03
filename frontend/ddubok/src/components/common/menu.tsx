@@ -101,16 +101,7 @@ const Menu = () => {
 				)}
 				<div className="mx-6">
 					{decodedToken ? (
-						decodedToken.role === "ROLE_USER" ? (
-							<ul>
-								<li className="mb-4">
-									<Link href="/book">행운 카드북</Link>
-								</li>
-								<li className="mb-4">
-									<Link href="/fortune">오늘의 운세</Link>
-								</li>
-							</ul>
-						) : (
+						decodedToken.role === "ROLE_ADMIN" ? (
 							<ul>
 								<li className="mb-4">
 									<Link href="/admin/user">사용자 관리</Link>
@@ -120,6 +111,15 @@ const Menu = () => {
 								</li>
 								<li className="mb-4">
 									<Link href="/admin/setting">메인 관리</Link>
+								</li>
+							</ul>
+						) : (
+							<ul>
+								<li className="mb-4">
+									<Link href="/book">행운 카드북</Link>
+								</li>
+								<li className="mb-4">
+									<Link href="/fortune">오늘의 운세</Link>
 								</li>
 							</ul>
 						)
