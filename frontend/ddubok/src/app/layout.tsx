@@ -62,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					`}
 				</Script>
 				<meta
-					http-equiv="Content-Security-Policy"
+					httpEquiv="Content-Security-Policy"
 					content="upgrade-insecure-requests"
 				></meta>
 			</head>

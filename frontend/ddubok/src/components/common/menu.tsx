@@ -5,18 +5,18 @@ import { useEffect, useState } from "react";
 
 import { IUserDto } from "@interface/components/user";
 import { selectUser } from "@lib/api/user-api";
-import { decodeAccessToken } from "@lib/utils/authUtils";
+import { getTokenInfo } from "@lib/utils/authUtils";
 import useAuthStore from "@store/auth-store";
 
 import { CaretRight } from "@phosphor-icons/react";
 
 const Menu = () => {
 	const accessToken = useAuthStore((state) => state.accessToken);
-	const decodedToken = accessToken ? decodeAccessToken(accessToken) : null;
+	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<IUserDto | null>(
 		decodedToken
 			? {
-					id: decodedToken.id,
+					memberId: decodedToken.memberId,
 					nickname: "",
 					role: decodedToken.role,
 			  }
@@ -28,15 +28,13 @@ const Menu = () => {
 			if (decodedToken) {
 				try {
 					const response = await selectUser();
-					console.log(response.data);
-					setUser((prevUser) =>
-						prevUser
-							? {
-									...prevUser,
-									nickname: response.data.nickname,
-							  }
-							: null,
-					);
+					console.log(response.data.data.nickname);
+					setUser({
+						memberId: decodedToken.memberId,
+						nickname: response.data.data.nickname,
+						role: decodedToken.role,
+					});
+					console.log(user);
 				} catch (error) {
 					console.error(error);
 				}
@@ -98,16 +96,7 @@ const Menu = () => {
 				)}
 				<div className="mx-6">
 					{decodedToken ? (
-						decodedToken.role === "ROLE_USER" ? (
-							<ul>
-								<li className="mb-4">
-									<Link href="/book">행운 카드북</Link>
-								</li>
-								<li className="mb-4">
-									<Link href="/fortune">오늘의 운세</Link>
-								</li>
-							</ul>
-						) : (
+						decodedToken.role === "ROLE_ADMIN" ? (
 							<ul>
 								<li className="mb-4">
 									<Link href="/admin/user">사용자 관리</Link>
@@ -117,6 +106,18 @@ const Menu = () => {
 								</li>
 								<li className="mb-4">
 									<Link href="/admin/setting">메인 관리</Link>
+								</li>
+							</ul>
+						) : (
+							<ul>
+								<li className="mb-4">
+									<Link href="/book">행운 카드북</Link>
+								</li>
+								<li className="mb-4">
+									<Link href="/fortune">오늘의 운세</Link>
+								</li>
+								<li>
+									<Link href="/create">행운카드 만들기</Link>
 								</li>
 							</ul>
 						)

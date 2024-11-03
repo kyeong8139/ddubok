@@ -1,12 +1,12 @@
 export interface IUserProps {
-	id: number;
+	memberId: number;
 	nickname: string;
 	state: string;
 	role: string;
 }
 
 export interface IUserDto {
-	id: number;
-	nickname: string;
+	memberId: number;
+	nickname?: string;
 	role: string;
 }

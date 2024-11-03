@@ -1,14 +1,14 @@
 import axios from "axios";
 import Router from "next/router";
 
-import { reissue } from "@lib/api/login-api";
+import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
 
 const axiosInstance = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 	withCredentials: true,
 	headers: {
-		"Content-Type": "applicaion/json",
+		"Content-Type": "application/json",
 	},
 });
 
@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
 	(config) => {
 		const { accessToken } = useAuthStore.getState();
-		if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
+		if (accessToken) config.headers["Authorization"] = accessToken;
 		return config;
 	},
 	(error) => Promise.reject(error),
@@ -31,24 +31,23 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_FETCH_URL}/get-refresh-token`);
-			const data = await refreshResponse.json();
+			const refreshResponse = await checkRefreshToken();
 
-			if (data.refresh) {
+			if (refreshResponse.status === 200) {
 				try {
 					const response = await reissue();
-					const newAcessToken = response.headers.authorization;
+					const newAcessToken = `Bearer ${response.headers.authorization}`;
 
 					useAuthStore.getState().setAccessToken(newAcessToken);
 
-					originalRequest.headers["Authorization"] = `Bearer ${newAcessToken}`;
+					originalRequest.headers["Authorization"] = newAcessToken;
 					return axiosInstance(originalRequest);
 				} catch (error) {
 					console.error("accessToken 재발급 실패");
-					Router.push("/login");
 				}
-			} else {
+			} else if (refreshResponse.status === 800) {
 				console.log("refreshToken 없음");
+				// 로그인이 만료되었으니 다시 하라고 해야함
 				Router.push("/login");
 			}
 		}
