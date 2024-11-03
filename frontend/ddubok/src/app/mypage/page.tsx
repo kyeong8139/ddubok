@@ -58,30 +58,36 @@ const Mypage = () => {
 	};
 
 	const modifyNickname = async () => {
+		console.log("1");
 		try {
 			await updateUser();
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
 			setIsEditing(false);
+			console.log("닉네임 수정하기");
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const handleLogout = async () => {
+		console.log("2");
 		try {
 			await logout();
 			clearAccessToken();
 			route.push("/");
+			console.log("로그아웃 함");
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const removeUser = async () => {
+		console.log("3");
 		try {
 			await deleteUser();
 			clearAccessToken();
 			route.push("/");
+			console.log("탈퇴함");
 		} catch (error) {
 			console.error(error);
 		}
