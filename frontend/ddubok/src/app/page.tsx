@@ -22,17 +22,12 @@ const Home = () => {
 	const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
 	useEffect(() => {
-		console.log(0);
 		const getRefreshToken = async () => {
 			try {
-				console.log(1);
 				const refreshResponse = await checkRefreshToken();
-				console.log(refreshResponse);
 
 				if (refreshResponse.data.code === "200") {
-					console.log(2);
 					const response = await reissue();
-					console.log(response.headers);
 					const newAccessToken = `Bearer ${response.headers.authorization}`;
 					setAccessToken(newAccessToken);
 				}
