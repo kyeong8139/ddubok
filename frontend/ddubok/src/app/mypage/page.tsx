@@ -58,7 +58,6 @@ const Mypage = () => {
 	};
 
 	const modifyNickname = async () => {
-		console.log("1");
 		try {
 			await updateUser();
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
@@ -70,24 +69,21 @@ const Mypage = () => {
 	};
 
 	const handleLogout = async () => {
-		console.log("2");
 		try {
 			await logout();
 			clearAccessToken();
 			route.push("/");
-			console.log("로그아웃 함");
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const removeUser = async () => {
-		console.log("3");
 		try {
+			await logout();
 			await deleteUser();
 			clearAccessToken();
 			route.push("/");
-			console.log("탈퇴함");
 		} catch (error) {
 			console.error(error);
 		}
@@ -115,7 +111,7 @@ const Mypage = () => {
 								id="nickname"
 								type="text"
 								placeholder="최대 11글자"
-								value={user?.nickname}
+								value={newNickname}
 								onChange={(e) => setNewNickname(e.target.value)}
 								className="px-2 py-2 w-48 text-sm rounded-lg text-black"
 							/>
