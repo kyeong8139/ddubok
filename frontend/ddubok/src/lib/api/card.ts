@@ -35,3 +35,15 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 		throw error;
 	}
 };
+
+export const saveCard = async (cardId: number) => {
+	try {
+		const response = await axiosInstance.post("/api/cards/save", {
+			cardId: cardId,
+		});
+		return response.data;
+	} catch (error) {
+		console.error("카드 보관 실패:", error);
+		throw error;
+	}
+};
