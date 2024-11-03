@@ -32,7 +32,7 @@ public class OAuth2ResponseFactory {
             case "google" -> new GoogleResponse(attributes);
             case "naver" -> new NaverResponse(attributes);
             case "kakao" -> new KakaoResponse(attributes);
-            case "facebook" -> new XResponse(attributes);
+            case "twitter", "x" -> new XResponse(attributes);
             default -> throw new UnsupportedOAuth2ProviderException(
                 "해당 SNS(" + registrationId + ")는 지원하지 않습니다.");
         };
