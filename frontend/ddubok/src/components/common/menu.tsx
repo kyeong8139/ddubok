@@ -25,15 +25,9 @@ const Menu = () => {
 
 	useEffect(() => {
 		const getUser = async () => {
-			console.log(accessToken);
-			console.log(decodedToken);
-
 			if (decodedToken) {
-				console.log("1");
 				try {
-					console.log("2");
 					const response = await selectUser();
-					console.log(response.data);
 					setUser((prevUser) =>
 						prevUser
 							? {
@@ -42,7 +36,6 @@ const Menu = () => {
 							  }
 							: null,
 					);
-					console.log("3");
 				} catch (error) {
 					console.error(error);
 				}
