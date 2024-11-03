@@ -13,7 +13,7 @@ export const reissue = async () => {
 		`${baseURL}/auth/reissue`,
 		{},
 		{
-			headers: { "Content-Type": "applicaion/json" },
+			headers: { "Content-Type": "application/json" },
 			withCredentials: true,
 		},
 	);
