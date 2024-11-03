@@ -38,7 +38,7 @@ const Menu = () => {
 						prevUser
 							? {
 									...prevUser,
-									nickname: response.data.nickname,
+									nickname: response.data.data.nickname,
 							  }
 							: null,
 					);
