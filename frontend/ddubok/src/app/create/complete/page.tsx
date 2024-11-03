@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -9,6 +9,7 @@ import { useCardStore } from "@store/card-store";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
+import { ModalContext } from "@context/modal-context";
 
 import { LinkSimple } from "@phosphor-icons/react";
 
@@ -18,7 +19,7 @@ const CardDetail = () => {
 	const type = searchParams?.get("type");
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+	const { isModalOpen, openModal } = useContext(ModalContext);
 
 	// const { selectedImage, letterContent, cardId, setCardId } = useCardStore();
 	// useEffect(() => {
@@ -190,7 +191,7 @@ const CardDetail = () => {
 							size="short"
 							font="both"
 							shadow="green"
-							onClick={() => setIsShareModalOpen(true)}
+							onClick={() => openModal()}
 						/>
 					</>
 				) : (
@@ -208,7 +209,7 @@ const CardDetail = () => {
 					)
 				)}
 			</div>
-			{isShareModalOpen && (
+			{isModalOpen && (
 				<Modal>
 					<div className="flex flex-col items-center">
 						<div className="w-full ">
@@ -272,12 +273,6 @@ const CardDetail = () => {
 								/>
 							</button>
 						</div>
-						<button
-							onClick={() => setIsShareModalOpen(false)}
-							className="absolute top-4 right-4 text-black font-nexonBold text-xl hover:opacity-70"
-						>
-							✕
-						</button>
 					</div>
 				</Modal>
 			)}
