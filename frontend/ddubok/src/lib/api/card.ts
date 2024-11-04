@@ -5,6 +5,7 @@ const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 export const sendCard = async (content: string, writerName: string, seasonId: number, image: string | null) => {
 	try {
 		const formData = new FormData();
+
 		formData.append(
 			"req",
 			new Blob(
@@ -20,9 +21,11 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 				},
 			),
 		);
-		console.log(formData);
+
+		console.log(writerName + " " + seasonId + " " + content + " " + image);
 
 		if (image) {
+			console.log("들어오니");
 			try {
 				if (image.startsWith("data:image")) {
 					if (!image.includes("base64,")) {
