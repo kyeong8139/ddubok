@@ -62,25 +62,20 @@ const Fortune = () => {
 			const response = await insertFortune();
 			console.log(response.data.data);
 			setFortuneDetail({
-				sentence: response.data.data.sentence,
-				score: response.data.data.score,
+				sentence: response.data.data.fortune.sentence,
+				score: response.data.data.fortune.score,
 			});
 			setFortuneList(response.data.data.attendanceHistory.attendanceList);
 			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
+
+			console.log(fortuneDetail.sentence);
+			console.log(fortuneDetail.score);
+
+			openModal();
 		} catch (error) {
 			console.error(error);
 		}
 	};
-
-	useEffect(() => {
-		console.log(fortuneDetail.sentence);
-		console.log(fortuneDetail.score);
-		if (fortuneDetail.sentence && fortuneDetail.score) {
-			console.log(fortuneDetail.sentence);
-			console.log(fortuneDetail.score);
-			openModal();
-		}
-	}, [fortuneDetail]);
 
 	return (
 		<div id="fortune">
