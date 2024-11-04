@@ -16,39 +16,37 @@ const Book = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedImage, setSelectedImage] = useState("");
 	const [selectedEffect, setSelectedEffect] = useState(0);
+	const [selectedCardId, setSelectedCardId] = useState(0);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
 	};
 
-	const handleCardClick = (image: string, effect: number) => {
+	const handleCardClick = (image: string, effect: number, cardId: number) => {
 		setSelectedImage(image);
 		setSelectedEffect(effect);
+		setSelectedCardId(cardId);
 		openModal();
 	};
 
 	const cardImages = useMemo(
 		() => [
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
+			{ cardId: 1, image: "/assets/examplCard1.png", effect: 0 },
+			{ cardId: 2, image: "/assets/examplCard2.png", effect: 0 },
+			{ cardId: 3, image: "/assets/temp1.jpg", effect: 0 },
+			{ cardId: 4, image: "/assets/temp2.jpg", effect: 0 },
+			{ cardId: 5, image: "/assets/examplCard1.png", effect: 0 },
+			{ cardId: 6, image: "/assets/examplCard2.png", effect: 0 },
+			{ cardId: 7, image: "/assets/temp1.jpg", effect: 0 },
+			{ cardId: 8, image: "/assets/temp2.jpg", effect: 0 },
+			{ cardId: 9, image: "/assets/examplCard1.png", effect: 0 },
+			{ cardId: 10, image: "/assets/examplCard2.png", effect: 0 },
+			{ cardId: 11, image: "/assets/temp1.jpg", effect: 0 },
+			{ cardId: 12, image: "/assets/temp2.jpg", effect: 0 },
+			{ cardId: 13, image: "/assets/examplCard1.png", effect: 0 },
+			{ cardId: 14, image: "/assets/examplCard2.png", effect: 0 },
+			{ cardId: 15, image: "/assets/temp1.jpg", effect: 0 },
+			{ cardId: 16, image: "/assets/temp2.jpg", effect: 0 },
 		],
 		[],
 	); // 임시 데이터, 페이징 처리 수정 필요
@@ -124,7 +122,7 @@ const Book = () => {
 							<div
 								key={index}
 								className="flex justify-center items-center w-full h-0 pb-[180%] relative rounded-lg overflow-hidden"
-								onClick={() => handleCardClick(card.image, card.effect)}
+								onClick={() => handleCardClick(card.image, card.effect, card.cardId)}
 							>
 								<NextImage
 									src={card.image}
@@ -165,6 +163,7 @@ const Book = () => {
 					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
 					>
 						<DetailCard
+							cardId={selectedCardId}
 							writer="나는야뿌랑하는유니스"
 							image={selectedImage}
 							content="상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼"
