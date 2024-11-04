@@ -9,7 +9,7 @@ const LoginButton = (props: ILoginButtonProps) => {
 	return (
 		<button
 			id="login-button"
-			className={`w-14 h-14 flex justify-center items-center border border-solid border-black rounded-full ${colorClass[color]} ${shadowClass[shadow]}`}
+			className={`w-14 h-14 flex justify-center items-center rounded-full ${colorClass[color]} ${shadowClass[shadow]}`}
 			onClick={onClick}
 		>
 			<Image

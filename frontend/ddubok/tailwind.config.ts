@@ -39,7 +39,7 @@ const config: Config = {
 				kakao: "0px 4px 0px 0px #7D7319",
 				naver: "0px 4px 0px 0px #0D6102",
 				google: "0px 4px 0px 0px #6F6F6F",
-				x: "0px 4px 0px 0px #444444",
+				x: "0px 4px 0px 0px #888888",
 			},
 			fontFamily: {
 				pyeongchang: ["var(--font-pyeongchang-peace-bold)", "sans-serif"],
