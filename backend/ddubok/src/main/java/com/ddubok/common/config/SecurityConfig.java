@@ -57,7 +57,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-            Arrays.asList("https://ddubok.com", "http://localhost:3000"));
+            Arrays.asList("https://ddubok.com", "http://localhost:3000", "https://ddubok-test.kro.kr"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -178,6 +178,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/api/v1/auth/check-refresh-token", "/api/v1/auth/reissue").permitAll()
+                .requestMatchers("/api/v1/cards/**").permitAll()
                 .anyRequest().authenticated()
             );
 
