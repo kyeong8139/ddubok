@@ -9,6 +9,7 @@ import com.ddubok.common.auth.exception.SoicalAccessTokenNotFoundExcpetion;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,13 +37,16 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
     private String naverId;
     @Value("${spring.social.naver-secret}")
     private String naverSecret;
+    @Value("${spring.social.x-id}")
+    private String xId;
+    @Value("${spring.social.x-secret}")
+    private String xSecret;
 
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberRepository memberRepository;
     private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
     private final RedisTemplate<String, String> redisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final OAuth2AuthorizedClientService authorizedClientService;
 
     /**
      * {@inheritDoc}
@@ -54,7 +58,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
         String socialProvider = member.getSocialProvider().toLowerCase();
         try {
             ResponseEntity<?> response = sendUnlinkRequestByProvider(socialProvider,
-                member.getId(), authentication);
+                member.getId());
 
             if (response == null) {
                 throw new InvalidDeleteMemberException("연동 해제 중 오류가 발생했습니다.");
@@ -77,7 +81,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
     }
 
     private ResponseEntity<Object> sendUnlinkRequestByProvider(String socialProvider,
-        Long memberId, Authentication authentication) {
+        Long memberId) {
 
         String token = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (token == null) {
@@ -94,7 +98,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
                 case "kakao" -> unlinkKakao(socialAccessToken);
                 case "naver" -> unlinkNaver(socialAccessToken);
                 case "google" -> unlinkGoogle(socialAccessToken);
-                case "x" -> unlinkX(authentication);
+                case "x" -> unlinkX(socialAccessToken);
                 default -> null;
             };
         } catch (RestClientException e) {
@@ -141,9 +145,31 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
         return restTemplate.exchange(googleUrl, HttpMethod.POST, entity, Object.class);
     }
 
-    private ResponseEntity<Object> unlinkX(Authentication authentication) {
-        authorizedClientService.removeAuthorizedClient("x", authentication.getName());
-        return ResponseEntity.ok().build();
+    private ResponseEntity<Object> unlinkX(String socialAccessToken) {
+        String disconnectEndpoint = "https://api.twitter.com/2/oauth2/revoke";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setBearerAuth(socialAccessToken);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("token", socialAccessToken);
+        body.add("token_type_hint", "access_token");
+        body.add("client_id", xId);
+
+        // Basic 인증 헤더 추가 (Twitter API 요구사항)
+        String credentials = Base64.getEncoder()
+            .encodeToString((xId + ":" + xSecret).getBytes());
+        headers.set("Authorization", "Basic " + credentials);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        return restTemplate.exchange(
+                disconnectEndpoint,
+                HttpMethod.POST,
+                request,
+                Object.class
+            );
     }
 
 }
