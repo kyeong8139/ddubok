@@ -7,8 +7,8 @@ public enum ReportType {
 
     VILIFICATION("비속어"),
     ADVERTISMENT("광고"),
-    OBSCENE("음란성내용"),
-    PERSONALINFORMATION("개인정보"),
+    OBSCENE("음란성 내용"),
+    PERSONALINFORMATION("사생활 침해"),
     SPAM("도배"),
     ETC("기타");
 
