@@ -79,28 +79,22 @@ public class SecurityConfig {
             );
 
         resolver.setAuthorizationRequestCustomizer(
-            authorizationRequestBuilder -> {
-                try {
-                    OAuth2AuthorizationRequest.Builder builder =
-                        (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
+            builder -> {
+                Map<String, Object> attributes = builder.build().getAttributes();
+                String registrationId = (String) attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
 
-                    Map<String, Object> attributes = builder.build().getAttributes();
-                    Object registrationIdObj = attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
+                if ("x".equals(registrationId)) {
+                    String codeVerifier = generateCodeVerifier();
+                    String codeChallenge = generateCodeChallenge(codeVerifier);
 
-                    if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
-                        // Generate a new code verifier
-                        String codeVerifier = generateCodeVerifier();
-                        String codeChallenge = generateCodeChallenge(codeVerifier);
+                    builder.additionalParameters(params -> {
+                        params.put("code_challenge", codeChallenge);
+                        params.put("code_challenge_method", "S256");
+                    });
 
-                        // Store the code verifier in the session
-                        builder.additionalParameters(params -> {
-                            params.put("code_verifier", codeVerifier);
-                            params.put("code_challenge", codeChallenge);
-                            params.put("code_challenge_method", "S256");
-                        });
-                    }
-                } catch (Exception e) {
-                    log.error("Error customizing authorization request", e);
+                    builder.attributes(attrs ->
+                        attrs.put("code_verifier", codeVerifier)
+                    );
                 }
             });
 
@@ -108,19 +102,22 @@ public class SecurityConfig {
     }
 
     private String generateCodeVerifier() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[32];
-        random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] codeVerifier = new byte[96];
+        secureRandom.nextBytes(codeVerifier);
+        return Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(codeVerifier);
     }
 
     private String generateCodeChallenge(String codeVerifier) {
         try {
+            byte[] bytes = codeVerifier.getBytes(StandardCharsets.US_ASCII);
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(codeVerifier.getBytes(StandardCharsets.UTF_8));
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+            byte[] hash = digest.digest(bytes);
+            return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(hash);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 algorithm not found", e);
+            throw new RuntimeException("Failed to generate code challenge", e);
         }
     }
 
