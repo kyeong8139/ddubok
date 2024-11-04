@@ -70,7 +70,7 @@ public class CardController {
     @GetMapping
     public BaseResponse<?> getAllCardList(
         @RequestParam(value = "page") int page,
-        @RequestParam(value = "size", defaultValue = "4") int size
+        @RequestParam(value = "size") int size
     ) {
         GetCardListRes res = getCardService.getAllCardList(
             GetAllCardListReq.builder().memberId(authUtil.getMemberId())
@@ -88,7 +88,7 @@ public class CardController {
     @GetMapping("/albums/{seasonId}")
     public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId,
         @RequestParam(value = "page") int page,
-        @RequestParam(value = "size", defaultValue = "4") int size) {
+        @RequestParam(value = "size") int size) {
         GetCardListRes res = getCardService.getCardListBySeason(
             GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(authUtil.getMemberId())
                 .page(page).size(size)
