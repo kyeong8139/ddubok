@@ -24,7 +24,7 @@ public class XResponse implements OAuth2Response {
      * @param attributes X에서 제공하는 사용자 속성 Map
      */
     public XResponse(Map<String, Object> attributes) {
-        log.info("X OAuth2 Response Attributes: {}", attributes);
+        log.error("X OAuth2 Response Attributes: {}", attributes);
         this.attributes = attributes;
     }
 
