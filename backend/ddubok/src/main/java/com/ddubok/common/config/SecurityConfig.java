@@ -8,17 +8,27 @@ import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
 import com.ddubok.common.auth.registration.SocialClientRegistrationConfig;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,6 +39,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * Spring Security 보안 설정 클래스.
  * JWT 인증과 OAuth2 소셜 로그인을 구성한다.
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,19 +52,6 @@ public class SecurityConfig {
     private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
-
-    /**
-     * AuthenticationManager 빈을 구성한다.
-     *
-     * @param configuration 인증 설정 객체
-     * @return AuthenticationManager 인스턴스
-     * @throws Exception 인증 관련 예외 발생 시
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
-        return configuration.getAuthenticationManager();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -68,6 +66,59 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(
+        ClientRegistrationRepository clientRegistrationRepository) {
+
+        DefaultOAuth2AuthorizationRequestResolver resolver =
+            new DefaultOAuth2AuthorizationRequestResolver(
+                clientRegistrationRepository,
+                "/api/oauth2/authorization"
+            );
+
+        resolver.setAuthorizationRequestCustomizer(
+            builder -> {
+                Map<String, Object> attributes = builder.build().getAttributes();
+                String registrationId = (String) attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
+
+                if ("x".equals(registrationId)) {
+                    String codeVerifier = generateCodeVerifier();
+                    String codeChallenge = generateCodeChallenge(codeVerifier);
+
+                    builder.additionalParameters(params -> {
+                        params.put("code_challenge", codeChallenge);
+                        params.put("code_challenge_method", "S256");
+                    });
+
+                    builder.attributes(attrs ->
+                        attrs.put("code_verifier", codeVerifier)
+                    );
+                }
+            });
+
+        return resolver;
+    }
+
+    private String generateCodeVerifier() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] codeVerifier = new byte[96];
+        secureRandom.nextBytes(codeVerifier);
+        return Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(codeVerifier);
+    }
+
+    private String generateCodeChallenge(String codeVerifier) {
+        try {
+            byte[] bytes = codeVerifier.getBytes(StandardCharsets.US_ASCII);
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(bytes);
+            return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Failed to generate code challenge", e);
+        }
     }
 
     /**
@@ -115,7 +166,10 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
+                .authorizationEndpoint(endPoint -> endPoint
+                    .authorizationRequestResolver(customAuthorizationRequestResolver(
+                        socialClientRegistrationConfig.clientRegistrationRepository()))
+                    .baseUri("/api/oauth2/authorization"))
                 .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
                 .successHandler(customOAuth2SuccessHandler)
                 .failureHandler(customOAuth2FailureHandler)
@@ -123,7 +177,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api/get-refresh-token", "/api/v1/auth/reissue").permitAll()
+                .requestMatchers("/api/v1/auth/check-refresh-token", "/api/v1/auth/reissue").permitAll()
                 .anyRequest().authenticated()
             );
 

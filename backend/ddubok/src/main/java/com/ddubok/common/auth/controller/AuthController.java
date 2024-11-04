@@ -6,6 +6,7 @@ import com.ddubok.common.template.response.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +23,11 @@ public class AuthController {
         authService.reissueToken(request, response);
         return BaseResponse.ofSuccess(ResponseCode.CREATED);
     }
+
+    @GetMapping("/check-refresh-token")
+    public BaseResponse<?> checkRefreshToken(HttpServletRequest request) {
+        authService.checkRefreshToken(request);
+        return BaseResponse.ofSuccess(ResponseCode.OK);
+    }
+
 }

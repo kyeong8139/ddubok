@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
-        if (!category.equals(REDIS_REFRESH_TOKEN_PREFIX)) {
+        if (!category.equals(REFRESH_TOKEN_COOKIE_NAME)) {
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
@@ -66,5 +66,27 @@ public class AuthServiceImpl implements AuthService {
         String newAccess = jwtTokenUtil.createToken(ACCESS_TOKEN_COOKIE_NAME, memberId, role, expiration);
         response.setHeader("Authorization", newAccess);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void checkRefreshToken(HttpServletRequest request) {
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if(refresh == null || refresh.trim().isEmpty()) {
+            throw new InvalidRefreshTokenException("Refresh token not found or empty");
+        }
     }
 }
