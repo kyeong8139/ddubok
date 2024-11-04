@@ -10,6 +10,7 @@ import com.ddubok.common.auth.oauth.CustomOidcUserService;
 import com.ddubok.common.auth.registration.SocialClientRegistrationConfig;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +35,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * Spring Security 보안 설정 클래스.
  * JWT 인증과 OAuth2 소셜 로그인을 구성한다.
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -143,20 +145,31 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class);
 
         http
-            .oauth2Login((oauth2) -> oauth2
-                .clientRegistrationRepository(
-                    socialClientRegistrationConfig.clientRegistrationRepository())
-                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                    .userService(customOAuth2UserService)
-                    .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint
-                    .authorizationRequestResolver(customAuthorizationRequestResolver(
-                        socialClientRegistrationConfig.clientRegistrationRepository()))
-                    .baseUri("/api/oauth2/authorization"))
-                .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
-                .successHandler(customOAuth2SuccessHandler)
-                .failureHandler(customOAuth2FailureHandler)
-            );
+            .oauth2Login((oauth2) -> {
+                log.error("Configuring OAuth2 login");
+                oauth2
+                    .clientRegistrationRepository(
+                        socialClientRegistrationConfig.clientRegistrationRepository())
+                    .userInfoEndpoint(userInfoEndpointConfig -> {
+                        log.error("Configuring userInfoEndpoint");
+                        userInfoEndpointConfig
+                            .userService(customOAuth2UserService)
+                            .oidcUserService(customOidcUserService);
+                    })
+                    .authorizationEndpoint(endPoint -> {
+                        log.error("Configuring authorizationEndpoint");
+                        endPoint
+                            .authorizationRequestResolver(customAuthorizationRequestResolver(
+                                socialClientRegistrationConfig.clientRegistrationRepository()))
+                            .baseUri("/api/oauth2/authorization");
+                    })
+                    .redirectionEndpoint(endPoint -> {
+                        log.error("Configuring redirectionEndpoint");
+                        endPoint.baseUri("/api/login/oauth2/code/*");
+                    })
+                    .successHandler(customOAuth2SuccessHandler)
+                    .failureHandler(customOAuth2FailureHandler);
+            });
 
         http
             .authorizeHttpRequests((auth) -> auth
