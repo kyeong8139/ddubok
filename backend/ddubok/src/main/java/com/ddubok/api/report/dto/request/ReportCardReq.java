@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportMemberReq {
+public class ReportCardReq {
 
     private Long cardId;
     private String title;

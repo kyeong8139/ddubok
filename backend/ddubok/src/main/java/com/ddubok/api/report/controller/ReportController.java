@@ -1,7 +1,7 @@
 package com.ddubok.api.report.controller;
 
-import com.ddubok.api.report.dto.request.ReportMemberReq;
-import com.ddubok.api.report.dto.response.ReportMemberRes;
+import com.ddubok.api.report.dto.request.ReportCardReq;
+import com.ddubok.api.report.dto.response.ReportCardRes;
 import com.ddubok.api.report.service.ReportService;
 import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.template.response.BaseResponse;
@@ -25,16 +25,16 @@ public class ReportController {
 
     /**
      * 사용자가 카드의 내용을 신고하는 경우 사용하는 API
-     * @param reportMemberReq 신고할 멤버의 객체
+     * @param reportCardReq 신고할 멤버의 객체
      * @return 신고의 번호
      */
     @PostMapping("")
     public ResponseEntity<BaseResponse<?>> reportMember(
-        @RequestBody ReportMemberReq reportMemberReq){
+        @RequestBody ReportCardReq reportCardReq){
         Long memberId = authUtil.getMemberId();
-        ReportMemberRes reportMemberRes = ReportMemberRes.builder()
-            .reportId(reportService.reportMember(memberId, reportMemberReq))
+        ReportCardRes reportCardRes = ReportCardRes.builder()
+            .reportId(reportService.reportCard(memberId, reportCardReq).getId())
             .build();
-        return ResponseEntity.ok(BaseResponse.ofSuccess(reportMemberRes));
+        return ResponseEntity.ok(BaseResponse.ofSuccess(reportCardRes));
     }
 }
