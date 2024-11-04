@@ -1,14 +1,25 @@
-import axiosInstance from "@lib/api/axiosInstance";
-
 import axios from "axios";
+import axiosInstance from "@lib/api/axiosInstance";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const sendCard = async (content: string, writerName: string, seasonId: number, image: string | null) => {
 	try {
 		const formData = new FormData();
-		formData.append("content", content);
-		formData.append("writerName", writerName);
-		formData.append("seasonId", seasonId.toString());
+
+		const cardReq = {
+			content,
+			writerName,
+			seasonId,
+			memberId: null,
+		};
+
+		// req part 추가
+		formData.append(
+			"req",
+			new Blob([JSON.stringify(cardReq)], {
+				type: "application/json",
+			}),
+		);
 
 		if (image) {
 			try {
@@ -53,14 +64,33 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 			}
 		}
 
+		// FormData 내용 확인 (개발 환경에서만)
+		if (process.env.NODE_ENV === "development") {
+			Array.from(formData.entries()).forEach(([key, value]) => {
+				console.log("FormData:", key, value);
+			});
+		}
+
 		const response = await axios.post(`${baseURL}/cards`, formData, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
+			withCredentials: true,
 		});
-		console.log(response.data);
+
+		if (process.env.NODE_ENV === "development") {
+			console.log("Response:", response.data);
+		}
+
 		return response.data;
 	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			console.error("요청 에러:", {
+				status: error.response?.status,
+				data: error.response?.data,
+				headers: error.response?.headers,
+			});
+		}
 		console.error("카드 전송 실패:", error);
 		throw error;
 	}
@@ -74,6 +104,76 @@ export const saveCard = async (cardId: number) => {
 		return response.data;
 	} catch (error) {
 		console.error("카드 보관 실패:", error);
+		throw error;
+	}
+};
+
+export const getAllCards = async (lastCardId?: number, size: number = 4) => {
+	try {
+		const response = await axiosInstance.get("/cards", {
+			params: {
+				lastCardId,
+				size,
+			},
+		});
+		return response.data;
+	} catch (error) {
+		console.error("카드 목록 조회 실패:", error);
+		throw error;
+	}
+};
+
+export const getCardDetail = async (cardId: number) => {
+	try {
+		const response = await axiosInstance.get(`/cards/${cardId}`);
+		return response.data;
+	} catch (error) {
+		console.error("카드 상세 조회 실패:", error);
+		throw error;
+	}
+};
+
+export const getCardsBySeason = async (seasonId: number, lastCardId?: number, size: number = 4) => {
+	try {
+		const response = await axiosInstance.get(`/cards/albums/${seasonId}`, {
+			params: {
+				lastCardId,
+				size,
+			},
+		});
+		return response.data;
+	} catch (error) {
+		console.error("시즌별 카드 목록 조회 실패:", error);
+		throw error;
+	}
+};
+
+export const getCardPreview = async (memberId: number) => {
+	try {
+		const response = await axiosInstance.get(`/cards/${memberId}/preview`);
+		return response.data;
+	} catch (error) {
+		console.error("카드 프리뷰 조회 실패:", error);
+		throw error;
+	}
+};
+
+export const deleteCard = async (cardId: number) => {
+	try {
+		const response = await axiosInstance.delete(`/cards/${cardId}`);
+		return response.data;
+	} catch (error) {
+		console.error("카드 삭제 실패:", error);
+		throw error;
+	}
+};
+
+export const receiveCard = async (cardId: number) => {
+	try {
+		const response = await axiosInstance.post(`/cards/${cardId}`);
+		return response.data;
+	} catch (error) {
+		console.error("카드 수신 실패:", error);
 		throw error;
 	}
 };
