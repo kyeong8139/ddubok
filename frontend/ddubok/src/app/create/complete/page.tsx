@@ -250,7 +250,7 @@ const CardDetail = () => {
 							>
 								<div className="w-12 h-12 relative mb-2">
 									<Image
-										src="/assets/x-circle.jpg"
+										src="/assets/x-circle.png"
 										alt="X (Twitter)"
 										fill
 										className="rounded-full"
