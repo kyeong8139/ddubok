@@ -45,7 +45,7 @@ public class CardController {
     @PostMapping
     public BaseResponse<?> createCard(
         @RequestPart(name = "image", required = false) MultipartFile image,
-        @RequestPart CreateCardReq req) {
+        @RequestPart(name="req") CreateCardReq req) {
         Long cardId = cardService.createCard(
             CreateCardReqDto.builder().content(req.getContent()).seasonId(req.getSeasonId())
                 .path(uploadCardImg(image, req.getSeasonId())).isCustom(true)
