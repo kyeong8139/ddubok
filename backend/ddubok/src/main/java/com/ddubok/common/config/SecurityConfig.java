@@ -50,19 +50,6 @@ public class SecurityConfig {
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
 
-    /**
-     * AuthenticationManager 빈을 구성한다.
-     *
-     * @param configuration 인증 설정 객체
-     * @return AuthenticationManager 인스턴스
-     * @throws Exception 인증 관련 예외 발생 시
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
