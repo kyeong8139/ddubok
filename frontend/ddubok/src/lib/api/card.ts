@@ -42,7 +42,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 			}
 		}
 
-		const response = await axiosInstance.post("/api/cards", formData, {
+		const response = await axiosInstance.post("/cards", formData, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
@@ -57,7 +57,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 
 export const saveCard = async (cardId: number) => {
 	try {
-		const response = await axiosInstance.post("/api/cards/save", {
+		const response = await axiosInstance.post("/cards/save", {
 			cardId: cardId,
 		});
 		return response.data;
