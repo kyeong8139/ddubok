@@ -7,12 +7,14 @@ import com.ddubok.common.auth.dto.OAuth2Response;
 import com.ddubok.common.auth.dto.XResponse;
 import com.ddubok.common.auth.exception.UnsupportedOAuth2ProviderException;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * OAuth2 인증 제공자별 응답 객체를 생성하는 팩토리 클래스. 각 소셜 로그인 제공자(Google, Naver, Kakao, X)에 대한 적절한
  * OAuth2Response 구현체를 생성한다.
  */
+@Slf4j
 @Component
 public class OAuth2ResponseFactory {
 
@@ -27,6 +29,11 @@ public class OAuth2ResponseFactory {
      * @throws RuntimeException 지원하지 않는 OAuth2 제공자인 경우
      */
     public OAuth2Response getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
+        log.error("=============================================");
+        log.error("OAuth2ResponseFactory called!");
+        log.error("Registration ID: {}", registrationId);
+        log.error("Attributes: {}", attributes);
+        log.error("=============================================");
         return switch (registrationId.toLowerCase()) {
             case "google" -> new GoogleResponse(attributes);
             case "naver" -> new NaverResponse(attributes);
