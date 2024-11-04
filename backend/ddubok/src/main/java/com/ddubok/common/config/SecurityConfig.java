@@ -8,7 +8,12 @@ import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
 import com.ddubok.common.auth.registration.SocialClientRegistrationConfig;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,13 +88,16 @@ public class SecurityConfig {
                     Object registrationIdObj = attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
 
                     if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
-                        String codeVerifier = "challenge";
-                        Map<String, Object> additionalParams = Map.of(
-                            "code_challenge", codeVerifier,
-                            "code_challenge_method", "plain",
-                            "code_verifier", codeVerifier
-                        );
-                        builder.additionalParameters(params -> params.putAll(additionalParams));
+                        // Generate a new code verifier
+                        String codeVerifier = generateCodeVerifier();
+                        String codeChallenge = generateCodeChallenge(codeVerifier);
+
+                        // Store the code verifier in the session
+                        builder.additionalParameters(params -> {
+                            params.put("code_verifier", codeVerifier);
+                            params.put("code_challenge", codeChallenge);
+                            params.put("code_challenge_method", "S256");
+                        });
                     }
                 } catch (Exception e) {
                     log.error("Error customizing authorization request", e);
@@ -97,6 +105,23 @@ public class SecurityConfig {
             });
 
         return resolver;
+    }
+
+    private String generateCodeVerifier() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private String generateCodeChallenge(String codeVerifier) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(codeVerifier.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not found", e);
+        }
     }
 
     /**
