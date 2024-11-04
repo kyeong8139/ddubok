@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -178,7 +179,13 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/api/v1/auth/check-refresh-token", "/api/v1/auth/reissue").permitAll()
-                .requestMatchers("/api/v1/cards/**").permitAll()
+                .requestMatchers("/api/v1/members").hasRole("USER")
+                .requestMatchers("/api/v1/admins/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/attendances").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/cards").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v2/cards").permitAll()
+                .requestMatchers("/api/v1/cards/**").hasRole("USER")
+                .requestMatchers("/api/v1/reports").hasRole("USER")
                 .anyRequest().authenticated()
             );
 
