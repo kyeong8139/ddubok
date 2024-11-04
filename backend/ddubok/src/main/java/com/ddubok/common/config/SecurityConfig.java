@@ -9,6 +9,7 @@ import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
 import com.ddubok.common.auth.oauth.CustomOidcUserService;
 import com.ddubok.common.auth.registration.SocialClientRegistrationConfig;
 import java.util.Arrays;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -89,17 +90,23 @@ public class SecurityConfig {
 
         resolver.setAuthorizationRequestCustomizer(
             authorizationRequestBuilder -> {
-                OAuth2AuthorizationRequest.Builder builder =
-                    (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
+                try {
+                    OAuth2AuthorizationRequest.Builder builder =
+                        (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
 
-                String registrationId = builder.build().getAttributes()
-                    .get(OAuth2ParameterNames.REGISTRATION_ID).toString();
+                    // 직접 attributes에서 registrationId를 가져오는 대신
+                    // 다른 방법으로 provider 확인
+                    Map<String, Object> attributes = builder.build().getAttributes();
+                    Object registrationIdObj = attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
 
-                if ("x".equals(registrationId)) {
-                    builder.additionalParameters(params ->
-                            params.put("code_challenge", "challenge"))
-                        .additionalParameters(params ->
-                            params.put("code_challenge_method", "plain"));
+                    if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
+                        builder.additionalParameters(params -> {
+                            params.put("code_challenge", "challenge");
+                            params.put("code_challenge_method", "plain");
+                        });
+                    }
+                } catch (Exception e) {
+                    log.error("Error customizing authorization request", e);
                 }
             });
 
@@ -145,31 +152,20 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class);
 
         http
-            .oauth2Login((oauth2) -> {
-                log.error("Configuring OAuth2 login");
-                oauth2
-                    .clientRegistrationRepository(
-                        socialClientRegistrationConfig.clientRegistrationRepository())
-                    .userInfoEndpoint(userInfoEndpointConfig -> {
-                        log.error("Configuring userInfoEndpoint");
-                        userInfoEndpointConfig
-                            .userService(customOAuth2UserService)
-                            .oidcUserService(customOidcUserService);
-                    })
-                    .authorizationEndpoint(endPoint -> {
-                        log.error("Configuring authorizationEndpoint");
-                        endPoint
-                            .authorizationRequestResolver(customAuthorizationRequestResolver(
-                                socialClientRegistrationConfig.clientRegistrationRepository()))
-                            .baseUri("/api/oauth2/authorization");
-                    })
-                    .redirectionEndpoint(endPoint -> {
-                        log.error("Configuring redirectionEndpoint");
-                        endPoint.baseUri("/api/login/oauth2/code/*");
-                    })
-                    .successHandler(customOAuth2SuccessHandler)
-                    .failureHandler(customOAuth2FailureHandler);
-            });
+            .oauth2Login((oauth2) -> oauth2
+                .clientRegistrationRepository(
+                    socialClientRegistrationConfig.clientRegistrationRepository())
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                    .userService(customOAuth2UserService)
+                    .oidcUserService(customOidcUserService))
+                .authorizationEndpoint(endPoint -> endPoint
+                    .authorizationRequestResolver(customAuthorizationRequestResolver(
+                        socialClientRegistrationConfig.clientRegistrationRepository()))
+                    .baseUri("/api/oauth2/authorization"))
+                .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
+                .successHandler(customOAuth2SuccessHandler)
+                .failureHandler(customOAuth2FailureHandler)
+            );
 
         http
             .authorizeHttpRequests((auth) -> auth
