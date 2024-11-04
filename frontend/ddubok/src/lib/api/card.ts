@@ -5,16 +5,14 @@ const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 export const sendCard = async (content: string, writerName: string, seasonId: number, image: string | null) => {
 	try {
 		const formData = new FormData();
-
 		formData.append(
 			"req",
 			new Blob(
 				[
 					JSON.stringify({
-						content,
-						writerName,
-						seasonId,
-						memberId: null,
+						content: content,
+						writerName: writerName,
+						seasonId: seasonId,
 					}),
 				],
 				{
@@ -22,6 +20,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 				},
 			),
 		);
+		console.log(formData);
 
 		if (image) {
 			try {
