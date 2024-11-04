@@ -20,6 +20,7 @@ const CardDetail = () => {
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isModalOpen, openModal } = useContext(ModalContext);
+	const shareLink = process.env.NEXT_PUBLIC_SHARE_URL;
 
 	// const { selectedImage, letterContent, cardId, setCardId } = useCardStore();
 	// useEffect(() => {
@@ -50,7 +51,7 @@ const CardDetail = () => {
 
 		const encryptedId = encryptCardId(cardId);
 		const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
-		return `${baseUrl}/card?id=${encryptedId}`;
+		return `${shareLink}/card?id=${encryptedId}`;
 	};
 
 	const handleCopyLink = async () => {

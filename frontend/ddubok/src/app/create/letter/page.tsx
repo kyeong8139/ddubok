@@ -47,7 +47,7 @@ const CreateBack = () => {
 
 			if (response.code === "200") {
 				setCardId(response.data.cardId);
-				router.push(`/cards/complete?type=${type}`);
+				router.push(`/create/complete?type=${type}`);
 			}
 		} catch (error) {
 			console.error("카드 전송 중 오류 발생:", error);
