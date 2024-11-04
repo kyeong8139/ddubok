@@ -73,7 +73,7 @@ const Fortune = () => {
 	};
 
 	useEffect(() => {
-		openModal();
+		if (fortuneDetail.sentence && fortuneDetail.score) openModal();
 	}, [fortuneDetail]);
 
 	return (
