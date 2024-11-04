@@ -25,8 +25,9 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 		console.log(writerName + " " + seasonId + " " + content + " " + image);
 
 		if (image) {
-			console.log("들어오니");
 			try {
+				console.log("try 캐치");
+
 				if (image.startsWith("data:image")) {
 					if (!image.includes("base64,")) {
 						throw new Error("Invalid base64 image format");
@@ -49,6 +50,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 
 					const imageBlob = new Blob([bytes], { type: "image/png" });
 					const imageFile = new File([imageBlob], "card-image.png", { type: "image/png" });
+
 					formData.append("image", imageFile);
 				} else {
 					try {
