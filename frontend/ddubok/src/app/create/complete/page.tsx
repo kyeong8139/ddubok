@@ -6,21 +6,25 @@ import Image from "next/image";
 
 import { saveCard } from "@lib/api/card";
 import { useCardStore } from "@store/card-store";
+import useAuthStore from "@store/auth-store";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 
 import { LinkSimple } from "@phosphor-icons/react";
+import { toast } from "react-hot-toast";
 
 const CardDetail = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
+	const { accessToken } = useAuthStore();
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isModalOpen, openModal } = useContext(ModalContext);
 	const shareLink = process.env.NEXT_PUBLIC_SHARE_URL;
+	const [showLoginModal, setShowLoginModal] = useState(false);
 
 	// const { selectedImage, letterContent, cardId, setCardId } = useCardStore();
 	// useEffect(() => {
@@ -58,10 +62,10 @@ const CardDetail = () => {
 		const shareUrl = getShareUrl();
 		try {
 			await navigator.clipboard.writeText(shareUrl);
-			alert("링크가 복사되었습니다.");
+			toast.success("링크가 복사되었습니다");
 		} catch (error) {
 			console.error("링크 복사 실패:", error);
-			alert("링크 복사에 실패했습니다.");
+			toast.error("링크 복사에 실패했습니다");
 		}
 	};
 
@@ -106,19 +110,24 @@ const CardDetail = () => {
 
 	const handleSaveCard = async () => {
 		if (!cardId) {
-			alert("카드 정보가 없습니다.");
+			toast.error("카드 정보가 없습니다");
 			return;
 		}
 
 		if (isLoading) return;
 
+		if (!accessToken) {
+			setShowLoginModal(true);
+			return;
+		}
+
 		try {
 			setIsLoading(true);
 			await saveCard(cardId);
-			alert("카드가 보관되었습니다.");
+			toast.success("카드가 보관되었습니다.");
 		} catch (error) {
 			console.error("카드 보관 중 오류 발생:", error);
-			alert("카드 보관에 실패했습니다. 다시 시도해주세요.");
+			toast.error("카드 보관에 실패했습니다");
 		} finally {
 			setIsLoading(false);
 		}
@@ -134,6 +143,7 @@ const CardDetail = () => {
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
+			toast.success("이미지 다운에 성공하였습니다.");
 		} else {
 			fetch(cardImage)
 				.then((response) => response.blob())
@@ -146,137 +156,168 @@ const CardDetail = () => {
 					link.click();
 					window.URL.revokeObjectURL(url);
 					document.body.removeChild(link);
+					toast.success("이미지 다운에 성공하였습니다.");
 				})
+
 				.catch((error) => {
 					console.error("이미지 다운로드 중 오류 발생:", error);
-					alert("이미지 다운로드에 실패했습니다.");
+					toast.error("이미지 다운로드에 실패했습니다");
 				});
 		}
 	};
 
 	return (
-		<div className="flex flex-col items-center w-full">
-			<div className="text-white font-nexonBold text-2xl mt-10">{titleText}</div>
-			<div className="mt-8">
-				<Card
-					width={270}
-					height={478}
-					image={cardImage}
-					content={letterContent}
-					effect={0}
-					flip={true}
-				/>
-			</div>
-			<button
-				onClick={handleDownloadImage}
-				className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
-			>
-				이미지 저장
-			</button>
+		<div>
+			<div className="flex flex-col items-center w-full">
+				<div className="text-white font-nexonBold text-2xl mt-10">{titleText}</div>
+				<div className="mt-8">
+					<Card
+						width={270}
+						height={478}
+						image={cardImage}
+						content={letterContent}
+						effect={0}
+						flip={true}
+					/>
+				</div>
+				<button
+					onClick={handleDownloadImage}
+					className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
+				>
+					이미지 저장
+				</button>
 
-			<div className="mt-10 flex flex-row gap-4 w-full justify-center">
-				{type === "normal" ? (
-					<>
-						<Button
-							text="행운카드<br/>보관하기"
-							color="purple"
-							size="short"
-							font="both"
-							shadow="purple"
-							onClick={handleSaveCard}
-							disabled={isLoading}
-						/>
-						<Button
-							text="행운카드<br/>공유하기"
-							color="green"
-							size="short"
-							font="both"
-							shadow="green"
-							onClick={() => openModal()}
-						/>
-					</>
-				) : (
-					type === "require" && (
+				<div className="mt-10 flex flex-row gap-4 w-full justify-center">
+					{type === "normal" ? (
 						<>
 							<Button
-								text="홈으로"
-								color="gradient"
-								size="long"
-								font="regular"
-								shadow="gradient"
-								onClick={() => router.push("/")}
+								text="행운카드<br/>보관하기"
+								color="purple"
+								size="short"
+								font="both"
+								shadow="purple"
+								onClick={handleSaveCard}
+								disabled={isLoading}
+							/>
+							<Button
+								text="행운카드<br/>공유하기"
+								color="green"
+								size="short"
+								font="both"
+								shadow="green"
+								onClick={() => openModal()}
 							/>
 						</>
-					)
+					) : (
+						type === "require" && (
+							<>
+								<Button
+									text="홈으로"
+									color="gradient"
+									size="long"
+									font="regular"
+									shadow="gradient"
+									onClick={() => router.push("/")}
+								/>
+							</>
+						)
+					)}
+				</div>
+				{isModalOpen && (
+					<Modal>
+						<div className="flex flex-col items-center max-w-[360px] w-full">
+							<div className="w-full">
+								<h2 className="text-2xl font-nexonBold text-black">공유</h2>
+							</div>
+							<div className="flex gap-4 sm:gap-8 mt-6">
+								<button
+									onClick={handleShareKakao}
+									className="flex flex-col items-center"
+								>
+									<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
+										<Image
+											src="/assets/kakao-circle.png"
+											alt="Kakao"
+											fill
+											className="rounded-full"
+										/>
+									</div>
+									<span className="text-black font-nexonLight text-sm sm:text-base">카카오톡</span>
+								</button>
+								<button
+									onClick={handleShareFacebook}
+									className="flex flex-col items-center"
+								>
+									<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
+										<Image
+											src="/assets/facebook-circle.png"
+											alt="Facebook"
+											fill
+											className="rounded-full"
+										/>
+									</div>
+									<span className="text-black font-nexonLight text-sm sm:text-base">페이스북</span>
+								</button>
+								<button
+									onClick={handleShareX}
+									className="flex flex-col items-center"
+								>
+									<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
+										<Image
+											src="/assets/x-circle.png"
+											alt="X"
+											fill
+											className="rounded-full"
+										/>
+									</div>
+									<span className="text-black font-nexonLight text-sm sm:text-base">X</span>
+								</button>
+							</div>
+							<div className="w-full mb-4 flex items-center gap-2 mt-6 justify-center ">
+								<div className="w-full max-w-[240px] sm:max-w-[300px] bg-gray-100 p-3 rounded-lg text-gray-600 font-nexonLight h-[50px] flex items-center overflow-hidden">
+									<div className="truncate w-full text-sm sm:text-base">{getShareUrl()}</div>
+								</div>
+								<button
+									onClick={handleCopyLink}
+									className="whitespace-nowrap px-3 h-[50px] w-[50px] bg-gray-300 text-white rounded-lg font-nexonRegular hover:bg-gray-400 transition-colors flex items-center justify-center flex-shrink-0"
+								>
+									<LinkSimple
+										size={16}
+										color="#black"
+									/>
+								</button>
+							</div>
+						</div>
+					</Modal>
+				)}
+
+				{showLoginModal && (
+					<Modal>
+						<h3 className="text-lg font-nexonBold mb-4">로그인이 필요한 기능입니다</h3>
+						<p className="text-gray-600 mb-6 font-nexonRegular">모든 작업내용은 유지됩니다.</p>
+						<div className="flex justify-end gap-2">
+							<Button
+								text="취소"
+								color="gray"
+								size="small"
+								font="regular"
+								shadow="gray"
+								onClick={() => {
+									setShowLoginModal(false);
+								}}
+							/>
+							<Button
+								text="로그인"
+								color="green"
+								size="small"
+								font="regular"
+								shadow="green"
+								onClick={() => router.push("/login")}
+							/>
+						</div>
+					</Modal>
 				)}
 			</div>
-			{isModalOpen && (
-				<Modal>
-					<div className="flex flex-col items-center">
-						<div className="w-full ">
-							<h2 className="text-2xl font-nexonBold text-black">공유</h2>
-						</div>
-						<div className="flex gap-8 mt-6">
-							<button
-								onClick={handleShareKakao}
-								className="flex flex-col items-center"
-							>
-								<div className="w-12 h-12 relative mb-2">
-									<Image
-										src="/assets/kakao-circle.png"
-										alt="Kakao"
-										fill
-										className="rounded-full"
-									/>
-								</div>
-								<span className="text-black font-nexonLight">카카오톡</span>
-							</button>
-							<button
-								onClick={handleShareFacebook}
-								className="flex flex-col items-center"
-							>
-								<div className="w-12 h-12 relative mb-2">
-									<Image
-										src="/assets/facebook-circle.png"
-										alt="Facebook"
-										fill
-										className="rounded-full"
-									/>
-								</div>
-								<span className="text-black font-nexonLight">페이스북</span>
-							</button>
-							<button
-								onClick={handleShareX}
-								className="flex flex-col items-center"
-							>
-								<div className="w-12 h-12 relative mb-2">
-									<Image
-										src="/assets/x-circle.png"
-										alt="X (Twitter)"
-										fill
-										className="rounded-full"
-									/>
-								</div>
-								<span className="text-black font-nexonLight">X</span>
-							</button>
-						</div>
-						<div className="w-full mb-4 flex items-center gap-2 mt-6 justify-center">
-							<div className="flex-1 bg-gray-100 p-3 rounded-lg text-gray-600 font-nexonLight h-[56px] flex items-center overflow-hidden">
-								<div className="truncate w-full">{getShareUrl()}</div>
-							</div>
-							<button
-								onClick={handleCopyLink}
-								className="whitespace-nowrap px-3 h-[56px] bg-gray-300 text-white rounded-lg font-nexonRegular hover:bg-gray-400 transition-colors flex items-center justify-center"
-							>
-								<LinkSimple
-									size={16}
-									color="#black"
-								/>
-							</button>
-						</div>
-					</div>
-				</Modal>
-			)}
 		</div>
 	);
 };
