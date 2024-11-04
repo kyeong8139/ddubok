@@ -14,11 +14,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -56,6 +63,41 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(
+        ClientRegistrationRepository clientRegistrationRepository) {
+
+        DefaultOAuth2AuthorizationRequestResolver resolver =
+            new DefaultOAuth2AuthorizationRequestResolver(
+                clientRegistrationRepository,
+                "/api/oauth2/authorization"
+            );
+
+        resolver.setAuthorizationRequestCustomizer(
+            authorizationRequestBuilder -> {
+                try {
+                    OAuth2AuthorizationRequest.Builder builder =
+                        (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
+
+                    Map<String, Object> attributes = builder.build().getAttributes();
+                    Object registrationIdObj = attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
+
+                    if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
+                        String codeVerifier = "challenge";
+                        builder.additionalParameters(params -> {
+                            params.put("code_challenge", codeVerifier);
+                            params.put("code_challenge_method", "plain");
+                            params.put("code_verifier", codeVerifier);
+                        });
+                    }
+                } catch (Exception e) {
+                    log.error("Error customizing authorization request", e);
+                }
+            });
+
+        return resolver;
     }
 
     /**
@@ -103,7 +145,10 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
-                .authorizationEndpoint(endPoint -> endPoint.baseUri("/api/oauth2/authorization"))
+                .authorizationEndpoint(endPoint -> endPoint
+                    .authorizationRequestResolver(customAuthorizationRequestResolver(
+                        socialClientRegistrationConfig.clientRegistrationRepository()))
+                    .baseUri("/api/oauth2/authorization"))
                 .redirectionEndpoint(endPoint -> endPoint.baseUri("/api/login/oauth2/code/*"))
                 .successHandler(customOAuth2SuccessHandler)
                 .failureHandler(customOAuth2FailureHandler)
