@@ -31,7 +31,7 @@ const Fortune = () => {
 		};
 
 		loadFortuneList();
-	});
+	}, []);
 
 	useEffect(() => {
 		const maxWidth = 480;
