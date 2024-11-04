@@ -60,7 +60,7 @@ public class SocialClientRegistration {
             .clientSecret(xSecret)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("https://ddubok.com/api/login/oauth2/code/x")
-            .scope("tweet.read", "users.read")
+            .scope("tweet.read", "users.read", "offline.access")
             .authorizationUri("https://twitter.com/i/oauth2/authorize")
             .tokenUri("https://api.twitter.com/2/oauth2/token")
             .userInfoUri("https://api.twitter.com/2/users/me")
