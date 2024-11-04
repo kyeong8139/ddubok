@@ -67,14 +67,14 @@ const Fortune = () => {
 			});
 			setFortuneList(response.data.data.attendanceHistory.attendanceList);
 			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
+
+			setTimeout(() => {
+				openModal();
+			}, 0);
 		} catch (error) {
 			console.error(error);
 		}
 	};
-
-	useEffect(() => {
-		if (fortuneDetail.sentence && fortuneDetail.score) openModal();
-	}, [fortuneDetail]);
 
 	return (
 		<div id="fortune">
