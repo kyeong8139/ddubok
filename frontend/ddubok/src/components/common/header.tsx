@@ -34,6 +34,7 @@ const Header = () => {
 			case "/book":
 			case "/fortune":
 			case "/mypage":
+			case "/report":
 				return (
 					<div className="flex justify-between items-center h-full">
 						<CaretLeft

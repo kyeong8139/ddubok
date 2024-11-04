@@ -8,8 +8,16 @@ export interface ICardProps {
 }
 
 export interface IDetailCardProps {
+	cardId: number;
 	writer: string;
 	image: string;
 	content: string;
 	effect: number;
+}
+
+export interface IReportProps {
+	cardId: number;
+	title: string;
+	reportType: string;
+	content: string;
 }
