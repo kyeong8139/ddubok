@@ -17,13 +17,12 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
         String registrationId = extractRegistrationId(request.getRequestURI());
 
-        // X 로그인인 경우에만 처리
         if ("x".equals(registrationId)) {
             return (OAuth2AuthorizationRequest) request.getSession()
                 .getAttribute("oauth2_auth_request");
         }
 
-        return null;  // 다른 OAuth2 로그인은 기본 동작 사용
+        return null;
     }
 
     @Override
@@ -32,7 +31,6 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
         if (authorizationRequest != null) {
             String registrationId = extractRegistrationId(request.getRequestURI());
 
-            // X 로그인인 경우에만 처리
             if ("x".equals(registrationId)) {
                 request.getSession().setAttribute("oauth2_auth_request", authorizationRequest);
                 request.getSession().setAttribute("code_verifier", CODE_VERIFIER);
@@ -45,7 +43,6 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
         HttpServletResponse response) {
         String registrationId = extractRegistrationId(request.getRequestURI());
 
-        // X 로그인인 경우에만 처리
         if ("x".equals(registrationId)) {
             OAuth2AuthorizationRequest authorizationRequest = loadAuthorizationRequest(request);
             if (authorizationRequest != null) {
@@ -55,11 +52,12 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
             return authorizationRequest;
         }
 
-        return null;  // 다른 OAuth2 로그인은 기본 동작 사용
+        OAuth2AuthorizationRequest authorizationRequest = (OAuth2AuthorizationRequest) request.getSession().getAttribute("oauth2_auth_request");
+        request.getSession().removeAttribute("oauth2_auth_request");
+        return authorizationRequest;
     }
 
     private String extractRegistrationId(String uri) {
-        // "/oauth2/authorization/{registrationId}" 형식에서 registrationId 추출
         if (uri != null && uri.contains("/oauth2/authorization/")) {
             return uri.substring(uri.lastIndexOf("/") + 1);
         }
