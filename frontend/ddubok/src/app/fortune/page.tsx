@@ -17,7 +17,6 @@ const Fortune = () => {
 	const [fortuneList, setFortuneList] = useState([]);
 	const [fortuneCount, setFortuneCount] = useState(0);
 	const [fortuneDetail, setFortuneDetail] = useState<IFortuneProps>({ sentence: "", score: 0 });
-	const [isFortuneReady, setIsFortuneReady] = useState(false);
 
 	useEffect(() => {
 		const loadFortuneList = async () => {
@@ -68,21 +67,20 @@ const Fortune = () => {
 			});
 			setFortuneList(response.data.data.attendanceHistory.attendanceList);
 			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
-
-			setIsFortuneReady(true);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	useEffect(() => {
-		if (isFortuneReady) {
+		console.log(fortuneDetail.sentence);
+		console.log(fortuneDetail.score);
+		if (fortuneDetail.sentence && fortuneDetail.score) {
 			console.log(fortuneDetail.sentence);
 			console.log(fortuneDetail.score);
 			openModal();
-			setIsFortuneReady(false);
 		}
-	}, [isFortuneReady]);
+	}, [fortuneDetail]);
 
 	return (
 		<div id="fortune">
