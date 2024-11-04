@@ -4,7 +4,6 @@ export interface IMiniCardProps {
 }
 
 export interface IFortuneProps {
-	date: string;
 	sentence: string;
 	score: number;
 }
