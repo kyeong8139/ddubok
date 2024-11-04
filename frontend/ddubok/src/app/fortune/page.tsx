@@ -77,6 +77,8 @@ const Fortune = () => {
 
 	useEffect(() => {
 		if (isFortuneReady) {
+			console.log(fortuneDetail.sentence);
+			console.log(fortuneDetail.score);
 			openModal();
 			setIsFortuneReady(false);
 		}
