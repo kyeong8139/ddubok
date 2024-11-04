@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import LoginButton from "@components/button/loginButton";
-import { facebookLogin, googleLogin, kakaoLogin, naverLogin } from "@lib/api/login-api";
+import { xLogin, googleLogin, kakaoLogin, naverLogin } from "@lib/api/login-api";
 
 import { Clover } from "@phosphor-icons/react";
 
@@ -55,12 +55,12 @@ const Login = () => {
 						onClick={googleLogin}
 					/>
 					<LoginButton
-						image="/assets/facebook.png"
-						color="facebook"
-						shadow="facebook"
-						width={24}
-						height={24}
-						onClick={facebookLogin}
+						image="/assets/x-circle.png"
+						color="x"
+						shadow="x"
+						width={40}
+						height={40}
+						onClick={xLogin}
 					/>
 				</div>
 				<Link

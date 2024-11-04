@@ -40,8 +40,8 @@ export const googleLogin = () => {
 	window.location.href = `${loginURL}/google`;
 };
 
-export const facebookLogin = () => {
-	window.location.href = `${loginURL}/facebook`;
+export const xLogin = () => {
+	window.location.href = `${loginURL}/x`;
 };
 
 // 로그아웃
