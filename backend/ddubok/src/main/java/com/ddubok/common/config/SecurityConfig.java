@@ -3,7 +3,6 @@ package com.ddubok.common.config;
 import com.ddubok.common.auth.handler.CustomLogoutSuccessHandler;
 import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
-import com.ddubok.common.auth.oauth.CustomAuthorizationRequestRepository;
 import com.ddubok.common.auth.oauth.CustomOAuth2FailureHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
@@ -48,7 +47,6 @@ public class SecurityConfig {
     private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
-    private final CustomAuthorizationRequestRepository customAuthorizationRequestRepository;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -147,7 +145,6 @@ public class SecurityConfig {
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
                 .authorizationEndpoint(endPoint -> endPoint
-                    .authorizationRequestRepository(customAuthorizationRequestRepository)
                     .authorizationRequestResolver(customAuthorizationRequestResolver(
                         socialClientRegistrationConfig.clientRegistrationRepository()))
                     .baseUri("/api/oauth2/authorization"))
