@@ -45,7 +45,7 @@ public class CardController {
     @PostMapping
     public BaseResponse<?> createCard(
         @RequestPart(name = "image", required = false) MultipartFile image,
-        @RequestPart(name="req") CreateCardReq req) {
+        @RequestPart(name = "req") CreateCardReq req) {
         Long cardId = cardService.createCard(
             CreateCardReqDto.builder().content(req.getContent()).seasonId(req.getSeasonId())
                 .path(uploadCardImg(image, req.getSeasonId())).isCustom(true)
@@ -69,22 +69,14 @@ public class CardController {
 
     @GetMapping
     public BaseResponse<?> getAllCardList(
-        @RequestParam(value = "lastCardId", required = false) Long lastCardId,
-        @RequestParam(value = "size", defaultValue = "4") int size
+        @RequestParam(value = "page") int page,
+        @RequestParam(value = "size") int size
     ) {
-        List<GetCardDetailRes> list = getCardService.getAllCardList(
-            GetAllCardListReq.builder().memberId(authUtil.getMemberId()).lastCardId(lastCardId)
-                .size(size).build());
-        if (list.size() == 0) {
-            return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
-        }
-        boolean hasNext = false;
-        if (list.size() > size) {
-            list.remove(size);
-            hasNext = true;
-        }
-        return BaseResponse.ofSuccess(
-            GetCardListRes.builder().hasNext(hasNext).cards(list).build());
+        GetCardListRes res = getCardService.getAllCardList(
+            GetAllCardListReq.builder().memberId(authUtil.getMemberId())
+                .page(page).size(size)
+                .build());
+        return BaseResponse.ofSuccess(res);
     }
 
     @GetMapping("/{cardId}")
@@ -95,22 +87,13 @@ public class CardController {
 
     @GetMapping("/albums/{seasonId}")
     public BaseResponse<?> getCardListBySeason(@PathVariable Long seasonId,
-        @RequestParam(value = "lastCardId", required = false) Long lastCardId,
-        @RequestParam(value = "size", defaultValue = "4") int size) {
-        List<GetCardDetailRes> list = getCardService.getCardListBySeason(
+        @RequestParam(value = "page") int page,
+        @RequestParam(value = "size") int size) {
+        GetCardListRes res = getCardService.getCardListBySeason(
             GetCardListBySeasonReq.builder().seasonId(seasonId).memberId(authUtil.getMemberId())
-                .lastCardId(lastCardId).size(size)
+                .page(page).size(size)
                 .build());
-        if (list.size() == 0) {
-            return BaseResponse.ofSuccess(ResponseCode.NO_ALBUM);
-        }
-        boolean hasNext = false;
-        if (list.size() > size) {
-            list.remove(size);
-            hasNext = true;
-        }
-        return BaseResponse.ofSuccess(
-            GetCardListRes.builder().hasNext(hasNext).cards(list).build());
+        return BaseResponse.ofSuccess(res);
     }
 
     @GetMapping("/{memberId}/preview")

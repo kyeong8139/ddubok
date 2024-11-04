@@ -5,6 +5,7 @@ import com.ddubok.api.card.dto.request.GetCardDetailReq;
 import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.response.CardPreviewRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
+import com.ddubok.api.card.dto.response.GetCardListRes;
 import java.util.List;
 
 public interface GetCardService {
@@ -23,7 +24,7 @@ public interface GetCardService {
      * @param req 시즌별 카드를 조회하기 위한 정보
      * @return 시즌별로 조회된 카드의 정보를 반환한다.
      */
-    List<GetCardDetailRes> getCardListBySeason(GetCardListBySeasonReq req);
+    GetCardListRes getCardListBySeason(GetCardListBySeasonReq req);
 
     /**
      * <p>
@@ -34,7 +35,7 @@ public interface GetCardService {
      * @param req 보유한 카드를 조회하기 위한 정보
      * @return 보유한 모든 카드들을 반환한다.
      */
-    List<GetCardDetailRes> getAllCardList(GetAllCardListReq req);
+    GetCardListRes getAllCardList(GetAllCardListReq req);
 
     /**
      * 사용자가 보유한 카드 정보와 사용자 정보를 미리보기 형태로 조회한다.
