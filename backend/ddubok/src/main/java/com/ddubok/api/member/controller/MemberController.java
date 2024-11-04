@@ -6,7 +6,9 @@ import com.ddubok.api.member.service.MemberService;
 import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.template.response.BaseResponse;
 import com.ddubok.common.template.response.ResponseCode;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,10 +39,9 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteMember() {
+    public BaseResponse<?> deleteMember(Authentication authentication, HttpServletResponse response) {
         Long memberId = authUtil.getMemberId();
-        deleteMemberService.deleteMember(memberId);
+        deleteMemberService.deleteMember(memberId, authentication, response);
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
-
 }

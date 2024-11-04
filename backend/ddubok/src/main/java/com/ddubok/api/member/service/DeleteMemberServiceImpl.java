@@ -7,6 +7,8 @@ import com.ddubok.common.auth.exception.InvalidDeleteMemberException;
 import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
 import com.ddubok.common.auth.exception.SoicalAccessTokenNotFoundExcpetion;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -35,34 +39,45 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberRepository memberRepository;
+    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
     private final RedisTemplate<String, String> redisTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteMember(Long memberId) {
+    public void deleteMember(Long memberId, Authentication authentication, HttpServletResponse httpResponse) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException());
         String socialProvider = member.getSocialProvider().toLowerCase();
         try {
             ResponseEntity<?> response = sendUnlinkRequestByProvider(socialProvider,
-                member.getId());
+                member.getId(), authentication);
 
             if (response == null) {
                 throw new InvalidDeleteMemberException("연동 해제 중 오류가 발생했습니다.");
             }
 
             member.deleteMember();
+            httpResponse.addCookie(createCookie());
         } catch (Exception e) {
             throw new InvalidDeleteMemberException("연동 해제 중 오류가 발생했습니다.");
         }
     }
 
+    private Cookie createCookie() {
+        Cookie refreshCookie = new Cookie("refresh", null);
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setPath("/");
+        refreshCookie.setSecure(true);
+        refreshCookie.setHttpOnly(true);
+        return refreshCookie;
+    }
+
     private ResponseEntity<Object> sendUnlinkRequestByProvider(String socialProvider,
-        Long memberId) {
+        Long memberId, Authentication authentication) {
 
         String token = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (token == null) {
@@ -79,7 +94,7 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
                 case "kakao" -> unlinkKakao(socialAccessToken);
                 case "naver" -> unlinkNaver(socialAccessToken);
                 case "google" -> unlinkGoogle(socialAccessToken);
-                case "meta" -> unlinkMeta(socialAccessToken);
+                case "x" -> unlinkX(authentication);
                 default -> null;
             };
         } catch (RestClientException e) {
@@ -126,12 +141,9 @@ public class DeleteMemberServiceImpl implements DeleteMemberService {
         return restTemplate.exchange(googleUrl, HttpMethod.POST, entity, Object.class);
     }
 
-    private ResponseEntity<Object> unlinkMeta(String socialAccessToken) {
-        String metaUrl = String.format(
-            "https://graph.facebook.com/v19.0/me/permissions?access_token=%s",
-            socialAccessToken
-        );
-        return restTemplate.exchange(metaUrl, HttpMethod.DELETE, null, Object.class);
+    private ResponseEntity<Object> unlinkX(Authentication authentication) {
+        authorizedClientService.removeAuthorizedClient("x", authentication.getName());
+        return ResponseEntity.ok().build();
     }
 
 }
