@@ -2,10 +2,11 @@ import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Card from "@components/card/card";
+import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IDetailCardProps } from "@interface/components/card";
+
 import { Siren } from "@phosphor-icons/react";
-import Button from "@components/button/button";
 
 const DetailCard = ({ cardId, writer, image, content, effect }: IDetailCardProps) => {
 	const router = useRouter();
