@@ -55,14 +55,16 @@ const Mypage = () => {
 
 	const handleNicknameEdit = () => {
 		setIsEditing(true);
+		if (user?.nickname) {
+			setNewNickname(user.nickname);
+		}
 	};
 
 	const modifyNickname = async () => {
 		try {
-			await updateUser();
+			await updateUser(newNickname);
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
 			setIsEditing(false);
-			console.log("닉네임 수정하기");
 		} catch (error) {
 			console.error(error);
 		}
@@ -80,7 +82,6 @@ const Mypage = () => {
 
 	const removeUser = async () => {
 		try {
-			await logout();
 			await deleteUser();
 			clearAccessToken();
 			route.push("/");
