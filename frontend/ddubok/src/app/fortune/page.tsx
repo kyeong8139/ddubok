@@ -1,18 +1,37 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ModalContext } from "@context/modal-context";
 import MiniCard from "@components/card/miniCard";
 import Button from "@components/button/button";
 import FortuneCard from "@components/card/fortuneCard";
 import { checkAttendance, currentMonth, daysInMonth } from "@lib/utils/dateUtils";
+import { insertFortune, selectFortuneList } from "@lib/api/fortune-api";
+import { IFortuneProps } from "@interface/components/fortune";
 
 const Fortune = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
-	const attendanceList = ["2024-10-23", "2024-10-29"]; // 임시 데이터
 	const [itemsCount, setItemsCount] = useState(0);
 	const [emptyCount, setEmptyCount] = useState(0);
+	const [fortuneList, setFortuneList] = useState([]);
+	const [fortuneCount, setFortuneCount] = useState(0);
+	const [fortuneDetail, setFortuneDetail] = useState<IFortuneProps>({ sentence: "", score: 0 });
+
+	useEffect(() => {
+		const loadFortuneList = async () => {
+			try {
+				const response = await selectFortuneList();
+				console.log(response.data.data);
+				setFortuneList(response.data.data.attendanceList);
+				setFortuneCount(response.data.data.attendanceCount);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		loadFortuneList();
+	});
 
 	useEffect(() => {
 		const maxWidth = 480;
@@ -38,6 +57,21 @@ const Fortune = () => {
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
 
+	const createFortune = async () => {
+		try {
+			const response = await insertFortune();
+			console.log(response.data.data);
+			setFortuneDetail({
+				sentence: response.data.data.sentence,
+				score: response.data.data.score,
+			});
+			setFortuneList(response.data.data.attendanceHistory.attendanceList);
+			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<div id="fortune">
 			<div className="py-6">
@@ -51,14 +85,14 @@ const Fortune = () => {
 							<strong>{currentMonth}월</strong> 의 출석일
 						</span>
 						<span>
-							<strong>{attendanceList.length}</strong> 일
+							<strong>{fortuneCount}</strong> 일
 						</span>
 					</div>
 				</div>
 				<div className="flex flex-wrap justify-between gap-x-[6px] gap-y-4 w-[calc(100%-64px)] mx-auto">
 					{Array.from({ length: daysInMonth }, (_, index) => {
 						const day = index + 1;
-						const isAttend = checkAttendance(day, attendanceList);
+						const isAttend = checkAttendance(day, fortuneList);
 
 						return (
 							<MiniCard
@@ -83,7 +117,10 @@ const Fortune = () => {
 						size="long"
 						font="bold"
 						shadow="gradient"
-						onClick={openModal}
+						onClick={() => {
+							createFortune();
+							openModal();
+						}}
 					/>
 				</div>
 			</div>
@@ -92,9 +129,8 @@ const Fortune = () => {
 					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
 			>
 				<FortuneCard
-					date="2024-10-29"
-					sentence="긍정적인 자세로 난관을 극복할 수 있어요"
-					score={87}
+					sentence={fortuneDetail.sentence}
+					score={fortuneDetail.score}
 				/>
 			</div>
 		</div>
