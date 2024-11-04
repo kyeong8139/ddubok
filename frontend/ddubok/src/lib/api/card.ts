@@ -6,18 +6,13 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 	try {
 		const formData = new FormData();
 
-		const cardReq = {
-			content,
-			writerName,
-			seasonId,
-			memberId: null,
-		};
-
-		// req part 추가
 		formData.append(
 			"req",
-			new Blob([JSON.stringify(cardReq)], {
-				type: "application/json",
+			JSON.stringify({
+				content,
+				writerName,
+				seasonId,
+				memberId: null,
 			}),
 		);
 
@@ -64,7 +59,6 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 			}
 		}
 
-		// FormData 내용 확인 (개발 환경에서만)
 		if (process.env.NODE_ENV === "development") {
 			Array.from(formData.entries()).forEach(([key, value]) => {
 				console.log("FormData:", key, value);
@@ -95,7 +89,6 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 		throw error;
 	}
 };
-
 export const saveCard = async (cardId: number) => {
 	try {
 		const response = await axiosInstance.post("/cards/save", {
