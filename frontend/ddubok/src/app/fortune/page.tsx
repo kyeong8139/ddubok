@@ -72,6 +72,10 @@ const Fortune = () => {
 		}
 	};
 
+	useEffect(() => {
+		if (fortuneDetail.sentence && fortuneDetail.score) openModal();
+	}, [fortuneDetail]);
+
 	return (
 		<div id="fortune">
 			<div className="py-6">
@@ -117,10 +121,7 @@ const Fortune = () => {
 						size="long"
 						font="bold"
 						shadow="gradient"
-						onClick={() => {
-							createFortune();
-							openModal();
-						}}
+						onClick={createFortune}
 					/>
 				</div>
 			</div>
