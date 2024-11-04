@@ -28,20 +28,6 @@ const Header = () => {
 						<Hamburger />
 					</div>
 				);
-			case "/create":
-			case "/share":
-				return (
-					<div className="flex justify-center items-center h-full">
-						<Link href="/">
-							<Image
-								src="/assets/ddubok.png"
-								alt="ddubok"
-								width={72}
-								height={72}
-							/>
-						</Link>
-					</div>
-				);
 			case "/admin/user":
 			case "/admin/report":
 			case "/admin/setting":
@@ -69,7 +55,18 @@ const Header = () => {
 					</div>
 				);
 			default:
-				return null;
+				return (
+					<div className="flex justify-center items-center h-full">
+						<Link href="/">
+							<Image
+								src="/assets/ddubok.png"
+								alt="ddubok"
+								width={72}
+								height={72}
+							/>
+						</Link>
+					</div>
+				);
 		}
 	};
 
