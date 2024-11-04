@@ -9,6 +9,8 @@ public class GetCardListBySeasonReq {
 
     private Long seasonId;
     private Long memberId;
-    private Integer size;
-    private Long lastCardId;
+    @Builder.Default
+    private int size = 6;
+    @Builder.Default
+    private int page = 0;
 }
