@@ -86,11 +86,13 @@ public class SecurityConfig {
 
                     if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
                         String codeVerifier = "challenge";
-                        builder.additionalParameters(params -> {
-                            params.put("code_challenge", codeVerifier);
-                            params.put("code_challenge_method", "plain");
-                            params.put("code_verifier", codeVerifier);
-                        });
+                        // 모든 파라미터를 한 번에 Map으로 설정
+                        Map<String, Object> additionalParams = Map.of(
+                            "code_challenge", codeVerifier,
+                            "code_challenge_method", "plain",
+                            "code_verifier", codeVerifier
+                        );
+                        builder.additionalParameters(params -> params.putAll(additionalParams));
                     }
                 } catch (Exception e) {
                     log.error("Error customizing authorization request", e);
