@@ -39,6 +39,8 @@ const CreateBack = () => {
 			return;
 		}
 
+		console.log("Selected Image:", selectedImage);
+
 		try {
 			setIsLoading(true);
 			const response = (await sendCard(letterContent, userName, 1, selectedImage)) as SendCardResponse;
