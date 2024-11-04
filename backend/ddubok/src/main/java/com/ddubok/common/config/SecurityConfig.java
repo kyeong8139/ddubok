@@ -14,18 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -63,41 +56,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver(
-        ClientRegistrationRepository clientRegistrationRepository) {
-
-        DefaultOAuth2AuthorizationRequestResolver resolver =
-            new DefaultOAuth2AuthorizationRequestResolver(
-                clientRegistrationRepository,
-                "/api/oauth2/authorization"
-            );
-
-        resolver.setAuthorizationRequestCustomizer(
-            authorizationRequestBuilder -> {
-                try {
-                    OAuth2AuthorizationRequest.Builder builder =
-                        (OAuth2AuthorizationRequest.Builder) authorizationRequestBuilder;
-
-                    // 직접 attributes에서 registrationId를 가져오는 대신
-                    // 다른 방법으로 provider 확인
-                    Map<String, Object> attributes = builder.build().getAttributes();
-                    Object registrationIdObj = attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
-
-                    if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
-                        builder.additionalParameters(params -> {
-                            params.put("code_challenge", "challenge");
-                            params.put("code_challenge_method", "plain");
-                        });
-                    }
-                } catch (Exception e) {
-                    log.error("Error customizing authorization request", e);
-                }
-            });
-
-        return resolver;
     }
 
     /**
