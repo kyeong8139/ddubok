@@ -39,9 +39,9 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public BaseResponse<?> deleteMember(Authentication authentication, HttpServletResponse response) {
+    public BaseResponse<?> deleteMember(HttpServletResponse response) {
         Long memberId = authUtil.getMemberId();
-        deleteMemberService.deleteMember(memberId, authentication, response);
+        deleteMemberService.deleteMember(memberId, response);
         return BaseResponse.ofSuccess(ResponseCode.DELETED);
     }
 }
