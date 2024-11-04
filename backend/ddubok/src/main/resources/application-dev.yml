@@ -28,6 +28,7 @@ spring:
     x-secret: ${X_SECRET}
     google-id: ${GOOGLE_ID}
     google-secret: ${GOOGLE_SECRET}
+    base-url: ${BASE_URL}
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${ACCESS_EXPIRATION}
