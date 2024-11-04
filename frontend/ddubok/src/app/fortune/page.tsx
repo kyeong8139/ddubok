@@ -67,6 +67,8 @@ const Fortune = () => {
 			});
 			setFortuneList(response.data.data.attendanceHistory.attendanceList);
 			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
+
+			openModal();
 		} catch (error) {
 			console.error(error);
 		}
@@ -117,10 +119,7 @@ const Fortune = () => {
 						size="long"
 						font="bold"
 						shadow="gradient"
-						onClick={() => {
-							createFortune();
-							openModal();
-						}}
+						onClick={createFortune}
 					/>
 				</div>
 			</div>
