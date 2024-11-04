@@ -2,6 +2,7 @@ package com.ddubok.common.auth.dto;
 
 import com.ddubok.api.member.entity.SocialProvider;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.OAuth2Error;
  * X OAuth2 응답 속성:
  * - id: X 사용자 고유 ID
  */
+@Slf4j
 public class XResponse implements OAuth2Response {
 
     private final Map<String, Object> attributes;
@@ -22,6 +24,7 @@ public class XResponse implements OAuth2Response {
      * @param attributes X에서 제공하는 사용자 속성 Map
      */
     public XResponse(Map<String, Object> attributes) {
+        log.info("X OAuth2 Response Attributes: {}", attributes);
         this.attributes = attributes;
     }
 
