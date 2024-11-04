@@ -8,12 +8,19 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 
 		formData.append(
 			"req",
-			JSON.stringify({
-				content,
-				writerName,
-				seasonId,
-				memberId: null,
-			}),
+			new Blob(
+				[
+					JSON.stringify({
+						content,
+						writerName,
+						seasonId,
+						memberId: null,
+					}),
+				],
+				{
+					type: "application/json",
+				},
+			),
 		);
 
 		if (image) {
@@ -89,6 +96,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 		throw error;
 	}
 };
+
 export const saveCard = async (cardId: number) => {
 	try {
 		const response = await axiosInstance.post("/cards/save", {
