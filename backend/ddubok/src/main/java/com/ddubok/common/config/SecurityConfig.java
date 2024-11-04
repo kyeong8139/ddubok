@@ -3,6 +3,7 @@ package com.ddubok.common.config;
 import com.ddubok.common.auth.handler.CustomLogoutSuccessHandler;
 import com.ddubok.common.auth.jwt.JwtAuthenticationFilter;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
+import com.ddubok.common.auth.oauth.CustomAuthorizationRequestRepository;
 import com.ddubok.common.auth.oauth.CustomOAuth2FailureHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2SuccessHandler;
 import com.ddubok.common.auth.oauth.CustomOAuth2UserService;
@@ -14,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -49,6 +48,7 @@ public class SecurityConfig {
     private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final SocialClientRegistrationConfig socialClientRegistrationConfig;
+    private final CustomAuthorizationRequestRepository customAuthorizationRequestRepository;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -86,7 +86,6 @@ public class SecurityConfig {
 
                     if (registrationIdObj != null && "x".equals(registrationIdObj.toString())) {
                         String codeVerifier = "challenge";
-                        // 모든 파라미터를 한 번에 Map으로 설정
                         Map<String, Object> additionalParams = Map.of(
                             "code_challenge", codeVerifier,
                             "code_challenge_method", "plain",
@@ -148,6 +147,7 @@ public class SecurityConfig {
                     .userService(customOAuth2UserService)
                     .oidcUserService(customOidcUserService))
                 .authorizationEndpoint(endPoint -> endPoint
+                    .authorizationRequestRepository(customAuthorizationRequestRepository)
                     .authorizationRequestResolver(customAuthorizationRequestResolver(
                         socialClientRegistrationConfig.clientRegistrationRepository()))
                     .baseUri("/api/oauth2/authorization"))
