@@ -1,5 +1,8 @@
 import axiosInstance from "@lib/api/axiosInstance";
 
+import axios from "axios";
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const sendCard = async (content: string, writerName: string, seasonId: number, image: string | null) => {
 	try {
 		const formData = new FormData();
@@ -50,7 +53,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 			}
 		}
 
-		const response = await axiosInstance.post("/cards", formData, {
+		const response = await axios.post(`${baseURL}/cards`, formData, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
