@@ -23,20 +23,7 @@ type BackgroundImageItem = {
 
 type BackgroundItem = BackgroundUploadItem | BackgroundWhiteItem | BackgroundImageItem;
 
-const backgroundImages = [
-	"/assets/background/bg_1.png",
-	"/assets/background/bg_2.png",
-	"/assets/background/bg_3.jpg",
-	"/assets/background/bg_4.jpg",
-	"/assets/background/bg_5.png",
-	"/assets/background/bg_6.png",
-	"/assets/background/bg_7.jpg",
-	"/assets/background/bg_8.jpg",
-	"/assets/background/bg_9.png",
-	"/assets/background/bg_10.png",
-	"/assets/background/bg_11.jpg",
-	"/assets/background/bg_12.jpg",
-];
+const backgroundImages = Array.from({ length: 15 }, (_, index) => `/assets/background/background (${index + 1}).jpg`);
 
 function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 	const [selectedBackground, setSelectedBackground] = useState<string>("white");

@@ -221,7 +221,7 @@ const CreateFront = () => {
 
 			<div className="mt-6 flex w-[320px] place-content-between">
 				<div className="flex">
-					{["background", "border", "sticker", "character", "text", "brush"].map((value) => (
+					{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
 						<label
 							key={value}
 							className="flex items-center cursor-pointer"
