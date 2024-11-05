@@ -109,54 +109,60 @@ const CardDetail = () => {
 	// };
 
 	const handleShareInstagram = async () => {
-		if (!cardImage) {
-			toast.error("공유할 이미지가 없습니다");
+		const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+		if (!isMobile) {
+			toast.error("인스타그램 스토리 공유는 모바일에서만 가능합니다");
 			return;
 		}
 
 		try {
-			// 이미지를 Blob으로 변환
+			// 이미지 URL을 Blob으로 변환
 			const response = await fetch(cardImage);
 			const blob = await response.blob();
 
-			// 모바일 기기 체크
-			const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+			// 공유할 데이터 준비
+			const shareData = {
+				files: [
+					new File([blob], "fortune-card.png", {
+						type: "image/png",
+					}),
+				],
+			};
 
-			if (isMobile) {
-				// 모바일에서는 Web Share API 사용
-				if (navigator.share) {
-					try {
-						const file = new File([blob], "fortune-card.png", { type: "image/png" });
-						await navigator.share({
-							files: [file],
-							title: "행운카드",
-							text: "행운카드가 도착했어요! 🍀",
-						});
-					} catch (error) {
-						console.error("공유 실패:", error);
-						// 공유가 취소되었거나 실패한 경우 인스타그램 앱으로 직접 이동
-						window.location.href = "instagram://story-camera";
+			// Web Share API가 지원되는지 확인
+			if (navigator.canShare && navigator.canShare(shareData)) {
+				try {
+					await navigator.share(shareData);
+					toast.success("인스타그램 스토리에 공유할 수 있습니다");
+				} catch (err) {
+					// 타입 가드를 사용하여 에러 객체 타입 체크
+					if (err instanceof Error) {
+						if (err.name === "AbortError") {
+							// 사용자가 공유를 취소한 경우
+							return;
+						}
+						throw err;
 					}
-				} else {
-					// Web Share API를 지원하지 않는 경우 인스타그램 앱으로 직접 이동
-					window.location.href = "instagram://story-camera";
+					// Error 인스턴스가 아닌 경우에 대한 처리
+					throw new Error("Unknown error occurred");
 				}
 			} else {
-				// 데스크톱에서는 이미지 다운로드 제안
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement("a");
-				link.href = url;
-				link.download = "fortune-card.png";
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-				URL.revokeObjectURL(url);
+				// Web Share API를 지원하지 않는 경우 인스타그램 앱으로 직접 이동
+				const instagramUrl = `instagram://story-camera`;
 
-				toast.success("이미지가 다운로드되었습니다. 인스타그램 스토리에 업로드해주세요!");
+				// 현재 URL을 클립보드에 복사
+				const shareUrl = getShareUrl();
+				await navigator.clipboard.writeText(shareUrl);
+
+				window.location.href = instagramUrl;
+				toast.success("인스타그램이 열립니다. 카메라에서 최근 저장된 이미지를 선택해주세요");
 			}
-		} catch (error) {
-			console.error("인스타그램 공유 실패:", error);
-			toast.error("공유에 실패했습니다");
+		} catch (err) {
+			// 타입 가드를 사용하여 에러 객체 타입 체크
+			const error = err instanceof Error ? err : new Error("Unknown error occurred");
+			console.error("인스타그램 공유 중 오류 발생:", error);
+			toast.error("인스타그램 공유에 실패했습니다");
 		}
 	};
 
