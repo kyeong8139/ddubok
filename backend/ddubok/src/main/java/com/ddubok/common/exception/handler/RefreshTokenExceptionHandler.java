@@ -18,7 +18,6 @@ public class RefreshTokenExceptionHandler {
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BaseResponse<?> handleCommonException(CommonException e) {
-        log.info(e.getMessage());
         return BaseResponse.ofSuccess(e.getResponseCode());
     }
 }
