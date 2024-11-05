@@ -112,3 +112,22 @@ export const saveCard = async (cardId: number) => {
 		throw error;
 	}
 };
+
+export const getCard = async (cardId: number) => {
+	try {
+		const response = await axios.get(`${baseURL}/cards/${cardId}`, {
+			withCredentials: true,
+		});
+		return response.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			console.error("요청 에러:", {
+				status: error.response?.status,
+				data: error.response?.data,
+				headers: error.response?.headers,
+			});
+		}
+		console.error("카드 조회 실패:", error);
+		throw error;
+	}
+};
