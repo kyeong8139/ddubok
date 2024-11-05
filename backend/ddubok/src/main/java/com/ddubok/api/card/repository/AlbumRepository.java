@@ -2,6 +2,7 @@ package com.ddubok.api.card.repository;
 
 import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.card.entity.Album;
+import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.report.entity.Report;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,8 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     Optional<List<Album>> findByMemberId(Long memberId);
 
-    @Query("SELECT a FROM Album a WHERE a.isDeleted = false ORDER BY a.id DESC")
-    Page<Album> findAll(Pageable pageable);
+    @Query("SELECT a FROM Album a WHERE a.isDeleted = false AND a.member = :member ORDER BY a.id DESC")
+    Page<Album> findAll(Member member, Pageable pageable);
 
     @Query("SELECT a FROM Album a WHERE a.card.season = :season AND a.isDeleted = false ORDER BY a.id DESC")
     Page<Album> findAllBySeason(Season season, Pageable pageable);
