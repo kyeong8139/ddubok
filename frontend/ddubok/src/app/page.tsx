@@ -108,7 +108,7 @@ const Home = () => {
 								className="pt-2"
 							/>
 							<p className="font-nexonLight text-sm">
-								이벤트 기간: <span>11.04 - 11.13</span>
+								이벤트 기간: <span>11.06 - 11.13</span>
 							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
