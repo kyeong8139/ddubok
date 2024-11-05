@@ -79,7 +79,7 @@ public class CardController {
         return BaseResponse.ofSuccess(res);
     }
 
-    @GetMapping("/{cardId}")
+    @GetMapping("/albums/{cardId}/detail")
     public BaseResponse<?> getCardDetail(@PathVariable Long cardId) {
         return BaseResponse.ofSuccess(getCardService.getCardDetail(
             GetCardDetailReq.builder().cardId(cardId).memberId(authUtil.getMemberId()).build()));
@@ -99,6 +99,11 @@ public class CardController {
     @GetMapping("/{memberId}/preview")
     public BaseResponse<?> getCardPreview(@PathVariable Long memberId) {
         return BaseResponse.ofSuccess(getCardService.getCardPreview(memberId));
+    }
+
+    @GetMapping("/{cardId}")
+    public BaseResponse<?> getCardReceivePreview(@PathVariable Long cardId) {
+        return BaseResponse.ofSuccess(getCardService.getCardReceivePreview(cardId));
     }
 
     /**
