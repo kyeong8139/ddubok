@@ -37,8 +37,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Spring Security 보안 설정 클래스.
- * JWT 인증과 OAuth2 소셜 로그인을 구성한다.
+ * Spring Security 보안 설정 클래스. JWT 인증과 OAuth2 소셜 로그인을 구성한다.
  */
 @Slf4j
 @Configuration
@@ -58,11 +57,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-            Arrays.asList("https://ddubok.com", "http://localhost:3000", "https://ddubok-test.kro.kr"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+            Arrays.asList("https://ddubok.com", "http://localhost:3000",
+                "https://ddubok-test.kro.kr"));
+        configuration.setAllowedMethods(
+            Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie", "Error", "Error-Description"));
+        configuration.setExposedHeaders(
+            Arrays.asList("Authorization", "Set-Cookie", "Error", "Error-Description"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -82,7 +84,8 @@ public class SecurityConfig {
         resolver.setAuthorizationRequestCustomizer(
             builder -> {
                 Map<String, Object> attributes = builder.build().getAttributes();
-                String registrationId = (String) attributes.get(OAuth2ParameterNames.REGISTRATION_ID);
+                String registrationId = (String) attributes.get(
+                    OAuth2ParameterNames.REGISTRATION_ID);
 
                 if ("x".equals(registrationId)) {
                     String codeVerifier = generateCodeVerifier();
@@ -124,18 +127,10 @@ public class SecurityConfig {
 
     /**
      * SecurityFilterChain을 구성한다.
-     *
-     * 주요 설정:
-     * 1. CSRF, 폼 로그인, HTTP Basic 인증 비활성화
-     * 2. Frame Options 설정 (same-origin 허용)
-     * 3. JWT 인증 필터 추가
-     * 4. OAuth2 로그인 설정
-     *    - 소셜 로그인 제공자 설정
-     *    - 인증 엔드포인트 설정
-     *    - 사용자 서비스 설정
-     * 5. URL 기반 접근 제어
-     * 6. 로그아웃 제어
-     * 7. 세션 관리 설정 (STATELESS)
+     * <p>
+     * 주요 설정: 1. CSRF, 폼 로그인, HTTP Basic 인증 비활성화 2. Frame Options 설정 (same-origin 허용) 3. JWT 인증 필터
+     * 추가 4. OAuth2 로그인 설정 - 소셜 로그인 제공자 설정 - 인증 엔드포인트 설정 - 사용자 서비스 설정 5. URL 기반 접근 제어 6. 로그아웃 제어 7.
+     * 세션 관리 설정 (STATELESS)
      *
      * @param http HttpSecurity 객체
      * @return 구성된 SecurityFilterChain
@@ -184,6 +179,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/attendances").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/v1/cards").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v2/cards").permitAll()
+                .requestMatchers("/api/v1/cards/receive").permitAll()
                 .requestMatchers("/api/v1/cards/**").hasRole("USER")
                 .requestMatchers("/api/v1/reports").hasRole("USER")
                 .anyRequest().authenticated()
