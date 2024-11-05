@@ -26,14 +26,6 @@ const CardDetail = () => {
 	const shareLink = process.env.NEXT_PUBLIC_SHARE_URL;
 	const [showLoginModal, setShowLoginModal] = useState(false);
 
-	// const { selectedImage, letterContent, cardId, setCardId } = useCardStore();
-	// useEffect(() => {
-	// 	// 임시데이터
-	// 	if (!cardId) {
-	// 		setCardId(609);
-	// 	}
-	// }, []);
-
 	const titleText =
 		type === "normal" ? "행운카드를 공유해보세요" : type === "require" ? "행운카드가 배달중이예요" : "행운카드";
 
@@ -117,11 +109,9 @@ const CardDetail = () => {
 		}
 
 		try {
-			// 이미지 URL을 Blob으로 변환
 			const response = await fetch(cardImage);
 			const blob = await response.blob();
 
-			// 공유할 데이터 준비
 			const shareData = {
 				files: [
 					new File([blob], "fortune-card.png", {
@@ -130,28 +120,22 @@ const CardDetail = () => {
 				],
 			};
 
-			// Web Share API가 지원되는지 확인
 			if (navigator.canShare && navigator.canShare(shareData)) {
 				try {
 					await navigator.share(shareData);
 					toast.success("인스타그램 스토리에 공유할 수 있습니다");
 				} catch (err) {
-					// 타입 가드를 사용하여 에러 객체 타입 체크
 					if (err instanceof Error) {
 						if (err.name === "AbortError") {
-							// 사용자가 공유를 취소한 경우
 							return;
 						}
 						throw err;
 					}
-					// Error 인스턴스가 아닌 경우에 대한 처리
 					throw new Error("Unknown error occurred");
 				}
 			} else {
-				// Web Share API를 지원하지 않는 경우 인스타그램 앱으로 직접 이동
 				const instagramUrl = `instagram://story-camera`;
 
-				// 현재 URL을 클립보드에 복사
 				const shareUrl = getShareUrl();
 				await navigator.clipboard.writeText(shareUrl);
 
@@ -159,7 +143,6 @@ const CardDetail = () => {
 				toast.success("인스타그램이 열립니다. 카메라에서 최근 저장된 이미지를 선택해주세요");
 			}
 		} catch (err) {
-			// 타입 가드를 사용하여 에러 객체 타입 체크
 			const error = err instanceof Error ? err : new Error("Unknown error occurred");
 			console.error("인스타그램 공유 중 오류 발생:", error);
 			toast.error("인스타그램 공유에 실패했습니다");
