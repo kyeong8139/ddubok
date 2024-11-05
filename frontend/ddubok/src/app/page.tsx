@@ -47,6 +47,16 @@ const Home = () => {
 	);
 
 	useEffect(() => {
+		if (accessToken) {
+			const redirectPath = localStorage.getItem("redirectAfterLogin");
+			if (redirectPath) {
+				localStorage.removeItem("redirectAfterLogin");
+				router.push(redirectPath);
+			}
+		}
+	}, [accessToken, router]);
+
+	useEffect(() => {
 		const imgElements = cardImages.map((card) => {
 			if (card.image) {
 				const img = new Image();

@@ -90,6 +90,12 @@ const SharedCard = () => {
 		}
 	};
 
+	const handleLoginClick = () => {
+		const currentPath = window.location.pathname + window.location.search;
+		localStorage.setItem("redirectAfterLogin", currentPath);
+		router.push("/login");
+	};
+
 	useEffect(() => {
 		const fetchCardData = async () => {
 			if (!cardId) {
@@ -190,7 +196,7 @@ const SharedCard = () => {
 							size="small"
 							font="regular"
 							shadow="green"
-							onClick={() => router.push("/login")}
+							onClick={handleLoginClick}
 						/>
 					</div>
 				</Modal>

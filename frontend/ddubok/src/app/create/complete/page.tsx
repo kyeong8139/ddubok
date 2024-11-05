@@ -236,6 +236,12 @@ const CardDetail = () => {
 		}
 	};
 
+	const handleLoginClick = () => {
+		const currentPath = window.location.pathname + window.location.search;
+		localStorage.setItem("redirectAfterLogin", currentPath);
+		router.push("/login");
+	};
+
 	return (
 		<div>
 			<div className="flex flex-col items-center w-full">
@@ -382,7 +388,7 @@ const CardDetail = () => {
 								size="small"
 								font="regular"
 								shadow="green"
-								onClick={() => router.push("/login")}
+								onClick={handleLoginClick}
 							/>
 						</div>
 					</Modal>
