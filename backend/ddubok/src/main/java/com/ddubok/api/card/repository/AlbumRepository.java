@@ -20,6 +20,6 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     @Query("SELECT a FROM Album a WHERE a.isDeleted = false AND a.member = :member ORDER BY a.id DESC")
     Page<Album> findAll(Member member, Pageable pageable);
 
-    @Query("SELECT a FROM Album a WHERE a.card.season = :season AND a.isDeleted = false ORDER BY a.id DESC")
-    Page<Album> findAllBySeason(Season season, Pageable pageable);
+    @Query("SELECT a FROM Album a WHERE a.card.season = :season AND a.isDeleted = false AND a.member = :member ORDER BY a.id DESC")
+    Page<Album> findAllBySeason(Member member, Season season, Pageable pageable);
 }
