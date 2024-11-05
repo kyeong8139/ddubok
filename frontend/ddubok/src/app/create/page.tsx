@@ -17,7 +17,7 @@ const Create = () => {
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
 
-	const { setSelectedImage, setUserName } = useCardStore();
+	const { setSelectedImage, setUserName, setLetterContent } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
@@ -57,6 +57,8 @@ const Create = () => {
 
 		const finalUserName = userName.trim() === "" ? "익명" : userName;
 		setUserName(finalUserName);
+
+		setLetterContent("");
 
 		if (selectedImage) {
 			router.push(`/create/letter?type=${type}`);
