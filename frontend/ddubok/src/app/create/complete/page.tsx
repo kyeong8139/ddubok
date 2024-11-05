@@ -95,16 +95,68 @@ const CardDetail = () => {
 		// }
 	};
 
-	const handleShareInstagram = () => {
-		// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-		// window.open(shareUrl, "_blank", "width=600,height=400");
-		if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-			const shareUrl = getShareUrl();
-			const instagramUrl = `instagram://story-camera`;
+	// const handleShareInstagram = () => {
+	// 	// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+	// 	// window.open(shareUrl, "_blank", "width=600,height=400");
+	// 	if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+	// 		const shareUrl = getShareUrl();
+	// 		const instagramUrl = `instagram://story-camera`;
 
-			window.location.href = instagramUrl;
-		} else {
-			toast.error("인스타그램은 모바일에서만 가능합니다");
+	// 		window.location.href = instagramUrl;
+	// 	} else {
+	// 		toast.error("인스타그램은 모바일에서만 가능합니다");
+	// 	}
+	// };
+
+	const handleShareInstagram = async () => {
+		if (!cardImage) {
+			toast.error("공유할 이미지가 없습니다");
+			return;
+		}
+
+		try {
+			// 이미지를 Blob으로 변환
+			const response = await fetch(cardImage);
+			const blob = await response.blob();
+
+			// 모바일 기기 체크
+			const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+			if (isMobile) {
+				// 모바일에서는 Web Share API 사용
+				if (navigator.share) {
+					try {
+						const file = new File([blob], "fortune-card.png", { type: "image/png" });
+						await navigator.share({
+							files: [file],
+							title: "행운카드",
+							text: "행운카드가 도착했어요! 🍀",
+						});
+					} catch (error) {
+						console.error("공유 실패:", error);
+						// 공유가 취소되었거나 실패한 경우 인스타그램 앱으로 직접 이동
+						window.location.href = "instagram://story-camera";
+					}
+				} else {
+					// Web Share API를 지원하지 않는 경우 인스타그램 앱으로 직접 이동
+					window.location.href = "instagram://story-camera";
+				}
+			} else {
+				// 데스크톱에서는 이미지 다운로드 제안
+				const url = URL.createObjectURL(blob);
+				const link = document.createElement("a");
+				link.href = url;
+				link.download = "fortune-card.png";
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				URL.revokeObjectURL(url);
+
+				toast.success("이미지가 다운로드되었습니다. 인스타그램 스토리에 업로드해주세요!");
+			}
+		} catch (error) {
+			console.error("인스타그램 공유 실패:", error);
+			toast.error("공유에 실패했습니다");
 		}
 	};
 
