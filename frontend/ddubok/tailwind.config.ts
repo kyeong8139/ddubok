@@ -16,6 +16,7 @@ const config: Config = {
 				"0.5": "0.125rem",
 				"17": "4.25rem",
 				"18": "4.5rem",
+				"21": "5.25rem",
 			},
 			blur: {
 				custom: "8px",

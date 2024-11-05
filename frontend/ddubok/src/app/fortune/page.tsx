@@ -22,7 +22,6 @@ const Fortune = () => {
 		const loadFortuneList = async () => {
 			try {
 				const response = await selectFortuneList();
-				console.log(response.data.data);
 				setFortuneList(response.data.data.attendanceList);
 				setFortuneCount(response.data.data.attendanceCount);
 			} catch (error) {
@@ -60,16 +59,12 @@ const Fortune = () => {
 	const createFortune = async () => {
 		try {
 			const response = await insertFortune();
-			console.log(response.data.data);
 			setFortuneDetail({
 				sentence: response.data.data.fortune.sentence,
 				score: response.data.data.fortune.score,
 			});
 			setFortuneList(response.data.data.attendanceHistory.attendanceList);
 			setFortuneCount(response.data.data.attendanceHistory.attendanceCount);
-
-			console.log(fortuneDetail.sentence);
-			console.log(fortuneDetail.score);
 
 			openModal();
 		} catch (error) {

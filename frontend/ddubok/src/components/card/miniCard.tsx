@@ -12,7 +12,7 @@ const MiniCard = ({ day, isAttend }: IMiniCardProps) => {
 			) : (
 				<div className="border border-solid border-white rounded-full overflow-hidden w-14 h-14 flex items-center justify-center">
 					<Image
-						src="/assets/temp1.jpg"
+						src="/assets/clover.svg"
 						alt="출석 스탬프"
 						width={56}
 						height={56}
