@@ -9,18 +9,17 @@ import Modal from "@components/common/modal";
 import { IUserDto } from "@interface/components/user";
 import { selectUser, updateUser } from "@lib/api/user-api";
 import { getTokenInfo } from "@lib/utils/authUtils";
-import useAuthStore from "@store/auth-store";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 import { PencilCircle } from "@phosphor-icons/react";
 import { deleteUser, logout } from "@lib/api/login-api";
 
 const Mypage = () => {
 	const route = useRouter();
+	const { accessToken, isTokenReady, clearAccessToken } = useAuthToken();
 	const [isEditing, setIsEditing] = useState(false);
 	const [newNickname, setNewNickname] = useState("");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
-	const accessToken = useAuthStore((state) => state.accessToken);
-	const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<IUserDto | null>(
 		decodedToken
@@ -34,16 +33,14 @@ const Mypage = () => {
 
 	useEffect(() => {
 		const getUser = async () => {
-			if (decodedToken) {
+			if (decodedToken && isTokenReady) {
 				try {
 					const response = await selectUser();
-					console.log(response.data.data.nickname);
 					setUser({
 						memberId: decodedToken.memberId,
 						nickname: response.data.data.nickname,
 						role: decodedToken.role,
 					});
-					console.log(user);
 				} catch (error) {
 					console.error(error);
 				}
@@ -51,7 +48,7 @@ const Mypage = () => {
 		};
 
 		getUser();
-	}, [accessToken]);
+	}, [accessToken, isTokenReady]);
 
 	const handleNicknameEdit = () => {
 		setIsEditing(true);

@@ -33,21 +33,25 @@ axiosInstance.interceptors.response.use(
 
 			const refreshResponse = await checkRefreshToken();
 
-			if (refreshResponse.status === 200) {
+			if (refreshResponse.data.code === "200") {
 				try {
 					const response = await reissue();
-					const newAcessToken = `Bearer ${response.headers.authorization}`;
+					const newAccessToken = `Bearer ${response.headers.authorization}`;
 
-					useAuthStore.getState().setAccessToken(newAcessToken);
+					const setAccessToken = useAuthStore.getState().setAccessToken;
+					setAccessToken(newAccessToken);
 
-					originalRequest.headers["Authorization"] = newAcessToken;
+					originalRequest.headers["Authorization"] = newAccessToken;
 					return axiosInstance(originalRequest);
 				} catch (error) {
+					const clearAccessToken = useAuthStore.getState().clearAccessToken;
+					clearAccessToken();
 					console.error("accessToken 재발급 실패");
 				}
-			} else if (refreshResponse.status === 800) {
+			} else if (refreshResponse.data.code === "800") {
+				const clearAccessToken = useAuthStore.getState().clearAccessToken;
+				clearAccessToken();
 				console.log("refreshToken 없음");
-				// 로그인이 만료되었으니 다시 하라고 해야함
 				Router.push("/login");
 			}
 		}
