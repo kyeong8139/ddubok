@@ -112,26 +112,33 @@ export const saveCard = async (cardId: number) => {
 };
 
 export const getCard = async (cardId: number) => {
+	const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cards/${cardId}`;
+	console.log("Requesting URL:", apiUrl);
+
 	try {
-		const response = await axios.get(`${baseURL}/cards/${cardId}`, {
+		const response = await axios.get(apiUrl, {
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
 
-		console.log("전체 응답:", response);
-		console.log("응답 데이터:", response.data);
+		console.log("API Response:", {
+			status: response.status,
+			data: response.data,
+			headers: response.headers,
+		});
 
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			console.error("요청 에러:", {
+			console.error("API Error:", {
+				message: error.message,
+				code: error.code,
 				status: error.response?.status,
 				data: error.response?.data,
-				headers: error.response?.headers,
+				url: error.config?.url,
 			});
 		}
-		console.error("카드 조회 실패:", error);
 		throw error;
 	}
 };
