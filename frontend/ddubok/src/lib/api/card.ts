@@ -114,8 +114,11 @@ export const saveCard = async (cardId: number) => {
 export const getCard = async (cardId: number) => {
 	try {
 		const response = await axios.get(`${baseURL}/cards/${cardId}`, {
-			withCredentials: true,
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
 		});
+		console.log(response);
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
