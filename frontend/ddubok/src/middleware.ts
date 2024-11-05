@@ -7,6 +7,7 @@ export function middleware(request: NextRequest) {
 	const authHeader = request.headers.get("authorization");
 	const accessToken = authHeader?.split(" ")[1];
 
+	console.log(authHeader);
 	console.log(accessToken);
 
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
@@ -18,10 +19,12 @@ export function middleware(request: NextRequest) {
 		  }
 		: null;
 
-	console.log(accessToken);
+	console.log(decodedToken);
+	console.log(user);
 
 	if (pathname.startsWith("/mypage") || pathname.startsWith("/fortune") || pathname.startsWith("/book")) {
-		if (!accessToken) return NextResponse.redirect(new URL("/login", request.url));
+		return;
+		// if (!accessToken) return NextResponse.redirect(new URL("/login", request.url));
 	}
 
 	if (pathname.startsWith("/admin") && user?.role !== "ROLE_ADMIN") {
