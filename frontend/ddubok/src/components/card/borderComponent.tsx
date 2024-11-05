@@ -8,7 +8,7 @@ import { fabric } from "fabric";
 import { chunk } from "lodash";
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 
-const borderImages = Array.from({ length: 4 }, (_, index) => `/assets/stickers/sticker (${index + 1}).png`);
+const borderImages = Array.from({ length: 4 }, (_, index) => `/assets/border/border (${index + 1}).png`);
 
 function BorderComponent({ canvas }: IBorderComponentProps) {
 	const [selectedBorder, setSelectedBorder] = useState<string | null>(null);
