@@ -25,3 +25,8 @@ export const selectCardDetail = (cardId: number) => {
 export const selectPreviewList = (memberId: number) => {
 	return axiosInstance.get(`/cards/${memberId}/preview`);
 };
+
+// 카드 숨김 (사실상 삭제)
+export const deleteCard = (cardId: number) => {
+	return axiosInstance.delete(`/cards/${cardId}`);
+};

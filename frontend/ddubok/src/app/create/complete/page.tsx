@@ -186,7 +186,7 @@ const CardDetail = () => {
 					<Card
 						width={270}
 						height={478}
-						image={cardImage}
+						path={cardImage}
 						content={letterContent}
 						effect={0}
 						flip={true}

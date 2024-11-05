@@ -128,7 +128,7 @@ const Create = () => {
 										<Card
 											width={280}
 											height={495}
-											image={card.image}
+											path={card.image}
 											effect={card.effect}
 										/>
 									</div>

@@ -7,6 +7,8 @@ import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
 
 import { Siren } from "@phosphor-icons/react";
+import { deleteCard } from "@lib/api/card-load-api";
+import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
@@ -18,6 +20,16 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 		link.href = path;
 		link.download = "행운카드.png";
 		link.click();
+	};
+
+	const handleHide = async (cardId: number) => {
+		try {
+			await deleteCard(cardId);
+			toast.success("카드를 영구 삭제했습니다");
+		} catch (error) {
+			console.error(error);
+			toast.error("카드를 영구 삭제하지 못했습니다");
+		}
 	};
 
 	const handleReport = () => {
@@ -49,16 +61,22 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					</span>
 					{showOption && (
 						<div className="z-10 absolute right-8 top-18 bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
-							<p className="mb-2">카드 숨기기</p>
-							<p onClick={handleReport}>카드 신고하기</p>
+							<p
+								className="mb-2"
+								onClick={handleReport}
+							>
+								카드 신고하기
+							</p>
+							<p onClick={() => id !== undefined && handleHide(id)}>카드 영구 삭제하기</p>
 						</div>
 					)}
 				</div>
 				<Card
 					width={270}
 					height={478}
-					image={path}
+					path={path}
 					content={content}
+					state={state}
 					effect={effect}
 					flip={true}
 				/>
