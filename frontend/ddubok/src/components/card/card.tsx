@@ -79,6 +79,7 @@ const Card = ({ width, height, image, content, effect, flip }: ICardProps) => {
 						alt="운세 카드"
 						fill
 						className="absolute z-[-1]"
+						unoptimized
 					/>
 				</div>
 			</div>
