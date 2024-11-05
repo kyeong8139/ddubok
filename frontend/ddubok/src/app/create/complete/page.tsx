@@ -100,11 +100,13 @@ const CardDetail = () => {
 		// window.open(shareUrl, "_blank", "width=600,height=400");
 		if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 			const shareUrl = getShareUrl();
-			const instagramUrl = `instagram://story-camera`;
+			const shareText = "행운카드가 도착했어요! 접속해서 받아가세요🍀";
+
+			const instagramUrl = `instagram://story?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(
+				shareUrl,
+			)}`;
 
 			window.location.href = instagramUrl;
-
-			toast.success("인스타그램 스토리에 이미지를 추가해주세요!");
 		} else {
 			toast.error("인스타그램은 모바일에서만 가능합니다");
 		}
