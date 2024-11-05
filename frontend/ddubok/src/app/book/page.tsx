@@ -35,7 +35,7 @@ const Book = () => {
 				setIsLoading(true);
 
 				const response =
-					selected === 0 || selected === 1
+					selected === 0
 						? await selectCardList(6, currentPage)
 						: await selectCardSeasonList(6, currentPage, selected);
 
@@ -44,10 +44,6 @@ const Book = () => {
 					setHasNext(false);
 				} else {
 					let cards = response.data.data.cards || [];
-					if (selected === 1) {
-						cards = cards.filter((card: ICardDto) => !card.isRead);
-					}
-
 					setCardList(cards);
 					setHasNext(response.data.data.hasNext || false);
 				}
@@ -99,7 +95,7 @@ const Book = () => {
 				<>
 					<div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-							{["전체", "안 읽은 카드", "수능"].map((item, index) => (
+							{["전체", "수능"].map((item, index) => (
 								<li
 									key={index}
 									onClick={() => handleClick(index)}
@@ -132,7 +128,7 @@ const Book = () => {
 					</div>
 					<div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-							{["전체", "안 읽은 카드", "수능"].map((item, index) => (
+							{["전체", "수능"].map((item, index) => (
 								<li
 									key={index}
 									onClick={() => handleClick(index)}
@@ -157,6 +153,7 @@ const Book = () => {
 									alt="ddubok"
 									objectFit="cover"
 									fill
+									unoptimized
 								/>
 							</div>
 						))}
