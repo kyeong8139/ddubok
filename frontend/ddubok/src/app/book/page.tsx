@@ -112,7 +112,7 @@ const Book = () => {
 							))}
 						</ul>
 					</div>
-					<div className="font-nexonBold text-lg flex flex-col items-center justify-center h-[calc(100%-56px)] text-white">
+					<div className="font-nexonBold flex flex-col items-center justify-center h-[calc(100vh-150px)] text-white">
 						<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
 						<Button
 							text="행운카드<br/>조르기"
