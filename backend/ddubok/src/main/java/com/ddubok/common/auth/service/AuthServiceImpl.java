@@ -1,6 +1,7 @@
 package com.ddubok.common.auth.service;
 
 import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
+import com.ddubok.common.auth.exception.IsNotExistedResfreshTokenException;
 import com.ddubok.common.auth.jwt.JwtTokenUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -86,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if(refresh == null || refresh.trim().isEmpty()) {
-            throw new InvalidRefreshTokenException("Refresh token not found or empty");
+            throw new IsNotExistedResfreshTokenException("Refresh token not found or empty");
         }
     }
 }
