@@ -4,6 +4,7 @@ import com.ddubok.api.admin.exception.InvalidConditionException;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.card.exception.AlbumAlreadyDeletedException;
+import com.ddubok.api.card.exception.AlbumAlreadyExistException;
 import com.ddubok.api.card.exception.AlbumNotFoundException;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
@@ -49,6 +50,7 @@ public class CommonExceptionHandler {
         UnknownRoleException.class,
         UnknownStateException.class,
         InvalidDateOrderException.class,
+        AlbumAlreadyExistException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<?> handleCommonException(CommonException e) {
