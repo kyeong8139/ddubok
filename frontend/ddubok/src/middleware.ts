@@ -4,7 +4,7 @@ import { getTokenInfo } from "@lib/utils/authUtils";
 export function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
-	const authHeader = request.headers.get("authorization");
+	const authHeader = request.headers.get("Authorization");
 	const accessToken = authHeader?.split(" ")[1];
 
 	console.log(authHeader);
@@ -23,7 +23,6 @@ export function middleware(request: NextRequest) {
 	console.log(user);
 
 	if (pathname.startsWith("/mypage") || pathname.startsWith("/fortune") || pathname.startsWith("/book")) {
-		return;
 		// if (!accessToken) return NextResponse.redirect(new URL("/login", request.url));
 	}
 
