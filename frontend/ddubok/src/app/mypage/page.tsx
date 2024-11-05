@@ -36,13 +36,11 @@ const Mypage = () => {
 			if (decodedToken && isTokenReady) {
 				try {
 					const response = await selectUser();
-					console.log(response.data.data.nickname);
 					setUser({
 						memberId: decodedToken.memberId,
 						nickname: response.data.data.nickname,
 						role: decodedToken.role,
 					});
-					console.log(user);
 				} catch (error) {
 					console.error(error);
 				}
