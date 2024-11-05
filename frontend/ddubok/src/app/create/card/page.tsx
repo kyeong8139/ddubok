@@ -8,6 +8,7 @@ import StickerComponent from "@components/card/stickerComponent";
 import TextComponent from "@components/card/textComponent";
 import BrushComponent from "@components/card/brushComponent";
 import BorderComponent from "@components/card/borderComponent";
+import CharacterComponent from "@components/card/characterComponent";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { useCardStore } from "@store/card-store";
@@ -204,6 +205,8 @@ const CreateFront = () => {
 				return <BrushComponent canvas={canvas} />;
 			case "border":
 				return <BorderComponent canvas={canvas} />;
+			case "character":
+				return <CharacterComponent canvas={canvas} />;
 			default:
 				return null;
 		}
@@ -218,7 +221,7 @@ const CreateFront = () => {
 
 			<div className="mt-6 flex w-[320px] place-content-between">
 				<div className="flex">
-					{["background", "border", "sticker", "text", "brush"].map((value) => (
+					{["background", "border", "sticker", "character", "text", "brush"].map((value) => (
 						<label
 							key={value}
 							className="flex items-center cursor-pointer"
@@ -231,13 +234,14 @@ const CreateFront = () => {
 								className="hidden"
 							/>
 							<p
-								className={`p-2 border-2 border-black rounded-lg font-nexonBold text-xs ${
+								className={`px-[6px] py-2 mr-[2px] rounded-lg font-nexonBold text-xs ${
 									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
 								}`}
 							>
 								{value === "background" && "배경"}
 								{value === "border" && "테두리"}
 								{value === "sticker" && "스티커"}
+								{value === "character" && "캐릭터"}
 								{value === "text" && "텍스트"}
 								{value === "brush" && "브러쉬"}
 							</p>
