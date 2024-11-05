@@ -22,7 +22,6 @@ const Fortune = () => {
 		const loadFortuneList = async () => {
 			try {
 				const response = await selectFortuneList();
-				console.log(response.data.data);
 				setFortuneList(response.data.data.attendanceList);
 				setFortuneCount(response.data.data.attendanceCount);
 			} catch (error) {

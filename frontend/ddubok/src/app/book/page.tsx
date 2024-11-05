@@ -38,16 +38,24 @@ const Book = () => {
 					selected === 0 || selected === 1
 						? await selectCardList(6, currentPage)
 						: await selectCardSeasonList(6, currentPage, selected);
-				let cards = response.data.data.cards || [];
 
-				if (selected === 1) {
-					cards = cards.fliter((card: ICardDto) => !card.isRead);
+				if (response.data.code === "702") {
+					setCardList([]);
+					setHasNext(false);
+				} else {
+					let cards = response.data.data.cards || [];
+					if (selected === 1) {
+						cards = cards.filter((card: ICardDto) => !card.isRead);
+					}
+
+					setCardList(cards);
+					setHasNext(response.data.data.hasNext || false);
 				}
 
-				setCardList(cards);
-				setHasNext(response.data.data.hasNext);
 				setIsLoading(false);
 			} catch (error) {
+				setCardList([]);
+				setIsLoading(false);
 				console.error(error);
 			}
 		};
@@ -104,7 +112,7 @@ const Book = () => {
 							))}
 						</ul>
 					</div>
-					<div className="flex flex-col items-center justify-center h-screen text-white">
+					<div className="font-nexonBold text-lg flex flex-col items-center justify-center h-[calc(100%-56px)] text-white">
 						<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
 						<Button
 							text="행운카드<br/>조르기"
@@ -159,7 +167,7 @@ const Book = () => {
 							className="p-2 bg-white rounded-full disabled:opacity-0"
 							disabled={currentPage === 0}
 						>
-							<div>
+							<div className="flex gap-1 font-nexonRegular">
 								<CaretLeft
 									size={16}
 									weight="bold"
@@ -172,7 +180,7 @@ const Book = () => {
 							className="p-2 bg-white rounded-full disabled:opacity-0"
 							disabled={!hasNext}
 						>
-							<div>
+							<div className="flex gap-1 font-nexonRegular">
 								<span>다음으로</span>
 								<CaretRight
 									size={16}
