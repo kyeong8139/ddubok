@@ -10,6 +10,7 @@ import { ICardDto } from "@interface/components/card";
 import { selectCardDetail, selectCardList, selectCardSeasonList } from "@lib/api/card-load-api";
 
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import Button from "@components/button/button";
 
 const Book = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
@@ -37,7 +38,7 @@ const Book = () => {
 					selected === 0 || selected === 1
 						? await selectCardList(6, currentPage)
 						: await selectCardSeasonList(6, currentPage, selected);
-				let cards = response.data.data.cards;
+				let cards = response.data.data.cards || [];
 
 				if (selected === 1) {
 					cards = cards.fliter((card: ICardDto) => !card.isRead);
@@ -68,49 +69,6 @@ const Book = () => {
 		openModal();
 	};
 
-	// const cardImages = useMemo(
-	// 	() => [
-	// 		{ cardId: 1, image: "/assets/examplCard1.png", effect: 0 },
-	// 		{ cardId: 2, image: "/assets/examplCard2.png", effect: 0 },
-	// 		{ cardId: 3, image: "/assets/examplCard1.png", effect: 0 },
-	// 		{ cardId: 4, image: "/assets/examplCard2.png", effect: 0 },
-	// 		{ cardId: 5, image: "/assets/examplCard1.png", effect: 0 },
-	// 		{ cardId: 6, image: "/assets/examplCard2.png", effect: 0 },
-	// 		{ cardId: 7, image: "/assets/examplCard1.png", effect: 0 },
-	// 		{ cardId: 8, image: "/assets/examplCard2.png", effect: 0 },
-	// 		{ cardId: 9, image: "/assets/examplCard1.png", effect: 0 },
-	// 		{ cardId: 10, image: "/assets/examplCard2.png", effect: 0 },
-	// 	],
-	// 	[],
-	// );
-
-	// const itemsPerPage = 6;
-	// const totalPages = Math.ceil(cardImages.length / itemsPerPage);
-
-	// const paginatedCards = useMemo(() => {
-	// 	const start = (currentPage - 1) * itemsPerPage;
-	// 	const end = start + itemsPerPage;
-	// 	return cardImages.slice(start, end);
-	// }, [currentPage, cardImages]);
-
-	// const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-	// const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
-	// useEffect(() => {
-	// 	const imgElements = cardImages.map((card) => {
-	// 		if (card.image) {
-	// 			const img = new Image();
-	// 			img.src = card.image;
-	// 			return img;
-	// 		}
-	// 		return null;
-	// 	});
-
-	// 	Promise.all(imgElements.map((img) => img?.decode())).then(() => {
-	// 		setIsLoading(false);
-	// 	});
-	// }, [cardImages]);
-
 	useEffect(() => {
 		if (isModalOpen) {
 			document.body.style.overflow = "hidden";
@@ -128,6 +86,18 @@ const Book = () => {
 			{isLoading ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
+				</div>
+			) : cardList.length === 0 ? (
+				<div className="flex flex-col items-center justify-center h-screen text-white">
+					<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
+					<Button
+						text="행운카드<br/>조르기"
+						color="gradient"
+						size="short"
+						font="both"
+						shadow="gradient"
+						onClick={() => {}}
+					/>
 				</div>
 			) : (
 				<>
@@ -195,8 +165,9 @@ const Book = () => {
 						</button>
 					</div>
 					<div
-						className={`transition-opacity duration-300
-					${isModalOpen && card ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+						className={`transition-opacity duration-300 ${
+							isModalOpen && card ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+						}`}
 					>
 						<DetailCard
 							id={card.id}
