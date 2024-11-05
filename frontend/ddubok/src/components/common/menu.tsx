@@ -122,7 +122,7 @@ const Menu = () => {
 					) : (
 						<ul>
 							<li>
-								<Link href="/create">행운카드 만들기</Link>
+								<Link href="/create?type=normal">행운카드 만들기</Link>
 							</li>
 						</ul>
 					)}
