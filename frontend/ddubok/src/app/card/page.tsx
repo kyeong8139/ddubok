@@ -132,7 +132,7 @@ const SharedCard = () => {
 				<Card
 					width={280}
 					height={495}
-					image={cardData?.path || ""}
+					path={cardData?.path || ""}
 					content={cardData?.content || ""}
 					effect={0}
 					flip={true}
