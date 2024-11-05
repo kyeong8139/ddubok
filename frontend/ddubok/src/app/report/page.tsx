@@ -24,8 +24,13 @@ const Report = () => {
 				content,
 			};
 
-			alert("신고가 접수되었습니다.");
+			console.log(reportData);
+			console.log(title);
+			console.log(reportType);
+			console.log(content);
+
 			await insertReport(reportData);
+			alert("신고가 접수되었습니다.");
 			router.push("/book");
 		} catch (error) {
 			console.error(error);
