@@ -101,7 +101,7 @@ public class CardController {
         return BaseResponse.ofSuccess(getCardService.getCardPreview(memberId));
     }
 
-    @GetMapping("/{cardId}")
+    @GetMapping("/receive/{cardId}")
     public BaseResponse<?> getCardReceivePreview(@PathVariable Long cardId) {
         return BaseResponse.ofSuccess(getCardService.getCardReceivePreview(cardId));
     }
