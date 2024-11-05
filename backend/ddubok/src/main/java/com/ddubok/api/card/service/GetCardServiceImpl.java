@@ -9,11 +9,14 @@ import com.ddubok.api.card.dto.request.GetCardListBySeasonReq;
 import com.ddubok.api.card.dto.response.CardPreviewRes;
 import com.ddubok.api.card.dto.response.GetCardDetailRes;
 import com.ddubok.api.card.dto.response.GetCardListRes;
+import com.ddubok.api.card.dto.response.ReceiveCardPreviewRes;
 import com.ddubok.api.card.entity.Album;
+import com.ddubok.api.card.entity.Card;
 import com.ddubok.api.card.entity.State;
 import com.ddubok.api.card.exception.CardAlreadyDeletedException;
 import com.ddubok.api.card.exception.CardNotFoundException;
 import com.ddubok.api.card.repository.AlbumRepository;
+import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
@@ -35,6 +38,7 @@ public class GetCardServiceImpl implements GetCardService {
     private final AlbumRepository albumRepository;
     private final MemberRepository memberRepository;
     private final SeasonRepository seasonRepository;
+    private final CardRepository cardRepository;
 
     /**
      * {@inheritDoc}
@@ -65,10 +69,13 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public GetCardListRes getCardListBySeason(GetCardListBySeasonReq req) {
-        Pageable pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by("id").descending());
-        Season findSeason = seasonRepository.findById(req.getSeasonId()).orElseThrow(() -> new SeasonNotFoundException());
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize(),
+            Sort.by("id").descending());
+        Season findSeason = seasonRepository.findById(req.getSeasonId())
+            .orElseThrow(() -> new SeasonNotFoundException());
         Page<Album> albums = albumRepository.findAllBySeason(findSeason, pageable);
-        return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast()).build();
+        return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .build();
     }
 
     /**
@@ -76,9 +83,11 @@ public class GetCardServiceImpl implements GetCardService {
      */
     @Override
     public GetCardListRes getAllCardList(GetAllCardListReq req) {
-        Pageable pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize(),
+            Sort.by("id").descending());
         Page<Album> albums = albumRepository.findAll(pageable);
-        return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast()).build();
+        return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .build();
     }
 
     private List<GetCardDetailRes> getGetCardDetailRes(Page<Album> albums) {
@@ -113,5 +122,16 @@ public class GetCardServiceImpl implements GetCardService {
             .nickname(nickname)
             .cardUrl(cardUrl)
             .build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ReceiveCardPreviewRes getCardReceivePreview(Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException());
+        return ReceiveCardPreviewRes.builder().id(card.getId()).content(card.getContent())
+            .writerName(card.getWriterName()).state(card.getState()).openedAt(card.getOpenedAt())
+            .path(card.getPath()).build();
     }
 }
