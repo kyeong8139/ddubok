@@ -58,8 +58,9 @@ const Home = () => {
 	const cardImages = useMemo(
 		() => [
 			{ image: "/assets/template/kkm-card.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
+			{ image: "/assets/template/kde-card.jpg", effect: 0 },
+			{ image: "/assets/template/kkm-card-2.png", effect: 0 },
+			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
 		],
 		[],
 	);
