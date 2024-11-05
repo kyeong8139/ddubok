@@ -145,7 +145,7 @@ const Book = () => {
 							<div
 								key={index}
 								className="flex justify-center items-center w-full h-0 pb-[180%] relative rounded-lg overflow-hidden"
-								onClick={() => handleCardClick(card.id)}
+								onClick={() => card.id !== undefined && handleCardClick(card.id)}
 							>
 								<NextImage
 									src={card.path}

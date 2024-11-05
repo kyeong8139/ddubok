@@ -79,7 +79,7 @@ const Request = () => {
 									<Card
 										width={250}
 										height={445}
-										image={card.image}
+										path={card.image}
 										effect={card.effect}
 									/>
 									<p className="text-white font-nexonRegular mt-4 text-center">
