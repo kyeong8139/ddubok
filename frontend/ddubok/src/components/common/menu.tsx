@@ -115,7 +115,7 @@ const Menu = () => {
 									<Link href="/fortune">오늘의 운세</Link>
 								</li>
 								<li>
-									<Link href="/create">행운카드 만들기</Link>
+									<Link href="/create?type=normal">행운카드 만들기</Link>
 								</li>
 							</ul>
 						)

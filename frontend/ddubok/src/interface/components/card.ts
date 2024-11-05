@@ -3,7 +3,7 @@ export interface ICardProps {
 	height: number;
 	image?: string;
 	content?: string;
-	effect: number;
+	effect?: number;
 	flip?: boolean;
 }
 
