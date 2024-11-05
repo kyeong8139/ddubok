@@ -112,7 +112,7 @@ export const saveCard = async (cardId: number) => {
 };
 
 export const getCard = async (cardId: number) => {
-	const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cards/${cardId}`;
+	const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cards/receive/${cardId}`;
 	console.log("Requesting URL:", apiUrl);
 
 	try {

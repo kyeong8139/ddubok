@@ -101,14 +101,14 @@ const SharedCard = () => {
 				const response = await getCard(cardId);
 				console.log("전체 응답:", response);
 
-				if (response.data.code === "200") {
-					setCardData(response.data.data);
+				if (response.code === "200") {
+					setCardData(response.data);
 				} else {
-					throw new Error(response.data.message || "카드를 불러올 수 없습니다.");
+					throw new Error(response.message || "카드를 불러올 수 없습니다.");
 				}
 			} catch (error) {
 				console.error("카드 데이터 불러오기 실패:", error);
-				// router.replace("/error");
+				router.replace("/error");
 			} finally {
 				setIsLoading(false);
 			}
