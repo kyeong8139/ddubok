@@ -26,8 +26,13 @@ const Create = () => {
 	const cardImages = useMemo(
 		() => [
 			{ image: "", effect: 0 },
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
+			{ image: "/assets/template/kkm-card.png", effect: 0 },
+			{ image: "/assets/template/psh-card.jpg", effect: 0 },
+			{ image: "/assets/template/kkm-card-2.png", effect: 0 },
+			{ image: "/assets/template/lbk-card.png", effect: 0 },
+			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
+			{ image: "/assets/template/kde-card.jpg", effect: 0 },
+			{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
 		],
 		[],
 	);
@@ -108,7 +113,7 @@ const Create = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center w-full h-full">
-					<div className="text-white font-nexonBold text-2xl mt-10">
+					<div className="text-white font-nexonBold text-xl mt-6">
 						{type === "request" ? "행운 요청 카드 선택" : "행운 카드 선택"}
 					</div>
 
@@ -123,11 +128,11 @@ const Create = () => {
 										key={index}
 										className="!flex justify-center items-center"
 										onClick={() => handleCardClick(index)}
-										style={{ width: "280px", margin: "0 20px" }}
+										style={{ width: "240px", margin: "0 20px" }}
 									>
 										<Card
-											width={280}
-											height={495}
+											width={240}
+											height={424}
 											path={card.image}
 											effect={card.effect}
 										/>
@@ -138,14 +143,14 @@ const Create = () => {
 					</div>
 
 					<div className="w-9/12 flex flex-col items-center mt-10">
-						<label className="text-white text-xl font-nexonRegular mb-4">나의 이름은?</label>
+						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
 						<input
 							type="text"
 							placeholder="익명 (최대 11글자)"
 							value={userName}
 							onChange={(e) => setLocalUserName(e.target.value)}
 							maxLength={11}
-							className="border-b-2 border-white bg-transparent font-nexonRegular text-white text-center outline-none"
+							className="border-b border-white bg-transparent font-nexonRegular text-white text-center outline-none"
 						/>
 					</div>
 					<div className="mt-10 mb-10 w-full flex justify-center">

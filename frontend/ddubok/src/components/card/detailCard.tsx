@@ -6,13 +6,14 @@ import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
 
-import { Siren } from "@phosphor-icons/react";
+import { Siren, Star } from "@phosphor-icons/react";
 import { deleteCard } from "@lib/api/card-load-api";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
+	const [tempState, setTempState] = useState("FILTERED");
 	const [showOption, setShowOption] = useState(false);
 
 	const download = () => {
@@ -20,6 +21,10 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 		link.href = path;
 		link.download = "행운카드.png";
 		link.click();
+	};
+
+	const clickUnlockContent = () => {
+		setTempState("OPEN");
 	};
 
 	const handleHide = async (cardId: number) => {
@@ -51,7 +56,17 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					<p>From. {writerName}</p>
 					<span
 						className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
-						onClick={() => setShowOption(!showOption)}
+						onClick={() => {}}
+					>
+						<Star
+							size={14}
+							color="#d5b207"
+							weight="fill"
+						/>
+					</span>
+					<span
+						className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
+						onClick={clickUnlockContent}
 					>
 						<Siren
 							size={14}
@@ -60,9 +75,9 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 						/>
 					</span>
 					{showOption && (
-						<div className="z-10 absolute right-8 top-18 bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
+						<div className="z-10 absolute right-4 top-14 border border-black border-solid bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
 							<p
-								className="mb-2"
+								className="mb-2 border-b border-black border-solid"
 								onClick={handleReport}
 							>
 								카드 신고하기
@@ -76,7 +91,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					height={478}
 					path={path}
 					content={content}
-					state={state}
+					state={tempState}
 					effect={effect}
 					flip={true}
 				/>
