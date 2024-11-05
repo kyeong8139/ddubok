@@ -35,7 +35,8 @@ const nexonGothicBold = localFont({
 
 export const metadata: Metadata = {
 	title: "뚜복 (DDUBOK)",
-	description: "당신을 위한 행운 배달부🍀",
+	description: "당신을 위한 행운 배달부 서비스 뚜복🍀",
+	keywords: "뚜복, 행운, 카드, 수능, 수험생, 응원",
 	manifest: "/manifest.json",
 	icons: {
 		icon: "icons/icon-512x512.png",
