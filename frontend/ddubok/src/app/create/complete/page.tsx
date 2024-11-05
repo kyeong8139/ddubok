@@ -95,17 +95,30 @@ const CardDetail = () => {
 		// }
 	};
 
-	const handleShareFacebook = () => {
-		const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-		window.open(shareUrl, "_blank", "width=600,height=400");
+	const handleShareInstagram = () => {
+		// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+		// window.open(shareUrl, "_blank", "width=600,height=400");
+		if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+			const shareUrl = getShareUrl();
+			const instagramUrl = `instagram://story-camera`;
+
+			window.location.href = instagramUrl;
+
+			toast.success("인스타그램 스토리에 이미지를 추가해주세요!");
+		} else {
+			toast.error("인스타그램은 모바일에서만 가능합니다");
+		}
 	};
 
 	const handleShareX = () => {
-		const text = "행운카드가 도착했어요!";
-		const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(
-			currentUrl,
+		const shareUrl = getShareUrl();
+		const text = `행운카드가 도착했어요! 접속해서 받아가세요🍀`;
+
+		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(
+			shareUrl,
 		)}`;
-		window.open(shareUrl, "_blank", "width=600,height=400");
+
+		window.open(twitterUrl, "_blank", "width=600,height=400");
 	};
 
 	const handleSaveCard = async () => {
@@ -245,18 +258,18 @@ const CardDetail = () => {
 									<span className="text-black font-nexonLight text-sm sm:text-base">카카오톡</span>
 								</button>
 								<button
-									onClick={handleShareFacebook}
+									onClick={handleShareInstagram}
 									className="flex flex-col items-center"
 								>
 									<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
 										<Image
-											src="/assets/facebook-circle.png"
-											alt="Facebook"
+											src="/assets/insta-circle.png"
+											alt="Instagram"
 											fill
 											className="rounded-full"
 										/>
 									</div>
-									<span className="text-black font-nexonLight text-sm sm:text-base">페이스북</span>
+									<span className="text-black font-nexonLight text-sm sm:text-base">인스타그램</span>
 								</button>
 								<button
 									onClick={handleShareX}
