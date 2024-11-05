@@ -6,6 +6,7 @@ import { useState } from "react";
 import Button from "@components/button/button";
 import { IReportProps } from "@interface/components/card";
 import { insertReport } from "@lib/api/report-api";
+import toast from "react-hot-toast";
 
 const Report = () => {
 	const router = useRouter();
@@ -24,11 +25,17 @@ const Report = () => {
 				content,
 			};
 
-			alert("신고가 접수되었습니다.");
+			console.log(reportData);
+			console.log(title);
+			console.log(reportType);
+			console.log(content);
+
 			await insertReport(reportData);
+			toast.success("신고가 접수되었습니다");
 			router.push("/book");
 		} catch (error) {
 			console.error(error);
+			toast.error("신고 접수에 실패했습니다");
 		}
 	};
 

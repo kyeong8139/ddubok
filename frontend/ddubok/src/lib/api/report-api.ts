@@ -5,5 +5,5 @@ import axiosInstance from "@lib/api/axiosInstance";
 
 // 신고하기
 export const insertReport = (reportData: IReportProps) => {
-	return axiosInstance.post(`/reports`, { reportData });
+	return axiosInstance.post(`/reports`, reportData);
 };

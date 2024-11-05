@@ -160,25 +160,25 @@ const Book = () => {
 					</div>
 					<div className="flex justify-between items-center mt-8 pb-12 px-8">
 						<button
-							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-							className="p-2 bg-white rounded-full disabled:opacity-0"
+							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+							className="p-2 bg-white rounded-lg disabled:opacity-0"
 							disabled={currentPage === 0}
 						>
-							<div className="flex gap-1 font-nexonRegular">
+							<div className="flex items=-center gap-1 font-nexonRegular">
 								<CaretLeft
 									size={16}
 									weight="bold"
 								/>
-								<span>이전으로</span>
+								<span className="text-sm">이전으로</span>
 							</div>
 						</button>
 						<button
 							onClick={() => setCurrentPage((prev) => prev + 1)}
-							className="p-2 bg-white rounded-full disabled:opacity-0"
+							className="p-2 bg-white rounded-lg disabled:opacity-0"
 							disabled={!hasNext}
 						>
-							<div className="flex gap-1 font-nexonRegular">
-								<span>다음으로</span>
+							<div className="flex items-center gap-1 font-nexonRegular">
+								<span className="text-sm">다음으로</span>
 								<CaretRight
 									size={16}
 									weight="bold"
