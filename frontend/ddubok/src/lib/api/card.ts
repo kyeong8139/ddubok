@@ -115,10 +115,13 @@ export const getCard = async (cardId: number) => {
 	try {
 		const response = await axios.get(`${baseURL}/cards/${cardId}`, {
 			headers: {
-				"Content-Type": "multipart/form-data",
+				"Content-Type": "application/json",
 			},
 		});
-		console.log(response);
+
+		console.log("전체 응답:", response);
+		console.log("응답 데이터:", response.data);
+
 		return response.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {

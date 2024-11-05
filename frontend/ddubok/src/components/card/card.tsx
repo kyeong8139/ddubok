@@ -1,4 +1,4 @@
-`use client`;
+"use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -12,6 +12,17 @@ import Button from "@components/button/button";
 const Card = ({ width, height, path, content, state, effect, flip }: IDetailCardDto) => {
 	const [isFlipped, setIsFlipped] = useState(false);
 	const [tempState, setTempState] = useState(state);
+
+	// HTML 이스케이프 처리 함수
+	const escapeHTML = (str: string = "") => {
+		return str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;")
+			.replace(/\n/g, "<br>"); // 줄바꿈 유지
+	};
 
 	const effectClasses = () => {
 		switch (effect) {
@@ -79,9 +90,10 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 						<div
 							className="font-nexonRegular my-10 px-8 leading-tight text-sm overflow-hidden overflow-y-scroll scrollbar-hide"
 							style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
-						>
-							{content}
-						</div>
+							dangerouslySetInnerHTML={{
+								__html: escapeHTML(content),
+							}}
+						/>
 					) : state === "READY" ? (
 						<div className="font-nexonRegular text-lg flex justify-center items-center h-full ">
 							편지는 11월 13일 오후 6시부터 <br />
@@ -89,7 +101,7 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 						</div>
 					) : (
 						<div
-							className="font-nexonRegular text-lg flex justify-center items-center h-full"
+							className="font-nexonRegular text-lg flex justify-center items-center h-full flex-col"
 							style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
 						>
 							<p className="mb-4">
