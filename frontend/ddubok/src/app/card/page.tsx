@@ -99,6 +99,8 @@ const SharedCard = () => {
 
 			try {
 				const response = await getCard(cardId);
+				console.log(response);
+				console.log(response.data);
 				setCardData(response.data);
 			} catch (error) {
 				console.error("카드 데이터 불러오기 실패:", error);
