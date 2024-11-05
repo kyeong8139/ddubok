@@ -8,10 +8,12 @@ import Button from "@components/button/button";
 import FortuneCard from "@components/card/fortuneCard";
 import { checkAttendance, currentMonth, daysInMonth } from "@lib/utils/dateUtils";
 import { insertFortune, selectFortuneList } from "@lib/api/fortune-api";
+import useAuthToken from "@lib/utils/tokenUtils";
 import { IFortuneProps } from "@interface/components/fortune";
 
 const Fortune = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
+	const { accessToken, isTokenReady } = useAuthToken();
 	const [itemsCount, setItemsCount] = useState(0);
 	const [emptyCount, setEmptyCount] = useState(0);
 	const [fortuneList, setFortuneList] = useState([]);
@@ -20,6 +22,8 @@ const Fortune = () => {
 
 	useEffect(() => {
 		const loadFortuneList = async () => {
+			if (!isTokenReady) return;
+
 			try {
 				const response = await selectFortuneList();
 				setFortuneList(response.data.data.attendanceList);
@@ -30,7 +34,7 @@ const Fortune = () => {
 		};
 
 		loadFortuneList();
-	}, []);
+	}, [isTokenReady]);
 
 	useEffect(() => {
 		const maxWidth = 480;
