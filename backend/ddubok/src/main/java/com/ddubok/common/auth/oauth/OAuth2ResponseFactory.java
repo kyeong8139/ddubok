@@ -29,11 +29,6 @@ public class OAuth2ResponseFactory {
      * @throws RuntimeException 지원하지 않는 OAuth2 제공자인 경우
      */
     public OAuth2Response getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
-        log.error("=============================================");
-        log.error("OAuth2ResponseFactory called!");
-        log.error("Registration ID: {}", registrationId);
-        log.error("Attributes: {}", attributes);
-        log.error("=============================================");
         return switch (registrationId.toLowerCase()) {
             case "google" -> new GoogleResponse(attributes);
             case "naver" -> new NaverResponse(attributes);

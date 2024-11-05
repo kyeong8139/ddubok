@@ -41,19 +41,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        log.error("Starting OAuth2 user load for provider: {}",
-            userRequest.getClientRegistration().getRegistrationId());
 
         OAuth2User oauth2User = super.loadUser(userRequest);
-        log.error("Loaded OAuth2User attributes: {}", oauth2User.getAttributes());
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = oAuth2ResponseFactory.getOAuth2UserInfo(registrationId,
             oauth2User.getAttributes());
-
-        log.error("Created OAuth2Response for provider: {}, providerId: {}",
-            oAuth2Response.getProvider(),
-            oAuth2Response.getProviderId());
 
         String socialAccessToken = userRequest.getAccessToken().getTokenValue();
         MemberAuthDto memberAuthDto = processOAuth2User(oAuth2Response, socialAccessToken);
