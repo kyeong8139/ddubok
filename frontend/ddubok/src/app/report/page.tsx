@@ -25,11 +25,6 @@ const Report = () => {
 				content,
 			};
 
-			console.log(reportData);
-			console.log(title);
-			console.log(reportType);
-			console.log(content);
-
 			await insertReport(reportData);
 			toast.success("신고가 접수되었습니다");
 			router.push("/book");
