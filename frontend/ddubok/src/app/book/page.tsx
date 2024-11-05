@@ -88,17 +88,34 @@ const Book = () => {
 					<Loading />
 				</div>
 			) : cardList.length === 0 ? (
-				<div className="flex flex-col items-center justify-center h-screen text-white">
-					<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
-					<Button
-						text="행운카드<br/>조르기"
-						color="gradient"
-						size="short"
-						font="both"
-						shadow="gradient"
-						onClick={() => {}}
-					/>
-				</div>
+				<>
+					<div className="flex justify-center pt-4">
+						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
+							{["전체", "안 읽은 카드", "수능"].map((item, index) => (
+								<li
+									key={index}
+									onClick={() => handleClick(index)}
+									className={`p-[6px] rounded-md cursor-pointer ${
+										selected === index ? "bg-ddubokPurple text-white font-nexonBold" : "bg-gray-200"
+									}`}
+								>
+									{item}
+								</li>
+							))}
+						</ul>
+					</div>
+					<div className="flex flex-col items-center justify-center h-screen text-white">
+						<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
+						<Button
+							text="행운카드<br/>조르기"
+							color="gradient"
+							size="short"
+							font="both"
+							shadow="gradient"
+							onClick={() => {}}
+						/>
+					</div>
+				</>
 			) : (
 				<>
 					<div className="text-white flex flex-col items-center pt-8">
