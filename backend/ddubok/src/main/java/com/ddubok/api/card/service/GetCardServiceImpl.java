@@ -73,7 +73,9 @@ public class GetCardServiceImpl implements GetCardService {
             Sort.by("id").descending());
         Season findSeason = seasonRepository.findById(req.getSeasonId())
             .orElseThrow(() -> new SeasonNotFoundException());
-        Page<Album> albums = albumRepository.findAllBySeason(findSeason, pageable);
+        Member findmember = memberRepository.findById(req.getMemberId())
+            .orElseThrow(() -> new MemberNotFoundException());
+        Page<Album> albums = albumRepository.findAllBySeason(findmember, findSeason, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
             .build();
     }
@@ -85,9 +87,9 @@ public class GetCardServiceImpl implements GetCardService {
     public GetCardListRes getAllCardList(GetAllCardListReq req) {
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize(),
             Sort.by("id").descending());
-        Member member = memberRepository.findById(req.getMemberId())
+        Member findmember = memberRepository.findById(req.getMemberId())
             .orElseThrow(() -> new MemberNotFoundException());
-        Page<Album> albums = albumRepository.findAll(member ,pageable);
+        Page<Album> albums = albumRepository.findAll(findmember, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
             .build();
     }
