@@ -8,7 +8,7 @@ import { IStickerComponentProps } from "@interface/components/sticker";
 import { fabric } from "fabric";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
-const stickerImages = Array.from({ length: 71 }, (_, index) => `/assets/stickers/sticker (${index + 1}).png`);
+const stickerImages = Array.from({ length: 24 }, (_, index) => `/assets/character/character (${index + 1}).png`);
 
 function StickerComponent({ canvas }: IStickerComponentProps) {
 	const [currentPage, setCurrentPage] = useState(0);

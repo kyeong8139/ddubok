@@ -100,11 +100,7 @@ const CardDetail = () => {
 		// window.open(shareUrl, "_blank", "width=600,height=400");
 		if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 			const shareUrl = getShareUrl();
-			const shareText = "행운카드가 도착했어요! 접속해서 받아가세요🍀";
-
-			const instagramUrl = `instagram://story?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(
-				shareUrl,
-			)}`;
+			const instagramUrl = `instagram://story-camera`;
 
 			window.location.href = instagramUrl;
 		} else {
