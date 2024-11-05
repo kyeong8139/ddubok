@@ -55,6 +55,7 @@ const Card = ({ width, height, image, content, effect, flip }: ICardProps) => {
 							style={{ objectFit: "cover" }}
 							quality={80}
 							priority
+							unoptimized
 						/>
 					) : (
 						<div className="font-nexonBold text-xl flex justify-center items-center h-full bg-white">
