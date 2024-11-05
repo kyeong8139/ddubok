@@ -85,7 +85,9 @@ public class GetCardServiceImpl implements GetCardService {
     public GetCardListRes getAllCardList(GetAllCardListReq req) {
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize(),
             Sort.by("id").descending());
-        Page<Album> albums = albumRepository.findAll(pageable);
+        Member member = memberRepository.findById(req.getMemberId())
+            .orElseThrow(() -> new MemberNotFoundException());
+        Page<Album> albums = albumRepository.findAll(member ,pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
             .build();
     }
