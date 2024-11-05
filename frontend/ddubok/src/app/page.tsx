@@ -18,6 +18,8 @@ const Home = () => {
 	const { accessToken, isTokenReady } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
 
+	const isPageReady = isLoading || !isTokenReady;
+
 	const settings = {
 		infinite: true,
 		speed: 500,
@@ -58,8 +60,6 @@ const Home = () => {
 			setIsLoading(false);
 		});
 	}, [cardImages]);
-
-	const isPageReady = !isLoading && isTokenReady;
 
 	return (
 		<div

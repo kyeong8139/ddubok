@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
-	const [tempState, setTempState] = useState("FILTERED");
+	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
 	const [showOption, setShowOption] = useState(false);
 
 	const download = () => {
@@ -23,8 +23,11 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 		link.click();
 	};
 
-	const clickUnlockContent = () => {
-		setTempState("OPEN");
+	const clickUnlockContent = (cardId: number) => {
+		setTempState((prevState) => ({
+			...prevState,
+			[cardId]: prevState[cardId] === "FILTERED" ? "OPEN" : "FILTERED",
+		}));
 	};
 
 	const handleHide = async (cardId: number) => {
@@ -54,26 +57,28 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 			>
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
 					<p>From. {writerName}</p>
-					<span
-						className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
-						onClick={() => {}}
-					>
-						<Star
-							size={14}
-							color="#d5b207"
-							weight="fill"
-						/>
-					</span>
-					<span
-						className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
-						onClick={clickUnlockContent}
-					>
-						<Siren
-							size={14}
-							color="red"
-							weight="fill"
-						/>
-					</span>
+					<div>
+						<span
+							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
+							onClick={() => (id ? clickUnlockContent(id) : undefined)}
+						>
+							<Star
+								size={14}
+								color="#d5b207"
+								weight="fill"
+							/>
+						</span>
+						<span
+							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E] mr-1"
+							onClick={() => setShowOption(!showOption)}
+						>
+							<Siren
+								size={14}
+								color="red"
+								weight="fill"
+							/>
+						</span>
+					</div>
 					{showOption && (
 						<div className="z-10 absolute right-4 top-14 border border-black border-solid bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
 							<p
@@ -91,7 +96,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					height={478}
 					path={path}
 					content={content}
-					state={tempState}
+					state={id !== undefined ? tempState[id] : "FILTERED"}
 					effect={effect}
 					flip={true}
 				/>

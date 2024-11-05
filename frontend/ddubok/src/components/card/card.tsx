@@ -110,7 +110,7 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 								<br />
 								포함되어 있습니다.
 							</p>
-							<p className="font-[10px]">
+							<p className="font-xs">
 								카드 내용을 확인하시려면 <br />
 								상단의 별 버튼을 클릭하세요!
 							</p>
