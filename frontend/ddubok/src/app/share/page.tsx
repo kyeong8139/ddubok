@@ -6,15 +6,21 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
 import Card from "@components/card/card";
+import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
+import useAuthToken from "@lib/utils/tokenUtils";
+import { selectPreviewList } from "@lib/api/card-load-api";
+import { getTokenInfo } from "@lib/utils/authUtils";
 
 import Slider from "react-slick";
-import Modal from "@components/common/modal";
 
 const Request = () => {
 	const router = useRouter();
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
+	const { accessToken } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
+	const [nickname, setNickname] = useState("");
+	const [imageArray, setImageArray] = useState<string[]>([]);
 
 	const settings = {
 		infinite: true,
@@ -29,30 +35,36 @@ const Request = () => {
 		adaptiveHeight: true,
 	};
 
-	const cardImages = useMemo(
-		() => [
-			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
-		],
-		[],
-	);
-
 	useEffect(() => {
-		const imgElements = cardImages.map((card) => {
-			if (card.image) {
-				const img = new Image();
-				img.src = card.image;
-				return img;
+		const loadPriveiwImages = async () => {
+			if (accessToken) {
+				try {
+					const decodedToken = getTokenInfo(accessToken);
+					const response = await selectPreviewList(decodedToken.memberId);
+					console.log(response.data.data);
+					setNickname(response.data.data.nickname);
+					setImageArray(response.data.data.cardUrl);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching card images:", error);
+					router.push("/login");
+				}
 			}
-			return null;
-		});
+		};
 
-		Promise.all(imgElements.map((img) => img?.decode())).then(() => {
-			setIsLoading(false);
-		});
-	}, [cardImages]);
+		loadPriveiwImages();
+	}, [accessToken]);
+
+	const cardImages = useMemo(() => {
+		return imageArray.length >= 3
+			? imageArray.map((image) => ({ image, effect: 0 }))
+			: [
+					{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
+					{ image: "/assets/template/kkm-card.png", effect: 0 },
+					{ image: "/assets/template/kde-card.jpg", effect: 0 },
+					{ image: "/assets/template/psh-card.jpg", effect: 0 },
+			  ];
+	}, [imageArray]);
 
 	return (
 		<div id="request">
@@ -65,27 +77,24 @@ const Request = () => {
 					<div className="text-white font-nexonRegular flex flex-col items-center pt-8 text-center">
 						<p className="mb-4 text-lg leading-normal">
 							수능을 앞둔 <br />
-							<span className="font-nexonBold">서민정닮은코딩주머니</span> 님을 위해 <br />
+							<span className="font-nexonBold">{nickname}</span> 님을 위해 <br />
 							행운카드을 만들어주세요🍀
 						</p>
 						<p className="text-sm">
-							현재까지 <span className="font-nexonBold">5</span>개의 행운카드를 받았어요💌
+							현재까지 <span className="font-nexonBold">{imageArray.length}</span>개의 행운카드를
+							받았어요💌
 						</p>
 					</div>
 					<div className="w-full max-w-[480px] mx-auto mt-8">
 						<Slider {...settings}>
 							{cardImages.map((card, index) => (
-								<div key={index}>
-									<Card
-										width={250}
-										height={445}
-										path={card.image}
-										effect={card.effect}
-									/>
-									<p className="text-white font-nexonRegular mt-4 text-center">
-										<span className="font-nexonBold">서민정닮은코딩주머니뀨</span> 님
-									</p>
-								</div>
+								<Card
+									key={index}
+									width={250}
+									height={445}
+									path={card.image}
+									effect={card.effect}
+								/>
 							))}
 						</Slider>
 					</div>
