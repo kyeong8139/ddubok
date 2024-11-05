@@ -8,12 +8,14 @@ import DetailCard from "@components/card/detailCard";
 import { ModalContext } from "@context/modal-context";
 import { ICardDto } from "@interface/components/card";
 import { selectCardDetail, selectCardList, selectCardSeasonList } from "@lib/api/card-load-api";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import Button from "@components/button/button";
 
 const Book = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
+	const { isTokenReady } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
 	const [selected, setSelected] = useState(0);
 	const [currentPage, setCurrentPage] = useState(0);
@@ -31,6 +33,8 @@ const Book = () => {
 
 	useEffect(() => {
 		const loadCardList = async () => {
+			if (!isTokenReady) return;
+
 			try {
 				setIsLoading(true);
 
@@ -57,7 +61,7 @@ const Book = () => {
 		};
 
 		loadCardList();
-	}, [selected, currentPage]);
+	}, [selected, currentPage, isTokenReady]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);

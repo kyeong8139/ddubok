@@ -41,7 +41,7 @@ const useAuthToken = () => {
 		initializeAccessToken();
 	}, [accessToken, setAccessToken, clearAccessToken]);
 
-	return { accessToken, isTokenReady };
+	return { accessToken, isTokenReady, clearAccessToken };
 };
 
 export default useAuthToken;
