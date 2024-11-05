@@ -66,7 +66,6 @@ const Book = () => {
 
 	const handleCardClick = (cardId: number) => {
 		selectCardDetail(cardId).then((response) => {
-			console.log(response.data.data);
 			setCard(response.data.data);
 		});
 

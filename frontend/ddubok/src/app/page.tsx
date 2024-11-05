@@ -58,9 +58,11 @@ const Home = () => {
 	const cardImages = useMemo(
 		() => [
 			{ image: "/assets/template/kkm-card.png", effect: 0 },
-			{ image: "/assets/template/kde-card.jpg", effect: 0 },
+			{ image: "/assets/template/psh-card.jpg", effect: 0 },
 			{ image: "/assets/template/kkm-card-2.png", effect: 0 },
+			{ image: "/assets/template/lbk-card.png", effect: 0 },
 			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
+			{ image: "/assets/template/kde-card.jpg", effect: 0 },
 		],
 		[],
 	);
@@ -106,7 +108,7 @@ const Home = () => {
 								className="pt-2"
 							/>
 							<p className="font-nexonLight text-sm">
-								이벤트 기간: <span>11.04 - 11.13</span>
+								이벤트 기간: <span>11.06 - 11.13</span>
 							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
@@ -116,7 +118,7 @@ const Home = () => {
 										key={index}
 										width={250}
 										height={445}
-										image={card.image}
+										path={card.image}
 										effect={card.effect}
 									/>
 								))}

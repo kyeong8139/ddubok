@@ -8,18 +8,18 @@ export interface ICardProps {
 }
 
 export interface ICardDto {
-	id: number;
-	content: string;
+	id?: number;
+	content?: string;
 	openedAt?: string;
 	path: string;
-	state: string;
-	writerName: string;
+	state?: string;
+	writerName?: string;
 	isRead?: boolean;
 }
 
 export interface IDetailCardDto extends ICardDto {
 	width?: number;
-	hegiht?: number;
+	height?: number;
 	effect?: number;
 	flip?: boolean;
 }
