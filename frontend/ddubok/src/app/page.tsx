@@ -7,8 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import Button from "@components/button/button";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
-import { checkRefreshToken, reissue } from "@lib/api/login-api";
-import useAuthStore from "@store/auth-store";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -16,31 +15,8 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
 	const router = useRouter();
+	const { accessToken, isTokenReady } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
-	const accessToken = useAuthStore((state) => state.accessToken);
-	const setAccessToken = useAuthStore((state) => state.setAccessToken);
-	const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
-
-	useEffect(() => {
-		const getRefreshToken = async () => {
-			try {
-				const refreshResponse = await checkRefreshToken();
-
-				if (refreshResponse.data.code === "200") {
-					const response = await reissue();
-					const newAccessToken = `Bearer ${response.headers.authorization}`;
-					setAccessToken(newAccessToken);
-				} else if (refreshResponse.data.code === "805") {
-					clearAccessToken();
-					return;
-				}
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		getRefreshToken();
-	});
 
 	const settings = {
 		infinite: true,
@@ -63,6 +39,7 @@ const Home = () => {
 			{ image: "/assets/template/lbk-card.png", effect: 0 },
 			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
 			{ image: "/assets/template/kde-card.jpg", effect: 0 },
+			{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
 		],
 		[],
 	);
@@ -82,12 +59,14 @@ const Home = () => {
 		});
 	}, [cardImages]);
 
+	const isPageReady = !isLoading && isTokenReady;
+
 	return (
 		<div
 			id="home"
 			className="font-nexonRegular text-white"
 		>
-			{isLoading ? (
+			{isPageReady ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
 				</div>

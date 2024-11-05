@@ -95,27 +95,25 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 							}}
 						/>
 					) : state === "READY" ? (
-						<div className="font-nexonRegular text-lg flex justify-center items-center h-full ">
-							편지는 11월 13일 오후 6시부터 <br />
-							확인할 수 있습니다.
+						<div className="font-nexonRegular flex justify-center items-center h-full text-center">
+							11월 13일 오후 8시부터
+							<br />
+							편지를 확인할 수 있습니다.
 						</div>
 					) : (
 						<div
-							className="font-nexonRegular text-lg flex justify-center items-center h-full flex-col"
+							className="font-nexonRegular flex justify-center items-center h-full flex-col text-center"
 							style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
 						>
 							<p className="mb-4">
-								편지에 부적절한 내용이 <br />
+								편지에 부적절한 내용이
+								<br />
 								포함되어 있습니다.
 							</p>
-							<Button
-								text="편지 내용<br />확인하기"
-								color="gradient"
-								size="short"
-								font="both"
-								shadow="gradient"
-								onClick={clickUnlockContent}
-							/>
+							<p className="font-[10px]">
+								카드 내용을 확인하시려면 <br />
+								상단의 별 버튼을 클릭하세요!
+							</p>
 						</div>
 					)}
 					<Image
