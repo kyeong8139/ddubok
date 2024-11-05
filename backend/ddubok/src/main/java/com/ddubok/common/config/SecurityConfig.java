@@ -179,7 +179,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/attendances").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/v1/cards").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v2/cards").permitAll()
-                .requestMatchers("/api/v1/cards/receive").permitAll()
+                .requestMatchers("/api/v1/cards/receive/**").permitAll()
                 .requestMatchers("/api/v1/cards/**").hasRole("USER")
                 .requestMatchers("/api/v1/reports").hasRole("USER")
                 .anyRequest().authenticated()
