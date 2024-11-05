@@ -20,6 +20,7 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const setAccessToken = useAuthStore((state) => state.setAccessToken);
+	const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
 
 	useEffect(() => {
 		const getRefreshToken = async () => {
@@ -30,13 +31,12 @@ const Home = () => {
 					const response = await reissue();
 					const newAccessToken = `Bearer ${response.headers.authorization}`;
 					setAccessToken(newAccessToken);
+				} else if (refreshResponse.data.code === "800") {
+					clearAccessToken();
+					return;
 				}
 			} catch (error) {
-				if (axios.isAxiosError(error) && error.response?.data?.code === "800") {
-					return;
-				} else {
-					console.error(error);
-				}
+				console.error(error);
 			}
 		};
 
@@ -58,10 +58,9 @@ const Home = () => {
 
 	const cardImages = useMemo(
 		() => [
-			{ image: "/assets/examplCard1.png", effect: 0 },
+			{ image: "/assets/template/kkm-card.png", effect: 0 },
 			{ image: "/assets/examplCard2.png", effect: 0 },
 			{ image: "/assets/examplCard1.png", effect: 0 },
-			{ image: "/assets/examplCard2.png", effect: 0 },
 		],
 		[],
 	);
