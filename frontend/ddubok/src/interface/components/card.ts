@@ -3,16 +3,25 @@ export interface ICardProps {
 	height: number;
 	image?: string;
 	content?: string;
-	effect: number;
+	effect?: number;
 	flip?: boolean;
 }
 
-export interface IDetailCardProps {
-	cardId: number;
-	writer: string;
-	image: string;
+export interface ICardDto {
+	id: number;
 	content: string;
-	effect: number;
+	openedAt?: string;
+	path: string;
+	state: string;
+	writerName: string;
+	isRead?: boolean;
+}
+
+export interface IDetailCardDto extends ICardDto {
+	width?: number;
+	hegiht?: number;
+	effect?: number;
+	flip?: boolean;
 }
 
 export interface IReportProps {

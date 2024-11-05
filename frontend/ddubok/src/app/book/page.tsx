@@ -6,6 +6,8 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import Loading from "@components/common/loading";
 import DetailCard from "@components/card/detailCard";
 import { ModalContext } from "@context/modal-context";
+import { ICardDto } from "@interface/components/card";
+import { selectCardDetail, selectCardList, selectCardSeasonList } from "@lib/api/card-load-api";
 
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
@@ -13,70 +15,101 @@ const Book = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [selected, setSelected] = useState(0);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [selectedImage, setSelectedImage] = useState("");
-	const [selectedEffect, setSelectedEffect] = useState(0);
-	const [selectedCardId, setSelectedCardId] = useState(0);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [cardList, setCardList] = useState<ICardDto[]>([]);
+	const [card, setCard] = useState<ICardDto>({
+		id: 0,
+		content: "",
+		openedAt: "",
+		path: "",
+		state: "",
+		writerName: "",
+		isRead: false,
+	});
+	const [hasNext, setHasNext] = useState(false);
+
+	useEffect(() => {
+		const loadCardList = async () => {
+			try {
+				setIsLoading(true);
+
+				const response =
+					selected === 0 || selected === 1
+						? await selectCardList(6, currentPage)
+						: await selectCardSeasonList(6, currentPage, selected);
+				let cards = response.data.data.cards;
+
+				if (selected === 1) {
+					cards = cards.fliter((card: ICardDto) => !card.isRead);
+				}
+
+				setCardList(cards);
+				setHasNext(response.data.data.hasNext);
+				setIsLoading(false);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		loadCardList();
+	}, [selected, currentPage]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
+		setCurrentPage(0);
 	};
 
-	const handleCardClick = (image: string, effect: number, cardId: number) => {
-		setSelectedImage(image);
-		setSelectedEffect(effect);
-		setSelectedCardId(cardId);
+	const handleCardClick = (cardId: number) => {
+		selectCardDetail(cardId).then((response) => {
+			console.log(response.data.data);
+			setCard(response.data.data);
+		});
+
 		openModal();
 	};
 
-	const cardImages = useMemo(
-		() => [
-			{ cardId: 1, image: "/assets/examplCard1.png", effect: 0 },
-			{ cardId: 2, image: "/assets/examplCard2.png", effect: 0 },
-			{ cardId: 3, image: "/assets/temp1.jpg", effect: 0 },
-			{ cardId: 4, image: "/assets/temp2.jpg", effect: 0 },
-			{ cardId: 5, image: "/assets/examplCard1.png", effect: 0 },
-			{ cardId: 6, image: "/assets/examplCard2.png", effect: 0 },
-			{ cardId: 7, image: "/assets/temp1.jpg", effect: 0 },
-			{ cardId: 8, image: "/assets/temp2.jpg", effect: 0 },
-			{ cardId: 9, image: "/assets/examplCard1.png", effect: 0 },
-			{ cardId: 10, image: "/assets/examplCard2.png", effect: 0 },
-			{ cardId: 11, image: "/assets/temp1.jpg", effect: 0 },
-			{ cardId: 12, image: "/assets/temp2.jpg", effect: 0 },
-			{ cardId: 13, image: "/assets/examplCard1.png", effect: 0 },
-			{ cardId: 14, image: "/assets/examplCard2.png", effect: 0 },
-			{ cardId: 15, image: "/assets/temp1.jpg", effect: 0 },
-			{ cardId: 16, image: "/assets/temp2.jpg", effect: 0 },
-		],
-		[],
-	); // 임시 데이터, 페이징 처리 수정 필요
+	// const cardImages = useMemo(
+	// 	() => [
+	// 		{ cardId: 1, image: "/assets/examplCard1.png", effect: 0 },
+	// 		{ cardId: 2, image: "/assets/examplCard2.png", effect: 0 },
+	// 		{ cardId: 3, image: "/assets/examplCard1.png", effect: 0 },
+	// 		{ cardId: 4, image: "/assets/examplCard2.png", effect: 0 },
+	// 		{ cardId: 5, image: "/assets/examplCard1.png", effect: 0 },
+	// 		{ cardId: 6, image: "/assets/examplCard2.png", effect: 0 },
+	// 		{ cardId: 7, image: "/assets/examplCard1.png", effect: 0 },
+	// 		{ cardId: 8, image: "/assets/examplCard2.png", effect: 0 },
+	// 		{ cardId: 9, image: "/assets/examplCard1.png", effect: 0 },
+	// 		{ cardId: 10, image: "/assets/examplCard2.png", effect: 0 },
+	// 	],
+	// 	[],
+	// );
 
-	const itemsPerPage = 6;
-	const totalPages = Math.ceil(cardImages.length / itemsPerPage);
+	// const itemsPerPage = 6;
+	// const totalPages = Math.ceil(cardImages.length / itemsPerPage);
 
-	const paginatedCards = useMemo(() => {
-		const start = (currentPage - 1) * itemsPerPage;
-		const end = start + itemsPerPage;
-		return cardImages.slice(start, end);
-	}, [currentPage, cardImages]);
+	// const paginatedCards = useMemo(() => {
+	// 	const start = (currentPage - 1) * itemsPerPage;
+	// 	const end = start + itemsPerPage;
+	// 	return cardImages.slice(start, end);
+	// }, [currentPage, cardImages]);
 
-	const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-	const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+	// const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+	// const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-	useEffect(() => {
-		const imgElements = cardImages.map((card) => {
-			if (card.image) {
-				const img = new Image();
-				img.src = card.image;
-				return img;
-			}
-			return null;
-		});
+	// useEffect(() => {
+	// 	const imgElements = cardImages.map((card) => {
+	// 		if (card.image) {
+	// 			const img = new Image();
+	// 			img.src = card.image;
+	// 			return img;
+	// 		}
+	// 		return null;
+	// 	});
 
-		Promise.all(imgElements.map((img) => img?.decode())).then(() => {
-			setIsLoading(false);
-		});
-	}, [cardImages]);
+	// 	Promise.all(imgElements.map((img) => img?.decode())).then(() => {
+	// 		setIsLoading(false);
+	// 	});
+	// }, [cardImages]);
 
 	useEffect(() => {
 		if (isModalOpen) {
@@ -118,14 +151,14 @@ const Book = () => {
 						</ul>
 					</div>
 					<div className="w-[calc(100%-64px)] max-w-[416px] mx-auto mt-12 grid grid-cols-2 gap-4">
-						{paginatedCards.map((card, index) => (
+						{cardList.map((card, index) => (
 							<div
 								key={index}
 								className="flex justify-center items-center w-full h-0 pb-[180%] relative rounded-lg overflow-hidden"
-								onClick={() => handleCardClick(card.image, card.effect, card.cardId)}
+								onClick={() => handleCardClick(card.id)}
 							>
 								<NextImage
-									src={card.image}
+									src={card.path}
 									alt="ddubok"
 									objectFit="cover"
 									fill
@@ -135,39 +168,43 @@ const Book = () => {
 					</div>
 					<div className="flex justify-between items-center mt-8 pb-12 px-8">
 						<button
-							onClick={handlePrevPage}
+							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
 							className="p-2 bg-white rounded-full disabled:opacity-0"
-							disabled={currentPage === 1}
+							disabled={currentPage === 0}
 						>
-							<CaretLeft
-								size={16}
-								weight="bold"
-							/>
+							<div>
+								<CaretLeft
+									size={16}
+									weight="bold"
+								/>
+								<span>이전으로</span>
+							</div>
 						</button>
-						<span className="text-white font-nexonRegular text-sm">
-							{currentPage} / {totalPages}
-						</span>
 						<button
-							onClick={handleNextPage}
+							onClick={() => setCurrentPage((prev) => prev + 1)}
 							className="p-2 bg-white rounded-full disabled:opacity-0"
-							disabled={currentPage === totalPages}
+							disabled={!hasNext}
 						>
-							<CaretRight
-								size={16}
-								weight="bold"
-							/>
+							<div>
+								<span>다음으로</span>
+								<CaretRight
+									size={16}
+									weight="bold"
+								/>
+							</div>
 						</button>
 					</div>
 					<div
 						className={`transition-opacity duration-300
-					${isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+					${isModalOpen && card ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
 					>
 						<DetailCard
-							cardId={selectedCardId}
-							writer="나는야뿌랑하는유니스"
-							image={selectedImage}
-							content="상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼ 상용아! 너의 코딩 주머니는 사실 행운 주머니라며..? 그니까 수능 보다가 어려운 문제 있으면 배 살살 쓰다듬으면 금방 풀 수 있을거야! 너의 행운 주머니를 믿어! 상용아 파이팅‼‼"
-							effect={selectedEffect}
+							id={card.id}
+							state={card.state}
+							writerName={card.writerName}
+							path={card.path}
+							content={card.content}
+							effect={0}
 						/>
 					</div>
 				</>

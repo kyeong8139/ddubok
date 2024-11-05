@@ -4,24 +4,24 @@ import { useRouter } from "next/navigation";
 import Card from "@components/card/card";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
-import { IDetailCardProps } from "@interface/components/card";
+import { IDetailCardDto } from "@interface/components/card";
 
 import { Siren } from "@phosphor-icons/react";
 
-const DetailCard = ({ cardId, writer, image, content, effect }: IDetailCardProps) => {
+const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
 	const [showOption, setShowOption] = useState(false);
 
 	const download = () => {
 		const link = document.createElement("a");
-		link.href = image;
+		link.href = path;
 		link.download = "행운카드.png";
 		link.click();
 	};
 
 	const handleReport = () => {
-		router.push(`report?cardId=${cardId}`);
+		router.push(`report?cardId=${id}`);
 	};
 
 	return (
@@ -36,7 +36,7 @@ const DetailCard = ({ cardId, writer, image, content, effect }: IDetailCardProps
 				className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg z-10 overflow-hidden text-center"
 			>
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
-					<p>From. {writer}</p>
+					<p>From. {writerName}</p>
 					<span
 						className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
 						onClick={() => setShowOption(!showOption)}
@@ -57,7 +57,7 @@ const DetailCard = ({ cardId, writer, image, content, effect }: IDetailCardProps
 				<Card
 					width={270}
 					height={478}
-					image={image}
+					image={path}
 					content={content}
 					effect={effect}
 					flip={true}

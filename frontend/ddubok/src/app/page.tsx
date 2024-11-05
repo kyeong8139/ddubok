@@ -60,8 +60,8 @@ const Home = () => {
 		() => [
 			{ image: "/assets/examplCard1.png", effect: 0 },
 			{ image: "/assets/examplCard2.png", effect: 0 },
-			{ image: "/assets/temp1.jpg", effect: 0 },
-			{ image: "/assets/temp2.jpg", effect: 0 },
+			{ image: "/assets/examplCard1.png", effect: 0 },
+			{ image: "/assets/examplCard2.png", effect: 0 },
 		],
 		[],
 	);
