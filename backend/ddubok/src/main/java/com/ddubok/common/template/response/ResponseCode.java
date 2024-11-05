@@ -41,6 +41,7 @@ public enum ResponseCode {
     USER_TYPE_UNSUPPORTED("802", "해당 소셜 유저 타입을 지원하지 않음"),
     INVALID_ACCESS_TOKEN("803", "Access 토큰 에러입니다."),
     LOGIN_FAILED("804", "로그인에 실패하였습니다."),
+    REFRESH_TOKEN_NOT_FOUND("805", "RefreshToken이 없습니다."),
 
     // 900 - admin
     INVALID_CONDITION("900", "조건이 올바르지 않음"),
