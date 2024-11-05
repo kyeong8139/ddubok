@@ -21,7 +21,11 @@ const Card = () => {
 		return null;
 	}
 
-	return <div className="text-white">카드 받는 페이지 {cardId}</div>;
+	return (
+		<div className="flex flex-col items-center w-full">
+			<div className="text-white font-nexonBold text-2xl mt-10">편지 쓰기</div>
+		</div>
+	);
 };
 
 export default Card;
