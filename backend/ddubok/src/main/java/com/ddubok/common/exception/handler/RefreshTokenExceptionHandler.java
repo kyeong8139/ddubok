@@ -1,6 +1,6 @@
 package com.ddubok.common.exception.handler;
 
-import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
+import com.ddubok.common.auth.exception.IsNotExistedResfreshTokenException;
 import com.ddubok.common.exception.CommonException;
 import com.ddubok.common.template.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RefreshTokenExceptionHandler {
 
     @ExceptionHandler({
-        InvalidRefreshTokenException.class
+        IsNotExistedResfreshTokenException.class
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BaseResponse<?> handleCommonException(CommonException e) {
-        log.info(e.getMessage());
         return BaseResponse.ofSuccess(e.getResponseCode());
     }
 }
