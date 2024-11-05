@@ -3,7 +3,6 @@
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 
 import Button from "@components/button/button";
 import Card from "@components/card/card";
@@ -31,7 +30,7 @@ const Home = () => {
 					const response = await reissue();
 					const newAccessToken = `Bearer ${response.headers.authorization}`;
 					setAccessToken(newAccessToken);
-				} else if (refreshResponse.data.code === "800") {
+				} else if (refreshResponse.data.code === "805") {
 					clearAccessToken();
 					return;
 				}
@@ -122,7 +121,7 @@ const Home = () => {
 								))}
 							</Slider>
 						</div>
-						<div className="flex justify-center gap-2 pt-12 pb-16">
+						<div className="flex justify-center gap-2 pt-12 pb-20">
 							<Button
 								text="행운카드<br/>만들어주기"
 								color="purple"
@@ -147,14 +146,14 @@ const Home = () => {
 						id="home-02"
 						className="bg-ddubokPurple"
 					>
-						<div className="relative flex justify-center pt-16 pb-4">
+						<div className="relative flex justify-center pt-20 pb-4">
 							<NextImage
 								src="/assets/purple_step.svg"
 								alt="보라색 말풍선"
 								width={64}
 								height={32}
 							/>
-							<span className="absolute top-17 text-xs font-nexonBold">STEP 1</span>
+							<span className="absolute top-21 text-xs font-nexonBold">STEP 1</span>
 						</div>
 						<h1 className="font-pyeongchang text-[2rem] text-black text-center leading-tight mb-6">
 							수험생 친구들을 위한
@@ -167,7 +166,7 @@ const Home = () => {
 							<span className="font-nexonBold">행운카드</span>를 만들어 보내주세요!
 							<br />
 						</p>
-						<div className="flex justify-center pb-16">
+						<div className="flex justify-center pb-20">
 							<div className="relative w-[calc(100%-64px)] h-64 overflow-hidden rounded-lg">
 								<NextImage
 									src="/assets/temp1.jpg"
@@ -182,14 +181,14 @@ const Home = () => {
 						id="home-03"
 						className="bg-ddubokGreen"
 					>
-						<div className="relative flex justify-center pt-16 pb-4">
+						<div className="relative flex justify-center pt-20 pb-4">
 							<NextImage
 								src="/assets/green_step.svg"
 								alt="청록색 말풍선"
 								width={64}
 								height={32}
 							/>
-							<span className="absolute top-17 text-xs font-nexonBold">STEP 2</span>
+							<span className="absolute top-21 text-xs font-nexonBold">STEP 2</span>
 						</div>
 						<h1 className="font-pyeongchang text-[2rem] text-black text-center leading-tight mb-6">
 							수험생인 나를 위한
@@ -201,7 +200,7 @@ const Home = () => {
 							<br />
 							친구들에게 <span className="font-nexonBold">행운카드</span>를 요청하세요!
 						</p>
-						<div className="flex justify-center pb-16">
+						<div className="flex justify-center pb-20">
 							<div className="relative w-[calc(100%-64px)] h-64 overflow-hidden rounded-lg">
 								<NextImage
 									src="/assets/temp2.jpg"
@@ -214,9 +213,9 @@ const Home = () => {
 					</div>
 					<div
 						id="home-04"
-						className="my-12 flex flex-col items-center"
+						className="my-16 flex flex-col items-center"
 					>
-						<p className="mb-4">나의 행운카드를 모아보고 싶다면?</p>
+						<p className="mb-6">나의 행운카드를 모아보고 싶다면?</p>
 						{accessToken ? (
 							<Button
 								text="행운 카드북 보러가기"
@@ -243,38 +242,38 @@ const Home = () => {
 					</div>
 					<div
 						id="home-05"
-						className="bg-ddubokGray text-black p-8 "
+						className="bg-ddubokGray text-black px-8 py-12 "
 					>
-						<h2 className="font-nexonBold mb-2">유의사항</h2>
-						<ul className="list-inside list-disc space-y-1">
+						<h2 className="font-nexonBold mb-4">유의사항</h2>
+						<ul className="list-inside list-disc space-y-2">
 							<li
-								className="text-xs text-justify mb-2"
+								className="text-xs text-justify"
 								style={{ textIndent: "-1rem", paddingLeft: "1rem" }}
 							>
 								원활한 이용을 위해서 회원가입이 권장됩니다.
 							</li>
 							<li
-								className="text-xs text-justify mb-2"
+								className="text-xs text-justify"
 								style={{ textIndent: "-1rem", paddingLeft: "1rem" }}
 							>
 								부적절한 사진 및 내용을 첨부한 행운카드를 생성할 시 서비스 이용에 불이익 및 법적 조치를
 								받을 수 있습니다.
 							</li>
 							<li
-								className="text-xs text-justify mb-2"
+								className="text-xs text-justify"
 								style={{ textIndent: "-1rem", paddingLeft: "1rem" }}
 							>
 								생성한 행운카드 이미지는 비영리 목적으로 사용할 수 있습니다.
 							</li>
 							<li
-								className="text-xs text-justify mb-2"
+								className="text-xs text-justify"
 								style={{ textIndent: "-1rem", paddingLeft: "1rem" }}
 							>
 								생성한 행운카드 이미지를 영리 목적으로 이용하거나, 당사에서 제공하는 범위 외에서 복제,
 								수정, 변형, 2차적 저작물 작성등의 방법으로 이용할 수 없습니다.
 							</li>
 							<li
-								className="text-xs text-justify mb-2"
+								className="text-xs text-justify"
 								style={{ textIndent: "-1rem", paddingLeft: "1rem" }}
 							>
 								행운카드 생성에 사용하는 이미지의 저작권에 대한 책임은 사용자 본인에게 있습니다.
