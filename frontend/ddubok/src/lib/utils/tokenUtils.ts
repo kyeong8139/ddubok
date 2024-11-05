@@ -16,25 +16,28 @@ const useAuthToken = () => {
 	useEffect(() => {
 		const initializeAccessToken = async () => {
 			if (!accessToken) {
-				const refreshResponse = await checkRefreshToken();
+				try {
+					const refreshResponse = await checkRefreshToken();
 
-				if (refreshResponse.data.code === "200") {
-					try {
+					if (refreshResponse.data.code === "200") {
 						const response = await reissue();
 						const newAccessToken = `Bearer ${response.headers.authorization}`;
 						setAccessToken(newAccessToken);
-					} catch (error) {
+					} else if (refreshResponse.data.code === "800") {
 						clearAccessToken();
-						console.error("accessToken 재발급 실패");
+						console.log("refreshToken 없음, 로그인 필요");
+						Router.push("/login");
 					}
-				} else if (refreshResponse.data.code === "800") {
+				} catch (error) {
 					clearAccessToken();
-					console.log("refreshToken 없음, 로그인 필요");
-					Router.push("/login");
+					console.error("accessToken 재발급 실패");
+					Router.push("/");
 				}
 			}
+
 			setIsTokenReady(true);
 		};
+
 		initializeAccessToken();
 	}, [accessToken, setAccessToken, clearAccessToken]);
 
