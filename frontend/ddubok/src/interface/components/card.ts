@@ -30,3 +30,8 @@ export interface IReportProps {
 	reportType: string;
 	content: string;
 }
+
+export interface IPreviewCardDto {
+	nickname: string;
+	cardUrl: string[];
+}

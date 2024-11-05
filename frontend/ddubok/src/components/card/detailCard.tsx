@@ -57,7 +57,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 			>
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
 					<p>From. {writerName}</p>
-					<div>
+					<div className="flex gap-x-1">
 						<span
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
 							onClick={() => (id ? clickUnlockContent(id) : undefined)}
@@ -80,7 +80,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 						</span>
 					</div>
 					{showOption && (
-						<div className="z-10 absolute right-4 top-14 border border-black border-solid bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
+						<div className="z-10 absolute right-3 top-12 border border-black border-solid bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
 							<p
 								className="mb-2 border-b border-black border-solid"
 								onClick={handleReport}
