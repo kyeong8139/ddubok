@@ -134,6 +134,7 @@ const CardDetail = () => {
 
 		try {
 			setIsLoading(true);
+			console.log(cardId);
 			await saveCard(cardId);
 			toast.success("카드가 보관되었습니다.");
 		} catch (error) {

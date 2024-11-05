@@ -103,9 +103,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 
 export const saveCard = async (cardId: number) => {
 	try {
-		const response = await axiosInstance.post("/cards/save", {
-			cardId: cardId,
-		});
+		const response = await axiosInstance.post(`/cards/${cardId}`);
 		return response.data;
 	} catch (error) {
 		console.error("카드 보관 실패:", error);
