@@ -10,7 +10,7 @@ const MiniCard = ({ day, isAttend }: IMiniCardProps) => {
 					{day}
 				</div>
 			) : (
-				<div className="border border-solid border-white rounded-full overflow-hidden w-14 h-14 flex items-center justify-center">
+				<div className="border border-solid bg-white border-white rounded-full overflow-hidden w-14 h-14 flex items-center justify-center">
 					<Image
 						src="/assets/clover.svg"
 						alt="출석 스탬프"

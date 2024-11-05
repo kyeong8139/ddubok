@@ -170,7 +170,7 @@ const Home = () => {
 						<div className="flex justify-center pb-20">
 							<div className="relative w-[calc(100%-64px)] h-64 overflow-hidden rounded-lg">
 								<NextImage
-									src="/assets/temp1.jpg"
+									src="/assets/image-step1.png"
 									alt="행운카드 목록"
 									fill
 									style={{ objectFit: "cover" }}
@@ -204,7 +204,7 @@ const Home = () => {
 						<div className="flex justify-center pb-20">
 							<div className="relative w-[calc(100%-64px)] h-64 overflow-hidden rounded-lg">
 								<NextImage
-									src="/assets/temp2.jpg"
+									src="/assets/image-step2.png"
 									alt="행운카드 공유하는 모습"
 									fill
 									style={{ objectFit: "cover" }}
