@@ -141,6 +141,11 @@ h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"
 					></path>
 				</svg>
 			</div>
+			{/* <p className="mt-2 font-nexonRegular text-sm text-white text-center">
+				무한 로딩이 지속된다면,
+				<br />
+				새로 고침을 시도해주세요!
+			</p> */}
 		</div>
 	);
 };
