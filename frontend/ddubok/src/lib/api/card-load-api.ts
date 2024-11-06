@@ -1,6 +1,10 @@
 "use client";
 
+import axios from "axios";
+
 import axiosInstance from "@lib/api/axiosInstance";
+
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // 카드 전체 조회
 export const selectCardList = (size: number, page: number) => {
@@ -23,7 +27,10 @@ export const selectCardDetail = (cardId: number) => {
 
 // 카드 정보 미리보기 (조르기 화면)
 export const selectPreviewList = (memberId: number) => {
-	return axiosInstance.get(`/cards/${memberId}/preview`);
+	return axios.get(`${baseURL}/auth/check-refresh-token`, {
+		headers: { "Content-Type": "application/json" },
+		withCredentials: true,
+	});
 };
 
 // 카드 숨김 (사실상 삭제)
