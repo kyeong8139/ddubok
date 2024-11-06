@@ -39,8 +39,8 @@ const Book = () => {
 
 				const response =
 					selected === 0
-						? await selectCardList(6, currentPage)
-						: await selectCardSeasonList(6, currentPage, selected);
+						? await selectCardList(4, currentPage)
+						: await selectCardSeasonList(4, currentPage, selected);
 
 				if (response.data.code === "702") {
 					setCardList([]);
