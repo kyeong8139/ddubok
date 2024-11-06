@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import Button from "@components/button/button";
@@ -10,12 +10,14 @@ import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
 import useAuthToken from "@lib/utils/tokenUtils";
 import { selectPreviewList } from "@lib/api/card-load-api";
-import { getTokenInfo } from "@lib/utils/authUtils";
+import { decryptCardId } from "@lib/utils/crypto";
 
 import Slider from "react-slick";
 
-const Request = () => {
+const Share = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const id = searchParams.get("id");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const { accessToken } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
@@ -39,8 +41,13 @@ const Request = () => {
 		const loadPriveiwImages = async () => {
 			if (accessToken) {
 				try {
-					const decodedToken = getTokenInfo(accessToken);
-					const response = await selectPreviewList(decodedToken.memberId);
+					const memberId = decryptCardId(id as string);
+
+					if (memberId === null) {
+						throw new Error("memberId가 없음");
+					}
+
+					const response = await selectPreviewList(memberId);
 					console.log(response.data.data);
 					setNickname(response.data.data.nickname);
 					setImageArray(response.data.data.cardUrl);
@@ -114,7 +121,7 @@ const Request = () => {
 							font="both"
 							shadow="green"
 							onClick={() => {
-								router.push("/create");
+								router.push("/create?type=require");
 							}}
 						/>
 					</div>
@@ -155,4 +162,4 @@ const Request = () => {
 	);
 };
 
-export default Request;
+export default Share;
