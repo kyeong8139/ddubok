@@ -1,22 +1,28 @@
 "use client";
 
-import { useRouter } from "next/router";
-import { useContext, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
+import useAuthToken from "@lib/utils/tokenUtils";
 import { selectPreviewList } from "@lib/api/card-load-api";
 import { decryptCardId } from "@lib/utils/crypto";
 
 import Slider from "react-slick";
-import { GetServerSideProps } from "next";
 
-const Share = ({ nickname, imageArray }: SharePageProps) => {
+const Share = () => {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const id = searchParams.get("id");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
+	const { accessToken } = useAuthToken();
+	const [isLoading, setIsLoading] = useState(true);
+	const [nickname, setNickname] = useState("");
+	const [imageArray, setImageArray] = useState<string[]>([]);
 
 	const settings = {
 		infinite: true,
@@ -31,6 +37,31 @@ const Share = ({ nickname, imageArray }: SharePageProps) => {
 		adaptiveHeight: true,
 	};
 
+	useEffect(() => {
+		const loadPriveiwImages = async () => {
+			if (accessToken) {
+				try {
+					const memberId = decryptCardId(id as string);
+
+					if (memberId === null) {
+						throw new Error("memberId가 없음");
+					}
+
+					const response = await selectPreviewList(memberId);
+					console.log(response.data.data);
+					setNickname(response.data.data.nickname);
+					setImageArray(response.data.data.cardUrl);
+					setIsLoading(false);
+				} catch (error) {
+					console.error("Error fetching card images:", error);
+					router.push("/login");
+				}
+			}
+		};
+
+		loadPriveiwImages();
+	}, [accessToken]);
+
 	const cardImages = useMemo(() => {
 		return imageArray.length >= 3
 			? imageArray.map((image) => ({ image, effect: 0 }))
@@ -44,7 +75,7 @@ const Share = ({ nickname, imageArray }: SharePageProps) => {
 
 	return (
 		<div id="request">
-			{!nickname ? (
+			{isLoading ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
 				</div>
@@ -129,38 +160,6 @@ const Share = ({ nickname, imageArray }: SharePageProps) => {
 			</div>
 		</div>
 	);
-};
-
-// 리팩토링 필요...
-interface SharePageProps {
-	nickname: string | null;
-	imageArray: string[];
-}
-
-export const getServerSideProps: GetServerSideProps<SharePageProps> = async (context) => {
-	const { id } = context.query;
-
-	if (typeof id !== "string") {
-		return { notFound: true };
-	}
-
-	const memberId = decryptCardId(id);
-	if (memberId === null) {
-		return { notFound: true };
-	}
-
-	try {
-		const response = await selectPreviewList(memberId);
-		return {
-			props: {
-				nickname: response.data.data.nickname,
-				imageArray: response.data.data.cardUrl,
-			},
-		};
-	} catch (error) {
-		console.error("Error fetching card images:", error);
-		return { props: { nickname: null, imageArray: [] } };
-	}
 };
 
 export default Share;
