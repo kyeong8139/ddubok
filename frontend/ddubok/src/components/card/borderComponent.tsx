@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { IBorderComponentProps } from "@interface/components/border";
-
 import { fabric } from "fabric";
 import { chunk } from "lodash";
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
@@ -13,6 +12,7 @@ const borderImages = Array.from({ length: 13 }, (_, index) => `/assets/border/bo
 function BorderComponent({ canvas }: IBorderComponentProps) {
 	const [selectedBorder, setSelectedBorder] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(0);
+	const [isProcessing, setIsProcessing] = useState(false);
 
 	const itemsPerPage = 8;
 	const pages = chunk([null, ...borderImages], itemsPerPage);
@@ -53,53 +53,68 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 		};
 	}, [canvas]);
 
-	const setBorder = (imageUrl: string | null) => {
-		if (!canvas) return;
+	const setBorder = useCallback(
+		async (imageUrl: string | null) => {
+			if (!canvas || isProcessing) return;
 
-		const existingBorder = canvas.getObjects().find((obj) => obj.data?.type === "border");
-		if (existingBorder) {
-			canvas.remove(existingBorder);
-		}
+			setIsProcessing(true);
 
-		if (imageUrl === null) {
-			setSelectedBorder(null);
-			canvas.renderAll();
-			return;
-		}
+			try {
+				const existingBorder = canvas.getObjects().find((obj) => obj.data?.type === "border");
+				if (existingBorder) {
+					canvas.remove(existingBorder);
+				}
 
-		fabric.Image.fromURL(imageUrl, (img) => {
-			img.set({
-				scaleX: canvas.width! / img.width!,
-				scaleY: canvas.height! / img.height!,
-				left: 0,
-				top: 0,
-				selectable: false,
-				evented: false,
-				data: { type: "border" },
-			});
+				if (imageUrl === null) {
+					setSelectedBorder(null);
+					canvas.renderAll();
+					return;
+				}
 
-			const backgroundIndex = canvas.getObjects().findIndex((obj) => obj.data?.type === "background");
-			canvas.insertAt(img, backgroundIndex + 1, false);
-			canvas.renderAll();
-			setSelectedBorder(imageUrl);
-		});
-	};
+				await new Promise((resolve) => {
+					fabric.Image.fromURL(imageUrl, (img) => {
+						img.set({
+							scaleX: canvas.width! / img.width!,
+							scaleY: canvas.height! / img.height!,
+							left: 0,
+							top: 0,
+							selectable: false,
+							evented: false,
+							data: { type: "border" },
+						});
+
+						const backgroundIndex = canvas.getObjects().findIndex((obj) => obj.data?.type === "background");
+						canvas.insertAt(img, backgroundIndex + 1, false);
+						canvas.renderAll();
+						setSelectedBorder(imageUrl);
+						resolve(null);
+					});
+				});
+			} finally {
+				setTimeout(() => {
+					setIsProcessing(false);
+				}, 300);
+			}
+		},
+		[canvas, isProcessing],
+	);
 
 	return (
 		<div className="w-full">
 			<div className="relative">
 				<div className="grid grid-cols-4 gap-4">
-					{/* 테두리 제거 옵션 */}
 					<label className="relative cursor-pointer">
 						<input
 							type="radio"
 							className="absolute opacity-0"
 							checked={selectedBorder === null}
-							onChange={() => setBorder(null)}
+							onChange={() => !isProcessing && setBorder(null)}
+							disabled={isProcessing}
 						/>
 						<div
 							className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all bg-white flex items-center justify-center
-               ${selectedBorder === null ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+               ${selectedBorder === null ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}
+               ${isProcessing ? "opacity-50" : ""}`}
 						>
 							<X
 								size={24}
@@ -120,11 +135,13 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 									type="radio"
 									className="absolute opacity-0"
 									checked={selectedBorder === imageUrl}
-									onChange={() => setBorder(imageUrl)}
+									onChange={() => !isProcessing && setBorder(imageUrl)}
+									disabled={isProcessing}
 								/>
 								<div
 									className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-                 ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+                 ${selectedBorder === imageUrl ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}
+                 ${isProcessing ? "opacity-50" : ""}`}
 								>
 									<div className="relative w-full h-full">
 										<Image
