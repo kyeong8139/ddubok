@@ -32,7 +32,6 @@ const useAuthToken = () => {
 					}
 				} catch (error) {
 					clearAccessToken();
-					console.error("accessToken 재발급 실패");
 					router.refresh();
 				}
 			}
