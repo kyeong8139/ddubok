@@ -17,6 +17,7 @@ import { ModalContext } from "@context/modal-context";
 import { LinkSimple } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 import { getTokenInfo } from "@lib/utils/authUtils";
+import { selectUser } from "@lib/api/user-api";
 
 const Home = () => {
 	const router = useRouter();
@@ -25,13 +26,7 @@ const Home = () => {
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
-	const user = decodedToken
-		? {
-				memberId: decodedToken.memberId,
-				nickname: "",
-				role: decodedToken.role,
-		  }
-		: null;
+	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
 
 	const isPageReady = isLoading || !isTokenReady;
 
@@ -60,6 +55,25 @@ const Home = () => {
 		],
 		[],
 	);
+
+	useEffect(() => {
+		const getUser = async () => {
+			if (decodedToken && isTokenReady) {
+				try {
+					const response = await selectUser();
+					setUser({
+						memberId: decodedToken.memberId,
+						nickname: response.data.data.nickname,
+						role: decodedToken.role,
+					});
+				} catch (error) {
+					console.error(error);
+				}
+			}
+		};
+
+		getUser();
+	}, [accessToken, isTokenReady]);
 
 	const encryptCardId = (cardId: number) => {
 		const salt = process.env.NEXT_PUBLIC_SALT_KEY;
@@ -135,13 +149,13 @@ const Home = () => {
 		const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
 		if (isIOS) {
-			window.location.href = `instagram://stories?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(
-				shareUrl,
-			)}`;
+			window.location.href = `instagram://stories?text=${encodeURIComponent(
+				shareText,
+			)}&content_url=${encodeURIComponent(shareUrl)}`;
 		} else {
 			window.location.href = `intent://instagram.com/story?text=${encodeURIComponent(
 				shareText,
-			)}&url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
+			)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
 		}
 	};
 
