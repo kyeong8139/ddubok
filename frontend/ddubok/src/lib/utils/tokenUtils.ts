@@ -31,6 +31,7 @@ const useAuthToken = () => {
 					}
 				} catch (error) {
 					clearAccessToken();
+					console.log("진짜왜이러냐고!!!!!!!!!!!!!!!!!!!!!!!");
 					router.refresh();
 				}
 			}
