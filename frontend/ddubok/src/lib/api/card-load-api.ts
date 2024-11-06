@@ -22,7 +22,7 @@ export const selectCardSeasonList = (size: number, page: number, seasonId: numbe
 
 // 카드 상세 조회
 export const selectCardDetail = (cardId: number) => {
-	return axiosInstance.get(`/cards/${cardId}`);
+	return axiosInstance.get(`/cards/albums/${cardId}/detail`);
 };
 
 // 카드 정보 미리보기 (조르기 화면)

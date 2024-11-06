@@ -11,13 +11,13 @@ import { selectCardDetail, selectCardList, selectCardSeasonList } from "@lib/api
 import useAuthToken from "@lib/utils/tokenUtils";
 
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
-import Button from "@components/button/button";
 
 const Book = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
 	const { isTokenReady } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
 	const [selected, setSelected] = useState(0);
+	const [hasNext, setHasNext] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [cardList, setCardList] = useState<ICardDto[]>([]);
 	const [card, setCard] = useState<ICardDto>({
@@ -29,7 +29,6 @@ const Book = () => {
 		writerName: "",
 		isRead: false,
 	});
-	const [hasNext, setHasNext] = useState(false);
 
 	useEffect(() => {
 		const loadCardList = async () => {
@@ -98,7 +97,7 @@ const Book = () => {
 				</div>
 			) : cardList.length === 0 ? (
 				<>
-					<div className="flex justify-center pt-4">
+					{/* <div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
 							{["전체", "수능"].map((item, index) => (
 								<li
@@ -112,17 +111,17 @@ const Book = () => {
 								</li>
 							))}
 						</ul>
-					</div>
+					</div> */}
 					<div className="font-nexonBold flex flex-col items-center justify-center h-[calc(100vh-150px)] text-white">
 						<p className="mb-4 text-lg">받은 행운카드가 없습니다.</p>
-						<Button
+						{/* <Button
 							text="행운카드<br/>조르기"
 							color="gradient"
 							size="short"
 							font="both"
 							shadow="gradient"
 							onClick={() => {}}
-						/>
+						/> */}
 					</div>
 				</>
 			) : (
@@ -130,8 +129,9 @@ const Book = () => {
 					<div className="text-white flex flex-col items-center pt-8">
 						<h1 className="font-nexonBold text-xl mb-2">행운 카드북</h1>
 						<p className="font-nexonRegular text-sm">수신한 행운카드와 편지를 확인하세요!</p>
+						<p className="font-nexonRegular text-sm">편지는는 수능 전날 오후 8시부터 확인할 수 있습니다.</p>
 					</div>
-					<div className="flex justify-center pt-4">
+					{/* <div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
 							{["전체", "수능"].map((item, index) => (
 								<li
@@ -145,7 +145,7 @@ const Book = () => {
 								</li>
 							))}
 						</ul>
-					</div>
+					</div> */}
 					<div className="w-[calc(100%-64px)] max-w-[416px] mx-auto mt-12 grid grid-cols-2 gap-4">
 						{cardList.map((card, index) => (
 							<div
