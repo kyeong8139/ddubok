@@ -6,11 +6,11 @@ import Image from "next/image";
 
 import { saveCard } from "@lib/api/card";
 import { useCardStore } from "@store/card-store";
-import useAuthStore from "@store/auth-store";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 import { LinkSimple } from "@phosphor-icons/react";
 import { toast } from "react-hot-toast";
@@ -19,7 +19,7 @@ const CardDetail = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
-	const { accessToken } = useAuthStore();
+	const { accessToken } = useAuthToken();
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isModalOpen, openModal } = useContext(ModalContext);
