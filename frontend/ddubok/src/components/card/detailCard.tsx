@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Card from "@components/card/card";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
+import { deleteCard } from "@lib/api/card-load-api";
 
 import { Siren, Star } from "@phosphor-icons/react";
-import { deleteCard } from "@lib/api/card-load-api";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
@@ -15,6 +15,12 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 	const { closeModal } = useContext(ModalContext);
 	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
 	const [showOption, setShowOption] = useState(false);
+
+	useEffect(() => {
+		if (id !== undefined && state !== undefined) {
+			setTempState({ [id]: state });
+		}
+	}, [id, state]);
 
 	const download = () => {
 		const link = document.createElement("a");
@@ -58,7 +64,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
 					<p>From. {writerName}</p>
 					<div className="flex gap-x-1">
-						<span
+						{/* <span
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
 							onClick={() => (id ? clickUnlockContent(id) : undefined)}
 						>
@@ -67,7 +73,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 								color="#d5b207"
 								weight="fill"
 							/>
-						</span>
+						</span> */}
 						<span
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E] mr-1"
 							onClick={() => setShowOption(!showOption)}

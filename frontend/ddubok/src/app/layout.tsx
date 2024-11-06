@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "뚜복 (DDUBOK)",
 		description: "당신을 위한 행운 배달부 서비스 뚜복🍀",
-		images: ["//assets/basic-open.png"],
+		images: ["/assets/basic-open.png"],
 	},
 };
 

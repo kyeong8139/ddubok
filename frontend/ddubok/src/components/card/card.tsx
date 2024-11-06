@@ -11,7 +11,6 @@ import Button from "@components/button/button";
 
 const Card = ({ width, height, path, content, state, effect, flip }: IDetailCardDto) => {
 	const [isFlipped, setIsFlipped] = useState(false);
-	const [tempState, setTempState] = useState(state);
 
 	// HTML 이스케이프 처리 함수
 	const escapeHTML = (str: string = "") => {
@@ -44,10 +43,6 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 	useEffect(() => {
 		setIsFlipped(false);
 	}, [path]);
-
-	const clickUnlockContent = () => {
-		setTempState("OPEN");
-	};
 
 	return (
 		<div
@@ -86,36 +81,39 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 					className="absolute w-full h-full backface-hidden rotate-y-180 flex items-center justify-center rounded-lg shadow-lg overflow-hidden text-justify"
 					style={{ backgroundColor: "#f0f0f0" }}
 				>
-					{state === "OPEN" ? (
-						<div
-							className="font-nexonRegular my-10 px-8 leading-tight text-sm overflow-hidden overflow-y-scroll scrollbar-hide"
-							style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
-							dangerouslySetInnerHTML={{
-								__html: escapeHTML(content),
-							}}
-						/>
-					) : state === "READY" ? (
-						<div className="font-nexonRegular flex justify-center items-center h-full text-center">
-							11월 13일 오후 8시부터
-							<br />
-							편지를 확인할 수 있습니다.
-						</div>
-					) : (
-						<div
-							className="font-nexonRegular flex justify-center items-center h-full flex-col text-center"
-							style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
-						>
-							<p className="mb-4">
-								편지에 부적절한 내용이
+					{
+						state === "OPEN" ? (
+							<div
+								className="font-nexonRegular my-10 px-8 leading-tight text-sm overflow-hidden overflow-y-scroll scrollbar-hide"
+								style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
+								dangerouslySetInnerHTML={{
+									__html: escapeHTML(content),
+								}}
+							/>
+						) : (
+							<div className="font-nexonRegular flex justify-center items-center h-full text-center">
+								11월 13일 오후 8시부터
 								<br />
-								포함되어 있습니다.
-							</p>
-							<p className="font-xs">
-								카드 내용을 확인하시려면 <br />
-								상단의 별 버튼을 클릭하세요!
-							</p>
-						</div>
-					)}
+								편지를 확인할 수 있습니다.
+							</div>
+						)
+						// : (
+						// 	<div
+						// 		className="font-nexonRegular flex justify-center items-center h-full flex-col text-center"
+						// 		style={{ width: `${width}px`, height: `calc(${height}px - 80px)` }}
+						// 	>
+						// 		<p className="mb-4">
+						// 			편지에 부적절한 내용이
+						// 			<br />
+						// 			포함되어 있습니다.
+						// 		</p>
+						// 		<p className="font-xs">
+						// 			카드 내용을 확인하시려면 <br />
+						// 			상단의 별 버튼을 클릭하세요!
+						// 		</p>
+						// 	</div>
+						// )
+					}
 					<Image
 						src="/assets/fortune-reverse.png"
 						alt="운세 카드"

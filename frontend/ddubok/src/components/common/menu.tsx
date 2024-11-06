@@ -40,7 +40,7 @@ const Menu = () => {
 		};
 
 		getUser();
-	}, [accessToken]);
+	}, [accessToken, user?.nickname]);
 
 	return (
 		<div

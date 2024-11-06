@@ -18,6 +18,7 @@ import { LinkSimple } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import { selectUser } from "@lib/api/user-api";
+import useKakaoInit from "src/hooks/useKakaoInit";
 
 const Home = () => {
 	const router = useRouter();
@@ -103,65 +104,64 @@ const Home = () => {
 		}
 	};
 
-	const handleShareKakao = () => {
-		// if (window.Kakao) {
-		// 	window.Kakao.Share.sendDefault({
-		// 		objectType: "feed",
-		// 		content: {
-		// 			title: "행운카드",
-		// 			description: "행운카드가 도착했어요!",
-		// 			imageUrl: cardImage,
-		// 			link: {
-		// 				mobileWebUrl: currentUrl,
-		// 				webUrl: currentUrl,
-		// 			},
-		// 		},
-		// 		buttons: [
-		// 			{
-		// 				title: "자세히 보기",
-		// 				link: {
-		// 					mobileWebUrl: currentUrl,
-		// 					webUrl: currentUrl,
-		// 				},
-		// 			},
-		// 		],
-		// 	});
-		// }
-	};
+	const isKakaoInitialized = useKakaoInit();
 
-	// const handleShareInstagram = () => {
-	// 	// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-	// 	// window.open(shareUrl, "_blank", "width=600,height=400");
-	// 	if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-	// 		const shareUrl = getShareUrl();
-	// 		const instagramUrl = `instagram://story-camera`;
+	const handleShareKakao = async () => {
+		if (!window.Kakao) {
+			toast.error("카카오톡 SDK가 로드되지 않았습니다");
+			return;
+		}
 
-	// 		window.location.href = instagramUrl;
-	// 	} else {
-	// 		toast.error("인스타그램은 모바일에서만 가능합니다");
-	// 	}
-	// };
+		if (!isKakaoInitialized) {
+			toast.error("카카오톡 초기화 중입니다");
+			return;
+		}
 
-	const handleShareInstagram = () => {
-		const shareText = "${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀";
-		const shareUrl = getShareUrl();
+		if (!user?.memberId) {
+			toast.error("카드 정보가 없습니다");
+			return;
+		}
 
-		const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+		try {
+			const fullShareUrl = getShareUrl();
+			const splitKey = process.env.NEXT_PUBLIC_SPLIT_KEY;
+			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
 
-		if (isIOS) {
-			window.location.href = `instagram://stories?text=${encodeURIComponent(
-				shareText,
-			)}&content_url=${encodeURIComponent(shareUrl)}`;
-		} else {
-			window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
-				shareText,
-			)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
+			window.Kakao.Share.sendCustom({
+				templateId: 113932,
+				templateArgs: {
+					LINK_URL: shareUrl,
+					IMAGE_URL: "https://ddubok.s3.ap-northeast-2.amazonaws.com/common/kakao.png",
+					TITLE: `${user?.nickname}님이 행운카드를 요청했어요!`,
+					DESCRIPTION: "응원을 담은 카드를 만들어주세요🍀",
+				},
+			});
+		} catch (error) {
+			console.error("카카오톡 공유 중 오류 발생:", error);
+			toast.error("카카오톡 공유에 실패했습니다");
 		}
 	};
 
+	// const handleShareInstagram = () => {
+	// 	const shareText = "${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀";
+	// 	const shareUrl = getShareUrl();
+
+	// 	const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+	// 	if (isIOS) {
+	// 		window.location.href = `instagram://stories?text=${encodeURIComponent(
+	// 			shareText,
+	// 		)}&content_url=${encodeURIComponent(shareUrl)}`;
+	// 	} else {
+	// 		window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
+	// 			shareText,
+	// 		)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
+	// 	}
+	// };
+
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
-		const text = `${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀`;
+		const text = `${user?.nickname}님이 행운카드를 요청했어요! 응원이 담긴 카드를 만들어주세요🍀`;
 
 		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(
 			shareUrl,
@@ -419,22 +419,6 @@ const Home = () => {
 										</div>
 										<span className="text-black font-nexonLight text-sm sm:text-base">
 											카카오톡
-										</span>
-									</button>
-									<button
-										onClick={handleShareInstagram}
-										className="flex flex-col items-center"
-									>
-										<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
-											<NextImage
-												src="/assets/insta-circle.png"
-												alt="Instagram"
-												fill
-												className="rounded-full"
-											/>
-										</div>
-										<span className="text-black font-nexonLight text-sm sm:text-base">
-											인스타그램
 										</span>
 									</button>
 									<button
