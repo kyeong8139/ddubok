@@ -130,34 +130,21 @@ const Home = () => {
 	};
 
 	// const handleShareInstagram = () => {
-	// 	// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-	// 	// window.open(shareUrl, "_blank", "width=600,height=400");
-	// 	if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-	// 		const shareUrl = getShareUrl();
-	// 		const instagramUrl = `instagram://story-camera`;
+	// 	const shareText = "${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀";
+	// 	const shareUrl = getShareUrl();
 
-	// 		window.location.href = instagramUrl;
+	// 	const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+	// 	if (isIOS) {
+	// 		window.location.href = `instagram://stories?text=${encodeURIComponent(
+	// 			shareText,
+	// 		)}&content_url=${encodeURIComponent(shareUrl)}`;
 	// 	} else {
-	// 		toast.error("인스타그램은 모바일에서만 가능합니다");
+	// 		window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
+	// 			shareText,
+	// 		)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
 	// 	}
 	// };
-
-	const handleShareInstagram = () => {
-		const shareText = "${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀";
-		const shareUrl = getShareUrl();
-
-		const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
-		if (isIOS) {
-			window.location.href = `instagram://stories?text=${encodeURIComponent(
-				shareText,
-			)}&content_url=${encodeURIComponent(shareUrl)}`;
-		} else {
-			window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
-				shareText,
-			)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
-		}
-	};
 
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
@@ -419,22 +406,6 @@ const Home = () => {
 										</div>
 										<span className="text-black font-nexonLight text-sm sm:text-base">
 											카카오톡
-										</span>
-									</button>
-									<button
-										onClick={handleShareInstagram}
-										className="flex flex-col items-center"
-									>
-										<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
-											<NextImage
-												src="/assets/insta-circle.png"
-												alt="Instagram"
-												fill
-												className="rounded-full"
-											/>
-										</div>
-										<span className="text-black font-nexonLight text-sm sm:text-base">
-											인스타그램
 										</span>
 									</button>
 									<button

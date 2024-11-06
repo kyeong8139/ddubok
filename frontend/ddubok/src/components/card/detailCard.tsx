@@ -5,15 +5,17 @@ import Card from "@components/card/card";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
+import { deleteCard } from "@lib/api/card-load-api";
 
 import { Siren, Star } from "@phosphor-icons/react";
-import { deleteCard } from "@lib/api/card-load-api";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
-	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
+	const [tempState, setTempState] = useState<{ [key: number]: string }>(
+		id !== undefined && state !== undefined ? { [id]: state } : {},
+	);
 	const [showOption, setShowOption] = useState(false);
 
 	const download = () => {
