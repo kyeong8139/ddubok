@@ -8,6 +8,7 @@ import { IDetailCardDto } from "@interface/components/card";
 import "@styles/scrollHide.css";
 import "@styles/rotateCard.css";
 import Button from "@components/button/button";
+import { PlusCircle } from "@phosphor-icons/react";
 
 const Card = ({ width, height, path, content, state, effect, flip }: IDetailCardDto) => {
 	const [isFlipped, setIsFlipped] = useState(false);
@@ -70,8 +71,9 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 							unoptimized
 						/>
 					) : (
-						<div className="font-nexonBold text-xl flex justify-center items-center h-full bg-white">
-							직접 만들기
+						<div className="font-nexonBold text-xl flex flex-col gap-2 justify-center items-center h-full bg-white">
+							<PlusCircle size={32} />
+							<span>직접 만들기</span>
 						</div>
 					)}
 				</div>

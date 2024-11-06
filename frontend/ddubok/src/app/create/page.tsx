@@ -114,7 +114,7 @@ const Create = () => {
 			) : (
 				<div className="flex flex-col items-center w-full h-full">
 					<div className="text-white font-nexonBold text-xl mt-6">
-						{type === "request" ? "행운 요청 카드 선택" : "행운 카드 선택"}
+						{type === "request" ? "요청 카드 선택하기" : "행운 카드 선택하기"}
 					</div>
 
 					<div className="w-full flex items-center justify-center mt-8">

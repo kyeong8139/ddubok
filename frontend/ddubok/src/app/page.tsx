@@ -220,8 +220,12 @@ const Home = () => {
 								height={136}
 								className="pt-2"
 							/>
-							<p className="font-nexonLight text-sm">
+							<p className="font-nexonLight text-sm mb-2">
 								이벤트 기간: <span>11.06 - 11.13</span>
+							</p>
+							<p className="font-nexonLight text-xs text-center">
+								행운카드 뒷면의 메세지는 <br />
+								수능 전날(13일) 20시에 일괄 확인 가능합니다.
 							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
