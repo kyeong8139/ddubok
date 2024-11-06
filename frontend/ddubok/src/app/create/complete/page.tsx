@@ -20,7 +20,7 @@ const CardDetail = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
-	const { accessToken } = useAuthToken();
+	const { accessToken, isTokenReady } = useAuthToken();
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isModalOpen, openModal } = useContext(ModalContext);
@@ -187,7 +187,7 @@ const CardDetail = () => {
 
 		if (isLoading) return;
 
-		if (!accessToken) {
+		if (!isTokenReady) {
 			setShowLoginModal(true);
 			return;
 		}
@@ -204,38 +204,38 @@ const CardDetail = () => {
 		}
 	};
 
-	const handleDownloadImage = () => {
-		if (!cardImage) return;
+	// const handleDownloadImage = () => {
+	// 	if (!cardImage) return;
 
-		if (cardImage.startsWith("data:image")) {
-			const link = document.createElement("a");
-			link.href = cardImage;
-			link.download = "fortune-card.png";
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			toast.success("이미지 다운에 성공하였습니다.");
-		} else {
-			fetch(cardImage)
-				.then((response) => response.blob())
-				.then((blob) => {
-					const url = window.URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.href = url;
-					link.download = "fortune-card.png";
-					document.body.appendChild(link);
-					link.click();
-					window.URL.revokeObjectURL(url);
-					document.body.removeChild(link);
-					toast.success("이미지 다운에 성공하였습니다.");
-				})
+	// 	if (cardImage.startsWith("data:image")) {
+	// 		const link = document.createElement("a");
+	// 		link.href = cardImage;
+	// 		link.download = "fortune-card.png";
+	// 		document.body.appendChild(link);
+	// 		link.click();
+	// 		document.body.removeChild(link);
+	// 		toast.success("이미지 다운에 성공하였습니다.");
+	// 	} else {
+	// 		fetch(cardImage)
+	// 			.then((response) => response.blob())
+	// 			.then((blob) => {
+	// 				const url = window.URL.createObjectURL(blob);
+	// 				const link = document.createElement("a");
+	// 				link.href = url;
+	// 				link.download = "fortune-card.png";
+	// 				document.body.appendChild(link);
+	// 				link.click();
+	// 				window.URL.revokeObjectURL(url);
+	// 				document.body.removeChild(link);
+	// 				toast.success("이미지 다운에 성공하였습니다.");
+	// 			})
 
-				.catch((error) => {
-					console.error("이미지 다운로드 중 오류 발생:", error);
-					toast.error("이미지 다운로드에 실패했습니다");
-				});
-		}
-	};
+	// 			.catch((error) => {
+	// 				console.error("이미지 다운로드 중 오류 발생:", error);
+	// 				toast.error("이미지 다운로드에 실패했습니다");
+	// 			});
+	// 	}
+	// };
 
 	const handleLoginClick = () => {
 		const currentPath = window.location.pathname + window.location.search;
@@ -257,12 +257,12 @@ const CardDetail = () => {
 						flip={true}
 					/>
 				</div>
-				<button
+				{/* <button
 					onClick={handleDownloadImage}
 					className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
 				>
 					이미지 저장
-				</button>
+				</button> */}
 
 				<div className="mt-4 flex flex-row gap-4 w-full justify-center mb-8">
 					{type === "normal" ? (
