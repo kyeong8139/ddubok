@@ -2,27 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { IBrushComponentProps, IPathCreatedEvent } from "@interface/components/brush";
-
-import { Eraser, PaintBrush } from "@phosphor-icons/react";
 import { fabric } from "fabric";
 
 function BrushComponent({ canvas }: IBrushComponentProps) {
 	const [brushColor, setBrushColor] = useState("#000000");
 	const [brushSize, setBrushSize] = useState(5);
-	const [isErasing, setIsErasing] = useState(false);
+	const [customColor, setCustomColor] = useState(
+		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
+	);
 
-	const colors = [
-		"#000000",
-		"#ffffff",
-		"#ff0000",
-		"#00ff00",
-		"#0000ff",
-		"#ffff00",
-		"#ff00ff",
-		"#00ffff",
-		"#ff9900",
-		"#9900ff",
-	];
+	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
 
 	useEffect(() => {
 		if (canvas) {
@@ -130,78 +119,28 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 
 	const handleColorChange = (color: string) => {
 		setBrushColor(color);
-		setIsErasing(false);
 		if (canvas) {
 			canvas.isDrawingMode = true;
 			canvas.freeDrawingBrush.color = color;
 			canvas.freeDrawingBrush.width = brushSize;
-			canvas.off("mouse:down");
-			canvas.off("mouse:move");
-			canvas.off("mouse:up");
 		}
+	};
+
+	const handleCustomColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newColor = e.target.value;
+		setCustomColor(newColor);
+		handleColorChange(newColor);
 	};
 
 	const handleSizeChange = (size: number) => {
 		setBrushSize(size);
-		setIsErasing(false);
 		if (canvas) {
 			canvas.isDrawingMode = true;
 			canvas.freeDrawingBrush.width = size;
-			canvas.off("mouse:down");
-			canvas.off("mouse:move");
-			canvas.off("mouse:up");
 		}
 	};
 
 	const sizes = [2, 5, 8, 12, 16];
-
-	const toggleEraser = () => {
-		if (!canvas) return;
-
-		setIsErasing(!isErasing);
-
-		if (!isErasing) {
-			canvas.isDrawingMode = false;
-
-			canvas.on("mouse:down", () => {
-				canvas.selection = false;
-			});
-
-			canvas.on("mouse:move", (options) => {
-				if (!options.e.buttons) return;
-				const pointer = canvas.getPointer(options.e);
-				const objects = canvas.getObjects();
-
-				objects.forEach((obj) => {
-					if (obj.type === "path") {
-						const objectLeft = obj.left || 0;
-						const objectTop = obj.top || 0;
-						const objectWidth = obj.width || 0;
-						const objectHeight = obj.height || 0;
-
-						if (
-							pointer.x >= objectLeft &&
-							pointer.x <= objectLeft + objectWidth &&
-							pointer.y >= objectTop &&
-							pointer.y <= objectTop + objectHeight
-						) {
-							canvas.remove(obj);
-						}
-					}
-				});
-				canvas.renderAll();
-			});
-
-			canvas.on("mouse:up", () => {
-				canvas.selection = true;
-			});
-		} else {
-			canvas.isDrawingMode = true;
-			canvas.off("mouse:down");
-			canvas.off("mouse:move");
-			canvas.off("mouse:up");
-		}
-	};
 
 	return (
 		<div className="w-full flex flex-col h-full">
@@ -211,13 +150,27 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 					{colors.map((color) => (
 						<button
 							key={color}
-							className={`w-8 h-8 rounded-lg border-2 ${
-								brushColor === color && !isErasing ? "border-ddubokPurple" : "border-gray-200"
+							className={`w-10 h-10 rounded-lg border-2 ${
+								brushColor === color ? "border-ddubokPurple" : "border-gray-200"
 							}`}
 							style={{ backgroundColor: color }}
 							onClick={() => handleColorChange(color)}
 						/>
 					))}
+					<div className="relative w-10 h-10">
+						<input
+							type="color"
+							value={customColor}
+							onChange={handleCustomColorChange}
+							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+						/>
+						<button
+							className={`w-full h-full rounded-lg border-2 ${
+								brushColor === customColor ? "border-ddubokPurple" : "border-gray-200"
+							}`}
+							style={{ background: customColor }}
+						/>
+					</div>
 				</div>
 			</div>
 
@@ -227,7 +180,7 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 					{sizes.map((size) => (
 						<button
 							key={size}
-							className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center ${
+							className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center ${
 								brushSize === size ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
 							}`}
 							onClick={() => handleSizeChange(size)}
@@ -238,30 +191,6 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 							/>
 						</button>
 					))}
-				</div>
-			</div>
-
-			<div className="space-y-2">
-				<p className="text-base font-nexonRegular mt-4">도구</p>
-				<div className="flex gap-2 mb-4">
-					<button
-						className={`px-4 py-2 rounded-lg border-2 ${
-							!isErasing ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
-						}`}
-						onClick={() => {
-							if (isErasing) toggleEraser();
-						}}
-					>
-						<PaintBrush size={32} />
-					</button>
-					<button
-						className={`px-4 py-2 rounded-lg border-2 ${
-							isErasing ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
-						}`}
-						onClick={toggleEraser}
-					>
-						<Eraser size={32} />
-					</button>
 				</div>
 			</div>
 		</div>

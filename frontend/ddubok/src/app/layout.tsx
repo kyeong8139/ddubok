@@ -82,6 +82,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						gtag('config', 'G-776Q6TRWEQ');
 					`}
 				</Script>
+				<Script
+					src="https://developers.kakao.com/sdk/js/kakao.js"
+					strategy="lazyOnload"
+				/>
 				<meta
 					httpEquiv="Content-Security-Policy"
 					content="upgrade-insecure-requests"

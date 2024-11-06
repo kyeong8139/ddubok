@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { ITextComponentProps } from "@interface/components/text";
-
 import Button from "@components/button/button";
-
 import { fabric } from "fabric";
 
 function TextComponent({ canvas }: ITextComponentProps) {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
+	const [customColor, setCustomColor] = useState(
+		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
+	);
 	const [selectedText, setSelectedText] = useState<fabric.IText | null>(null);
 	const [isDragging, setIsDragging] = useState(false);
 	const [startX, setStartX] = useState(0);
@@ -22,18 +23,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		{ id: 3, name: "CookieRun-Regular", label: "쿠키런" },
 	];
 
-	const colors = [
-		"#000000",
-		"#ffffff",
-		"#ff0000",
-		"#00ff00",
-		"#0000ff",
-		"#ffff00",
-		"#ff00ff",
-		"#00ffff",
-		"#ff9900",
-		"#9900ff",
-	];
+	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
 
 	useEffect(() => {
 		if (!canvas) return;
@@ -78,6 +68,12 @@ function TextComponent({ canvas }: ITextComponentProps) {
 			selectedText.set("fill", newColor);
 			canvas.renderAll();
 		}
+	};
+
+	const handleCustomColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newColor = e.target.value;
+		setCustomColor(newColor);
+		handleColorChange(newColor);
 	};
 
 	const handleMouseDown = (e: React.MouseEvent) => {
@@ -204,13 +200,27 @@ function TextComponent({ canvas }: ITextComponentProps) {
 					{colors.map((color) => (
 						<button
 							key={color}
-							className={`w-8 h-8 rounded-lg border-2 ${
+							className={`w-10 h-10 rounded-lg border-2 ${
 								textColor === color ? "border-ddubokPurple" : "border-gray-200"
 							}`}
 							style={{ backgroundColor: color }}
 							onClick={() => handleColorChange(color)}
 						/>
 					))}
+					<div className="relative w-10 h-10">
+						<input
+							type="color"
+							value={customColor}
+							onChange={handleCustomColorChange}
+							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+						/>
+						<button
+							className={`w-full h-full rounded-lg border-2 ${
+								textColor === customColor ? "border-ddubokPurple" : "border-gray-200"
+							}`}
+							style={{ background: customColor }}
+						/>
+					</div>
 				</div>
 			</div>
 			<div className="space-y-2">
@@ -237,7 +247,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 					))}
 				</div>
 			</div>
-			<div className="mt-8 flex w-full justify-center">
+			<div className="mt-6 flex w-full justify-center">
 				<Button
 					text="텍스트 추가"
 					color="purple"
