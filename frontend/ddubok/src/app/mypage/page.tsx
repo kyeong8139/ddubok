@@ -63,7 +63,7 @@ const Mypage = () => {
 			await updateUser(newNickname);
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
 			setIsEditing(false);
-			route.refresh();
+			window.location.reload();
 		} catch (error) {
 			console.error(error);
 		}

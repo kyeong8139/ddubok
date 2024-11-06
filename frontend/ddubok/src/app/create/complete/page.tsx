@@ -20,7 +20,7 @@ const CardDetail = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
-	const { accessToken, isTokenReady } = useAuthToken();
+	const { accessToken } = useAuthToken();
 	const { selectedImage, letterContent, cardId } = useCardStore();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isModalOpen, openModal } = useContext(ModalContext);
@@ -187,7 +187,7 @@ const CardDetail = () => {
 
 		if (isLoading) return;
 
-		if (!isTokenReady) {
+		if (!accessToken) {
 			setShowLoginModal(true);
 			return;
 		}
