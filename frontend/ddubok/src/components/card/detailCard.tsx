@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Card from "@components/card/card";
@@ -13,10 +13,14 @@ import toast from "react-hot-toast";
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
-	const [tempState, setTempState] = useState<{ [key: number]: string }>(
-		id !== undefined && state !== undefined ? { [id]: state } : {},
-	);
+	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
 	const [showOption, setShowOption] = useState(false);
+
+	useEffect(() => {
+		if (id !== undefined && state !== undefined) {
+			setTempState({ [id]: state });
+		}
+	}, [id, state]);
 
 	const download = () => {
 		const link = document.createElement("a");

@@ -18,6 +18,7 @@ import { LinkSimple } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import { selectUser } from "@lib/api/user-api";
+import useKakaoInit from "src/hooks/useKakaoInit";
 
 const Home = () => {
 	const router = useRouter();
@@ -103,30 +104,42 @@ const Home = () => {
 		}
 	};
 
-	const handleShareKakao = () => {
-		// if (window.Kakao) {
-		// 	window.Kakao.Share.sendDefault({
-		// 		objectType: "feed",
-		// 		content: {
-		// 			title: "행운카드",
-		// 			description: "행운카드가 도착했어요!",
-		// 			imageUrl: cardImage,
-		// 			link: {
-		// 				mobileWebUrl: currentUrl,
-		// 				webUrl: currentUrl,
-		// 			},
-		// 		},
-		// 		buttons: [
-		// 			{
-		// 				title: "자세히 보기",
-		// 				link: {
-		// 					mobileWebUrl: currentUrl,
-		// 					webUrl: currentUrl,
-		// 				},
-		// 			},
-		// 		],
-		// 	});
-		// }
+	const isKakaoInitialized = useKakaoInit();
+
+	const handleShareKakao = async () => {
+		if (!window.Kakao) {
+			toast.error("카카오톡 SDK가 로드되지 않았습니다");
+			return;
+		}
+
+		if (!isKakaoInitialized) {
+			toast.error("카카오톡 초기화 중입니다");
+			return;
+		}
+
+		if (!user?.memberId) {
+			toast.error("카드 정보가 없습니다");
+			return;
+		}
+
+		try {
+			const fullShareUrl = getShareUrl();
+			const splitKey = process.env.NEXT_PUBLIC_SPLIT_KEY;
+			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
+
+			window.Kakao.Share.sendCustom({
+				templateId: 113932,
+				templateArgs: {
+					LINK_URL: shareUrl,
+					IMAGE_URL: "/assets/basic-open.png",
+					TITLE: `${user?.nickname}님이 행운카드를 요청했어요!`,
+					DESCRIPTION: "응원을 담은 카드를 만들어주세요🍀",
+				},
+			});
+		} catch (error) {
+			console.error("카카오톡 공유 중 오류 발생:", error);
+			toast.error("카카오톡 공유에 실패했습니다");
+		}
 	};
 
 	// const handleShareInstagram = () => {
@@ -148,7 +161,7 @@ const Home = () => {
 
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
-		const text = `${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀`;
+		const text = `${user?.nickname}님이 행운카드를 요청했어요! 응원이 담긴 카드를 만들어주세요🍀`;
 
 		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(
 			shareUrl,
