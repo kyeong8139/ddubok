@@ -99,7 +99,9 @@ const SharedCard = () => {
 	useEffect(() => {
 		const fetchCardData = async () => {
 			if (!cardId) {
+				console.log(cardId);
 				router.replace("/error");
+
 				return;
 			}
 
