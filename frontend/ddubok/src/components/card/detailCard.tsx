@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Card from "@components/card/card";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
+import { deleteCard } from "@lib/api/card-load-api";
 
 import { Siren, Star } from "@phosphor-icons/react";
-import { deleteCard } from "@lib/api/card-load-api";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
@@ -15,6 +15,12 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 	const { closeModal } = useContext(ModalContext);
 	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
 	const [showOption, setShowOption] = useState(false);
+
+	useEffect(() => {
+		if (id !== undefined && state !== undefined) {
+			setTempState({ [id]: state });
+		}
+	}, [id, state]);
 
 	const download = () => {
 		const link = document.createElement("a");

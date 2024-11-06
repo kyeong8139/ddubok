@@ -62,10 +62,10 @@ const Book = () => {
 		loadCardList();
 	}, [selected, currentPage, isTokenReady]);
 
-	const handleClick = (index: number) => {
-		setSelected(index);
-		setCurrentPage(0);
-	};
+	// const handleClick = (index: number) => {
+	// 	setSelected(index);
+	// 	setCurrentPage(0);
+	// };
 
 	const handleCardClick = async (cardId: number) => {
 		try {
@@ -129,7 +129,7 @@ const Book = () => {
 					<div className="text-white flex flex-col items-center pt-8">
 						<h1 className="font-nexonBold text-xl mb-2">행운 카드북</h1>
 						<p className="font-nexonRegular text-sm">수신한 행운카드와 편지를 확인하세요!</p>
-						<p className="font-nexonRegular text-sm">편지는는 수능 전날 오후 8시부터 확인할 수 있습니다.</p>
+						<p className="font-nexonRegular text-sm">편지는 수능 전날 오후 8시부터 확인 가능합니다.</p>
 					</div>
 					{/* <div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">

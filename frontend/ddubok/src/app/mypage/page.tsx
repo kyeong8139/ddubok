@@ -111,9 +111,13 @@ const Mypage = () => {
 								placeholder="최대 11글자"
 								value={newNickname}
 								onChange={(e) => setNewNickname(e.target.value)}
+								maxLength={11}
 								className="px-2 py-2 w-48 text-sm rounded-lg text-black"
 							/>
 						</div>
+						<p className="flex justify-end font-nexonLight text-xs text-white">
+							닉네임은 최대 11글자까지 가능합니다.
+						</p>
 						<button
 							className="flex justify-end items-center gap-1 w-[calc(100%-64px)] mx-auto mt-4"
 							onClick={modifyNickname}
