@@ -2,11 +2,13 @@
 
 import Router from "next/router";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
 
 const useAuthToken = () => {
+	const router = useRouter();
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const setAccessToken = useAuthStore((state) => state.setAccessToken);
 	const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
@@ -31,7 +33,7 @@ const useAuthToken = () => {
 				} catch (error) {
 					clearAccessToken();
 					console.error("accessToken 재발급 실패");
-					Router.push("/");
+					router.refresh();
 				}
 			}
 
