@@ -300,12 +300,14 @@ const CardDetail = () => {
 						)
 					)}
 				</div>
-				<button
-					onClick={() => router.push("/")}
-					className="mt-2 mb-8 text-white font-nexonLight text-sm hover:underline cursor-pointer"
-				>
-					홈으로
-				</button>
+				{type === "normal" && (
+					<button
+						onClick={() => router.push("/")}
+						className="mt-2 mb-8 text-white font-nexonLight text-sm hover:underline cursor-pointer"
+					>
+						홈으로
+					</button>
+				)}
 				{isModalOpen && (
 					<Modal>
 						<div className="flex flex-col items-center max-w-[360px] w-full">
