@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 		url: process.env.NEXT_PUBLIC_SHARE_URL,
 		images: [
 			{
-				url: "/assets/basic-open.png",
+				url: `${process.env.NEXT_PUBLIC_SHARE_URL}/assets/basic-open.png`,
 				width: 2000,
 				height: 1200,
 				alt: "당신을 위한 행운 배달부 서비스 뚜복🍀",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "뚜복 (DDUBOK)",
 		description: "당신을 위한 행운 배달부 서비스 뚜복🍀",
-		images: ["/assets/basic-open.png"],
+		images: [`${process.env.NEXT_PUBLIC_SHARE_URL}/assets/basic-open.png`],
 	},
 };
 
