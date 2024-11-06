@@ -51,15 +51,18 @@ public class AuthServiceImpl implements AuthService {
 
         String findRefresh = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + memberId);
         if (findRefresh == null) {
+            redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         if (!findRefresh.equals(refresh)) {
+            redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
         String category = jwtTokenUtil.getCategory(refresh);
         if (!category.equals(REFRESH_TOKEN_COOKIE_NAME)) {
+            redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
 
