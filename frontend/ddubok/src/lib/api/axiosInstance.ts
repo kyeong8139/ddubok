@@ -51,7 +51,6 @@ axiosInstance.interceptors.response.use(
 			} else if (refreshResponse.data.code === "800") {
 				const clearAccessToken = useAuthStore.getState().clearAccessToken;
 				clearAccessToken();
-				console.log("refreshToken 없음");
 				Router.push("/login");
 			}
 		}

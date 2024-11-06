@@ -66,7 +66,6 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 							setSelectedBackground("custom");
 						}
 					} catch (error) {
-						console.log("Error parsing image URL:", error);
 						setSelectedBackground("custom");
 					}
 				}

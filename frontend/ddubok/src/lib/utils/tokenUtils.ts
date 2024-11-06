@@ -25,7 +25,6 @@ const useAuthToken = () => {
 						setAccessToken(newAccessToken);
 					} else if (refreshResponse.data.code === "800") {
 						clearAccessToken();
-						console.log("refreshToken 없음, 로그인 필요");
 						Router.push("/login");
 					}
 				} catch (error) {

@@ -82,7 +82,6 @@ const CardDetail = () => {
 
 		try {
 			const response = await getCard(cardId);
-			console.log("전체 응답:", response);
 
 			if (response.code !== "200") {
 				throw new Error(response.message || "카드를 불러올 수 없습니다.");
@@ -91,8 +90,6 @@ const CardDetail = () => {
 			const fullShareUrl = getShareUrl();
 			const splitKey = process.env.NEXT_PUBLIC_SPLIT_KEY;
 			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
-			console.log(shareUrl);
-			console.log(response.data.path);
 
 			window.Kakao.Share.sendCustom({
 				templateId: 113932,
@@ -197,7 +194,6 @@ const CardDetail = () => {
 
 		try {
 			setIsLoading(true);
-			console.log(cardId);
 			await saveCard(cardId);
 			toast.success("카드가 보관되었습니다.");
 		} catch (error) {

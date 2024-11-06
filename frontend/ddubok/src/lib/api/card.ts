@@ -29,12 +29,8 @@ export const sendCard = async (
 			),
 		);
 
-		console.log(writerName + " " + seasonId + " " + content + " " + image);
-
 		if (image) {
 			try {
-				console.log("try 캐치");
-
 				if (image.startsWith("data:image")) {
 					if (!image.includes("base64,")) {
 						throw new Error("Invalid base64 image format");
@@ -77,22 +73,12 @@ export const sendCard = async (
 			}
 		}
 
-		if (process.env.NODE_ENV === "development") {
-			Array.from(formData.entries()).forEach(([key, value]) => {
-				console.log("FormData:", key, value);
-			});
-		}
-
 		const response = await axios.post(`${baseURL}/cards`, formData, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
 			withCredentials: true,
 		});
-
-		if (process.env.NODE_ENV === "development") {
-			console.log("Response:", response.data);
-		}
 
 		return response.data;
 	} catch (error) {
@@ -120,19 +106,12 @@ export const saveCard = async (cardId: number) => {
 
 export const getCard = async (cardId: number) => {
 	const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cards/receive/${cardId}`;
-	console.log("Requesting URL:", apiUrl);
 
 	try {
 		const response = await axios.get(apiUrl, {
 			headers: {
 				"Content-Type": "application/json",
 			},
-		});
-
-		console.log("API Response:", {
-			status: response.status,
-			data: response.data,
-			headers: response.headers,
 		});
 
 		return response.data;

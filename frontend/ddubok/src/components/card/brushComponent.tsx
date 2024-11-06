@@ -143,9 +143,9 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 	const sizes = [2, 5, 8, 12, 16];
 
 	return (
-		<div className="w-full flex flex-col h-full">
+		<div className="w-full flex flex-col h-full ">
 			<div className="space-y-2">
-				<p className="text-base font-nexonRegular ">색상</p>
+				<p className="text-base font-nexonRegular mt-3">색상</p>
 				<div className="grid grid-cols-5 gap-2">
 					{colors.map((color) => (
 						<button
