@@ -7,7 +7,7 @@ import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
 import { deleteCard } from "@lib/api/card-load-api";
 
-import { Siren, Star } from "@phosphor-icons/react";
+import { DotsThreeCircleVertical, Siren, Star } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
@@ -78,9 +78,9 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E] mr-1"
 							onClick={() => setShowOption(!showOption)}
 						>
-							<Siren
+							<DotsThreeCircleVertical
 								size={14}
-								color="red"
+								color="black"
 								weight="fill"
 							/>
 						</span>
@@ -88,7 +88,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					{showOption && (
 						<div className="z-10 absolute right-3 top-12 border border-black border-solid bg-white p-3 rounded-lg text-black text-right font-nexonRegular text-xs">
 							<p
-								className="mb-2 border-b border-black border-solid"
+								className="pb-2 mb-2 border-b border-black border-solid"
 								onClick={handleReport}
 							>
 								카드 신고하기

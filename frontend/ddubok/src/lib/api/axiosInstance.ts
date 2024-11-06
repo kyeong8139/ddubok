@@ -33,8 +33,10 @@ axiosInstance.interceptors.response.use(
 
 			const refreshResponse = await checkRefreshToken();
 
-			if (refreshResponse.data.code === "200") {
-				try {
+			try {
+				const refreshResponse = await checkRefreshToken();
+
+				if (refreshResponse.data.code === "200") {
 					const response = await reissue();
 					const newAccessToken = `Bearer ${response.headers.authorization}`;
 
@@ -43,15 +45,16 @@ axiosInstance.interceptors.response.use(
 
 					originalRequest.headers["Authorization"] = newAccessToken;
 					return axiosInstance(originalRequest);
-				} catch (error) {
+				} else if (refreshResponse.data.code === "800") {
 					const clearAccessToken = useAuthStore.getState().clearAccessToken;
 					clearAccessToken();
-					console.error("accessToken 재발급 실패");
+					console.log("refreshToken 없음, 로그인 필요");
+					Router.push("/login");
 				}
-			} else if (refreshResponse.data.code === "800") {
+			} catch (error) {
 				const clearAccessToken = useAuthStore.getState().clearAccessToken;
 				clearAccessToken();
-				console.log("refreshToken 없음");
+				console.error("accessToken 재발급 실패");
 				Router.push("/login");
 			}
 		}
