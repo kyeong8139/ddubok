@@ -32,38 +32,38 @@ const SharedCard = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 
-	const handleDownloadImage = () => {
-		if (!cardData?.path) return;
+	// const handleDownloadImage = () => {
+	// 	if (!cardData?.path) return;
 
-		if (cardData?.path.startsWith("data:image")) {
-			const link = document.createElement("a");
-			link.href = cardData?.path;
-			link.download = "fortune-card.png";
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			toast.success("이미지 다운에 성공하였습니다.");
-		} else {
-			fetch(cardData?.path)
-				.then((response) => response.blob())
-				.then((blob) => {
-					const url = window.URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.href = url;
-					link.download = "fortune-card.png";
-					document.body.appendChild(link);
-					link.click();
-					window.URL.revokeObjectURL(url);
-					document.body.removeChild(link);
-					toast.success("이미지 다운에 성공하였습니다.");
-				})
+	// 	if (cardData?.path.startsWith("data:image")) {
+	// 		const link = document.createElement("a");
+	// 		link.href = cardData?.path;
+	// 		link.download = "fortune-card.png";
+	// 		document.body.appendChild(link);
+	// 		link.click();
+	// 		document.body.removeChild(link);
+	// 		toast.success("이미지 다운에 성공하였습니다.");
+	// 	} else {
+	// 		fetch(cardData?.path)
+	// 			.then((response) => response.blob())
+	// 			.then((blob) => {
+	// 				const url = window.URL.createObjectURL(blob);
+	// 				const link = document.createElement("a");
+	// 				link.href = url;
+	// 				link.download = "fortune-card.png";
+	// 				document.body.appendChild(link);
+	// 				link.click();
+	// 				window.URL.revokeObjectURL(url);
+	// 				document.body.removeChild(link);
+	// 				toast.success("이미지 다운에 성공하였습니다.");
+	// 			})
 
-				.catch((error) => {
-					console.error("이미지 다운로드 중 오류 발생:", error);
-					toast.error("이미지 다운로드에 실패했습니다");
-				});
-		}
-	};
+	// 			.catch((error) => {
+	// 				console.error("이미지 다운로드 중 오류 발생:", error);
+	// 				toast.error("이미지 다운로드에 실패했습니다");
+	// 			});
+	// 	}
+	// };
 
 	const handleSaveCard = async () => {
 		if (!cardId) {
@@ -136,7 +136,10 @@ const SharedCard = () => {
 
 	return (
 		<div className="flex flex-col items-center w-full">
-			<div className="text-white font-nexonBold text-2xl mt-10">{cardData?.writerName}님이 보낸 행운카드</div>
+			<div className="text-white font-nexonBold text-2xl mt-10">
+				{cardData?.writerName}님이
+				<br /> 보낸 행운카드
+			</div>
 			<div className="mt-8">
 				<Card
 					width={280}
@@ -147,12 +150,12 @@ const SharedCard = () => {
 					flip={true}
 				/>
 			</div>
-			<button
+			{/* <button
 				onClick={handleDownloadImage}
 				className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
 			>
 				이미지 저장
-			</button>
+			</button> */}
 
 			<div className="mt-10 mb-8 flex flex-row gap-4 w-full justify-center">
 				<Button

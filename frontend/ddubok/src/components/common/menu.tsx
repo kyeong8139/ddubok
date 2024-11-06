@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { IUserDto } from "@interface/components/user";
@@ -11,6 +12,7 @@ import useAuthStore from "@store/auth-store";
 import { CaretRight } from "@phosphor-icons/react";
 
 const Menu = () => {
+	const router = useRouter();
 	const accessToken = useAuthStore((state) => state.accessToken);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<IUserDto | null>(
@@ -33,6 +35,7 @@ const Menu = () => {
 						nickname: response.data.data.nickname,
 						role: decodedToken.role,
 					});
+					router.refresh();
 				} catch (error) {
 					console.error(error);
 				}

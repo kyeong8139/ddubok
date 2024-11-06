@@ -8,7 +8,6 @@ import Loading from "@components/common/loading";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
-import useAuthToken from "@lib/utils/tokenUtils";
 import { selectPreviewList } from "@lib/api/card-load-api";
 import { decryptCardId } from "@lib/utils/crypto";
 
@@ -19,7 +18,6 @@ const Share = () => {
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
-	const { accessToken } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
 	const [nickname, setNickname] = useState("");
 	const [imageArray, setImageArray] = useState<string[]>([]);
@@ -39,27 +37,25 @@ const Share = () => {
 
 	useEffect(() => {
 		const loadPriveiwImages = async () => {
-			if (accessToken) {
-				try {
-					const memberId = decryptCardId(id as string);
+			try {
+				const memberId = decryptCardId(id as string);
 
-					if (memberId === null) {
-						throw new Error("memberId가 없음");
-					}
-
-					const response = await selectPreviewList(memberId);
-					setNickname(response.data.data.nickname);
-					setImageArray(response.data.data.cardUrl);
-					setIsLoading(false);
-				} catch (error) {
-					console.error("Error fetching card images:", error);
-					router.push("/login");
+				if (memberId === null) {
+					throw new Error("memberId가 없음");
 				}
+
+				const response = await selectPreviewList(memberId);
+				setNickname(response.data.data.nickname);
+				setImageArray(response.data.data.cardUrl);
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching card images:", error);
+				router.push("/login");
 			}
 		};
 
 		loadPriveiwImages();
-	}, [accessToken]);
+	}, []);
 
 	const cardImages = useMemo(() => {
 		return imageArray.length >= 3

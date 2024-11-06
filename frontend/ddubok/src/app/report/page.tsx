@@ -60,6 +60,7 @@ const Report = () => {
 					placeholder="신고 제목을 입력하세요 (10자 이내)"
 					className="bg-transparent border border-solid border-white rounded-lg p-2 w-full mb-2 text-sm"
 					value={title}
+					maxLength={10}
 					onChange={(e) => setTitle(e.target.value)}
 				/>
 				<div className="grid grid-cols-2 p-3 border border-solid border-white rounded-lg gap-y-2 text-sm mb-2">
@@ -131,6 +132,7 @@ const Report = () => {
 					className="bg-transparent border border-solid border-whitee rounded-lg w-full p-3 mb-2"
 					placeholder="신고 사유를 상세히 작성해주세요 (200자 이내)"
 					value={content}
+					maxLength={200}
 					onChange={(e) => setContent(e.target.value)}
 				></textarea>
 			</div>
