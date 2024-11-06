@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import Button from "@components/button/button";
@@ -14,9 +14,10 @@ import { decryptCardId } from "@lib/utils/crypto";
 
 import Slider from "react-slick";
 
-const Request = () => {
+const Share = () => {
 	const router = useRouter();
-	const { id } = router.query;
+	const searchParams = useSearchParams();
+	const id = searchParams.get("id");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const { accessToken } = useAuthToken();
 	const [isLoading, setIsLoading] = useState(true);
@@ -161,4 +162,4 @@ const Request = () => {
 	);
 };
 
-export default Request;
+export default Share;
