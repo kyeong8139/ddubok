@@ -1,17 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import Button from "@components/button/button";
 import { IReportProps } from "@interface/components/card";
 import { insertReport } from "@lib/api/report-api";
+import useAuthToken from "@lib/utils/tokenUtils";
+
 import toast from "react-hot-toast";
-import Link from "next/link";
 
 const Report = () => {
 	const router = useRouter();
 	const searchParms = useSearchParams();
+	const { isTokenReady } = useAuthToken();
 	const cardId = searchParms.get("cardId");
 	const [title, setTitle] = useState("");
 	const [reportType, setReportType] = useState("");
@@ -19,6 +22,10 @@ const Report = () => {
 
 	const createReport = async () => {
 		try {
+			if (!isTokenReady) {
+				return;
+			}
+
 			const reportData: IReportProps = {
 				cardId: Number(cardId),
 				title,
