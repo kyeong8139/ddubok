@@ -12,9 +12,11 @@ import { selectPreviewList } from "@lib/api/card-load-api";
 import { decryptCardId } from "@lib/utils/crypto";
 
 import Slider from "react-slick";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 const Share = () => {
 	const router = useRouter();
+	const { accessToken } = useAuthToken();
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id");
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
@@ -101,14 +103,27 @@ const Share = () => {
 						</Slider>
 					</div>
 					<div className="flex justify-center gap-2 py-12">
-						<Button
-							text="나의 카드북<br/>만들기"
-							color="purple"
-							size="short"
-							font="both"
-							shadow="purple"
-							onClick={() => openModal()}
-						/>
+						{accessToken ? (
+							<Button
+								text="나의 카드북<br/>보러가기"
+								color="purple"
+								size="short"
+								font="both"
+								shadow="purple"
+								onClick={() => {
+									router.push("/book");
+								}}
+							/>
+						) : (
+							<Button
+								text="나의 카드북<br/>만들기"
+								color="purple"
+								size="short"
+								font="both"
+								shadow="purple"
+								onClick={() => openModal()}
+							/>
+						)}
 						<Button
 							text="행운카드<br/>만들어주기"
 							color="green"
