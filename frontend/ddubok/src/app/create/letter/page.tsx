@@ -8,6 +8,7 @@ import { sendCard } from "@lib/api/card";
 import { useCardStore } from "@store/card-store";
 import Button from "@components/button/button";
 import { decryptCardId } from "@lib/utils/crypto";
+import toast from "react-hot-toast";
 
 interface SendCardResponse {
 	code: string;
@@ -30,19 +31,17 @@ const CreateBack = () => {
 	const handleSendCard = async () => {
 		if (isLoading) return;
 		if (!letterContent.trim()) {
-			alert("편지 내용을 입력해주세요.");
+			toast.error("편지 내용을 입력해주세요.");
 			return;
 		}
 		if (!selectedImage) {
-			alert("잘못된 접근입니다.");
+			toast.error("잘못된 접근입니다.");
 			return;
 		}
 		if (!userName.trim()) {
-			alert("잘못된 접근입니다.");
+			toast.error("잘못된 접근입니다.");
 			return;
 		}
-
-		console.log("Selected Image:", selectedImage);
 
 		try {
 			setIsLoading(true);
@@ -54,7 +53,7 @@ const CreateBack = () => {
 			}
 		} catch (error) {
 			console.error("카드 전송 중 오류 발생:", error);
-			alert("카드 전송에 실패했습니다. 다시 시도해주세요.");
+			toast.error("카드 전송에 실패했습니다. 다시 시도해주세요.");
 		} finally {
 			setIsLoading(false);
 		}

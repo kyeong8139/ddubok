@@ -23,9 +23,7 @@ const useKakaoInit = () => {
 				if (!window.Kakao.isInitialized()) {
 					const key = process.env.NEXT_PUBLIC_KAKAO_KEY;
 					window.Kakao.init(key);
-					console.log("Kakao initialized successfully");
 				} else {
-					console.log("Kakao was already initialized");
 				}
 
 				setIsInitialized(true);

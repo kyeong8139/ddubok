@@ -48,7 +48,6 @@ const Share = () => {
 					}
 
 					const response = await selectPreviewList(memberId);
-					console.log(response.data.data);
 					setNickname(response.data.data.nickname);
 					setImageArray(response.data.data.cardUrl);
 					setIsLoading(false);

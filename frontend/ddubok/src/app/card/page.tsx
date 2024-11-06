@@ -105,7 +105,6 @@ const SharedCard = () => {
 
 			try {
 				const response = await getCard(cardId);
-				console.log("전체 응답:", response);
 
 				if (response.code === "200") {
 					setCardData(response.data);

@@ -11,7 +11,6 @@ const CreateEffect = () => {
 
 	useEffect(() => {
 		setIsLoading(false);
-		console.log(selectedImage);
 	}, []);
 
 	if (isLoading) {

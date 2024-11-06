@@ -38,9 +38,7 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 						if (matchingBorder) {
 							setSelectedBorder(matchingBorder);
 						}
-					} catch (error) {
-						console.log("Error parsing border URL:", error);
-					}
+					} catch (error) {}
 				}
 			}
 		};
