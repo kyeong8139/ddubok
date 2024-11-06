@@ -181,13 +181,17 @@ const Mypage = () => {
 					</>
 				)}
 			</div>
-			<div className="flex justify-center gap-2 pt-12 pb-16 absolute left-1/2 bottom-0 -translate-x-1/2">
-				<p
-					className="text-white border-b border-white border-solid font-nexonLight text-sm"
+			<div className="flex justify-center mt-12">
+				<Button
+					text="로그아웃"
+					color="green"
+					size="long"
+					font="regular"
+					shadow="green"
 					onClick={handleLogout}
-				>
-					로그아웃
-				</p>
+				/>
+			</div>
+			<div className="flex justify-center gap-2 pt-12 pb-16 absolute left-1/2 bottom-0 -translate-x-1/2">
 				<p
 					className="text-white border-b border-white border-solid font-nexonLight text-sm"
 					onClick={openModal}
