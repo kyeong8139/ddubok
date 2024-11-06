@@ -6,12 +6,12 @@ import toast from "react-hot-toast";
 
 import { decryptCardId } from "@lib/utils/crypto";
 import { getCard, saveCard } from "@lib/api/card";
-import useAuthStore from "@store/auth-store";
 import Button from "@components/button/button";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
 import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 interface CardData {
 	id: number;
@@ -27,7 +27,7 @@ const SharedCard = () => {
 	const searchParams = useSearchParams();
 	const encryptedId = searchParams?.get("id");
 	const cardId = encryptedId ? decryptCardId(encryptedId) : null;
-	const { accessToken } = useAuthStore();
+	const { accessToken } = useAuthToken();
 	const [cardData, setCardData] = useState<CardData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
