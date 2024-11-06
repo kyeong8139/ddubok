@@ -2,7 +2,13 @@ import axios from "axios";
 import axiosInstance from "@lib/api/axiosInstance";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const sendCard = async (content: string, writerName: string, seasonId: number, image: string | null) => {
+export const sendCard = async (
+	content: string,
+	writerName: string,
+	seasonId: number,
+	image: string | null,
+	memberId?: number | null,
+) => {
 	try {
 		const formData = new FormData();
 
@@ -14,6 +20,7 @@ export const sendCard = async (content: string, writerName: string, seasonId: nu
 						content: content,
 						writerName: writerName,
 						seasonId: seasonId,
+						...(memberId ? { memberId: memberId } : {}),
 					}),
 				],
 				{

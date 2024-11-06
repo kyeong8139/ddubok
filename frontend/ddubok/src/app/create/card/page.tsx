@@ -20,6 +20,7 @@ const CreateFront = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
+	const id = searchParams?.get("id");
 
 	const [activeComponent, setActiveComponent] = useState<string>("background");
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
@@ -170,7 +171,7 @@ const CreateFront = () => {
 			});
 
 			setSelectedImage(dataURL);
-			router.push(`/create/letter?type=${type}`);
+			router.push(`/create/letter?type=${type}&id=${id}`);
 		}
 	};
 

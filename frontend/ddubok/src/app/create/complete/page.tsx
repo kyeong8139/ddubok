@@ -122,54 +122,54 @@ const CardDetail = () => {
 	// 	}
 	// };
 
-	const handleShareInstagram = async () => {
-		const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+	// const handleShareInstagram = async () => {
+	// 	const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-		if (!isMobile) {
-			toast.error("인스타그램 스토리 공유는 모바일에서만 가능합니다");
-			return;
-		}
+	// 	if (!isMobile) {
+	// 		toast.error("인스타그램 스토리 공유는 모바일에서만 가능합니다");
+	// 		return;
+	// 	}
 
-		try {
-			const response = await fetch(cardImage);
-			const blob = await response.blob();
+	// 	try {
+	// 		const response = await fetch(cardImage);
+	// 		const blob = await response.blob();
 
-			const shareData = {
-				files: [
-					new File([blob], "fortune-card.png", {
-						type: "image/png",
-					}),
-				],
-			};
+	// 		const shareData = {
+	// 			files: [
+	// 				new File([blob], "fortune-card.png", {
+	// 					type: "image/png",
+	// 				}),
+	// 			],
+	// 		};
 
-			if (navigator.canShare && navigator.canShare(shareData)) {
-				try {
-					await navigator.share(shareData);
-					toast.success("인스타그램 스토리에 공유할 수 있습니다");
-				} catch (err) {
-					if (err instanceof Error) {
-						if (err.name === "AbortError") {
-							return;
-						}
-						throw err;
-					}
-					throw new Error("Unknown error occurred");
-				}
-			} else {
-				const instagramUrl = `instagram://story-camera`;
+	// 		if (navigator.canShare && navigator.canShare(shareData)) {
+	// 			try {
+	// 				await navigator.share(shareData);
+	// 				toast.success("인스타그램 스토리에 공유할 수 있습니다");
+	// 			} catch (err) {
+	// 				if (err instanceof Error) {
+	// 					if (err.name === "AbortError") {
+	// 						return;
+	// 					}
+	// 					throw err;
+	// 				}
+	// 				throw new Error("Unknown error occurred");
+	// 			}
+	// 		} else {
+	// 			const instagramUrl = `instagram://story-camera`;
 
-				const shareUrl = getShareUrl();
-				await navigator.clipboard.writeText(shareUrl);
+	// 			const shareUrl = getShareUrl();
+	// 			await navigator.clipboard.writeText(shareUrl);
 
-				window.location.href = instagramUrl;
-				toast.success("인스타그램이 열립니다. 카메라에서 최근 저장된 이미지를 선택해주세요");
-			}
-		} catch (err) {
-			const error = err instanceof Error ? err : new Error("Unknown error occurred");
-			console.error("인스타그램 공유 중 오류 발생:", error);
-			toast.error("인스타그램 공유에 실패했습니다");
-		}
-	};
+	// 			window.location.href = instagramUrl;
+	// 			toast.success("인스타그램이 열립니다. 카메라에서 최근 저장된 이미지를 선택해주세요");
+	// 		}
+	// 	} catch (err) {
+	// 		const error = err instanceof Error ? err : new Error("Unknown error occurred");
+	// 		console.error("인스타그램 공유 중 오류 발생:", error);
+	// 		toast.error("인스타그램 공유에 실패했습니다");
+	// 	}
+	// };
 
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
@@ -325,7 +325,7 @@ const CardDetail = () => {
 									</div>
 									<span className="text-black font-nexonLight text-sm sm:text-base">카카오톡</span>
 								</button>
-								<button
+								{/* <button
 									onClick={handleShareInstagram}
 									className="flex flex-col items-center"
 								>
@@ -338,7 +338,7 @@ const CardDetail = () => {
 										/>
 									</div>
 									<span className="text-black font-nexonLight text-sm sm:text-base">인스타그램</span>
-								</button>
+								</button> */}
 								<button
 									onClick={handleShareX}
 									className="flex flex-col items-center"

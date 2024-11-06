@@ -16,6 +16,7 @@ const Create = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
+	const id = searchParams?.get("id");
 
 	const { setSelectedImage, setUserName, setLetterContent } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
@@ -66,9 +67,9 @@ const Create = () => {
 		setLetterContent("");
 
 		if (selectedImage) {
-			router.push(`/create/letter?type=${type}`);
+			router.push(`/create/letter?type=${type}&id=${id}`);
 		} else {
-			router.push(`/create/card?type=${type}`);
+			router.push(`/create/card?type=${type}&id=${id}`);
 		}
 	};
 
