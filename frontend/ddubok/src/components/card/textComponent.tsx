@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { ITextComponentProps } from "@interface/components/text";
-import Button from "@components/button/button";
 import { fabric } from "fabric";
 
 function TextComponent({ canvas }: ITextComponentProps) {
@@ -18,9 +17,10 @@ function TextComponent({ canvas }: ITextComponentProps) {
 	const sliderRef = useRef<HTMLDivElement>(null);
 
 	const fonts = [
-		{ id: 1, name: "NEXON Lv1 Gothic Bold", label: "넥슨 고딕" },
-		{ id: 2, name: "PyeongChangPeace-Bold", label: "평창평화체" },
-		{ id: 3, name: "CookieRun-Regular", label: "쿠키런" },
+		{ id: 1, name: "NEXON Lv1 Gothic Bold", label: "화이팅" },
+		{ id: 2, name: "PyeongChangPeace-Bold", label: "화이팅" },
+		{ id: 3, name: "CookieRun-Regular", label: "화이팅" },
+		{ id: 4, name: "GumiRomanceTTF", label: "화이팅" },
 	];
 
 	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
@@ -59,6 +59,8 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		if (selectedText && canvas) {
 			selectedText.set("fontFamily", newFont);
 			canvas.renderAll();
+		} else {
+			addText(newFont);
 		}
 	};
 
@@ -96,13 +98,13 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		sliderRef.current.scrollLeft = scrollLeft - walk;
 	};
 
-	const addText = () => {
+	const addText = (font: string) => {
 		if (!canvas) return;
 
 		const text = new fabric.IText("", {
 			left: (canvas.width || 0) / 2,
 			top: (canvas.height || 0) / 2,
-			fontFamily: fontFamily,
+			fontFamily: font,
 			fontSize: 20,
 			fill: textColor,
 			padding: 10,
@@ -246,16 +248,6 @@ function TextComponent({ canvas }: ITextComponentProps) {
 						</button>
 					))}
 				</div>
-			</div>
-			<div className="mt-6 flex w-full justify-center">
-				<Button
-					text="텍스트 추가"
-					color="purple"
-					size="semiLong"
-					font="regular"
-					shadow="purple"
-					onClick={addText}
-				/>
 			</div>
 		</div>
 	);
