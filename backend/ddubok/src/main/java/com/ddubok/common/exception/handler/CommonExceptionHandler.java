@@ -14,7 +14,6 @@ import com.ddubok.api.member.exception.UnknownStateException;
 import com.ddubok.api.report.exception.InvalidTypeException;
 import com.ddubok.api.report.exception.ReportNotFoundException;
 import com.ddubok.common.auth.exception.InvalidDeleteMemberException;
-import com.ddubok.common.auth.exception.InvalidRefreshTokenException;
 import com.ddubok.common.auth.exception.SoicalAccessTokenNotFoundExcpetion;
 import com.ddubok.common.auth.exception.UnsupportedOAuth2ProviderException;
 import com.ddubok.common.auth.exception.UnsupportedOAuth2UserTypeException;
@@ -34,7 +33,6 @@ public class CommonExceptionHandler {
     @ExceptionHandler({
         CardNotFoundException.class,
         CardAlreadyDeletedException.class,
-        InvalidRefreshTokenException.class,
         UnsupportedOAuth2ProviderException.class,
         UnsupportedOAuth2UserTypeException.class,
         MemberNotFoundException.class,
