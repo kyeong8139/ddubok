@@ -42,6 +42,14 @@ const Header = () => {
 							color="white"
 							onClick={() => router.back()}
 						/>
+						<Link href="/">
+							<Image
+								src="/assets/ddubok.png"
+								alt="ddubok"
+								width={72}
+								height={72}
+							/>
+						</Link>
 						<Hamburger />
 					</div>
 				);
