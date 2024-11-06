@@ -153,7 +153,7 @@ const Home = () => {
 				shareText,
 			)}&content_url=${encodeURIComponent(shareUrl)}`;
 		} else {
-			window.location.href = `intent://instagram.com/story?text=${encodeURIComponent(
+			window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
 				shareText,
 			)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
 		}
