@@ -243,22 +243,22 @@ const Home = () => {
 						</div>
 						<div className="flex justify-center gap-2 pt-12 pb-20">
 							<Button
-								text="행운카드<br/>만들기"
+								text="내 행운카드<br/>조르기"
 								color="purple"
 								size="short"
 								font="both"
 								shadow="purple"
-								onClick={() => {
-									router.push("/create?type=normal");
-								}}
+								onClick={openModal}
 							/>
 							<Button
-								text="내 행운카드<br/>조르기"
+								text="행운카드<br/>만들기"
 								color="green"
 								size="short"
 								font="both"
 								shadow="green"
-								onClick={openModal}
+								onClick={() => {
+									router.push("/create?type=normal");
+								}}
 							/>
 						</div>
 					</div>
