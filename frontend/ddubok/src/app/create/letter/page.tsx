@@ -86,7 +86,7 @@ const CreateBack = () => {
 				<div className="text-white font-nexonLight text-sm">{letterContent.length}/500자</div>
 			</div>
 
-			<div className="w-full mt-10 flex justify-center">
+			<div className="w-full mt-10 flex justify-center mb-8">
 				<Button
 					text={isLoading ? "전송 중..." : type === "normal" ? "완성하기" : "전송하기"}
 					color="green"

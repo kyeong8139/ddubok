@@ -154,7 +154,7 @@ const SharedCard = () => {
 				이미지 저장
 			</button>
 
-			<div className="mt-10 flex flex-row gap-4 w-full justify-center">
+			<div className="mt-10 mb-8 flex flex-row gap-4 w-full justify-center">
 				<Button
 					text="행운카드<br/>보관하기"
 					color="purple"
