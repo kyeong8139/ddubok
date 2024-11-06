@@ -68,12 +68,14 @@ const Book = () => {
 		setCurrentPage(0);
 	};
 
-	const handleCardClick = (cardId: number) => {
-		selectCardDetail(cardId).then((response) => {
+	const handleCardClick = async (cardId: number) => {
+		try {
+			const response = await selectCardDetail(cardId);
 			setCard(response.data.data);
-		});
-
-		openModal();
+			openModal();
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	useEffect(() => {
