@@ -128,7 +128,7 @@ const Home = () => {
 			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
 
 			window.Kakao.Share.sendCustom({
-				templateId: 113932,
+				templateId: 113841,
 				templateArgs: {
 					LINK_URL: shareUrl,
 					IMAGE_URL: "https://ddubok.s3.ap-northeast-2.amazonaws.com/common/kakao.png",

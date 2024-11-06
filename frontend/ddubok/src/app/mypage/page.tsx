@@ -13,6 +13,7 @@ import useAuthToken from "@lib/utils/tokenUtils";
 
 import { PencilCircle } from "@phosphor-icons/react";
 import { deleteUser, logout } from "@lib/api/login-api";
+import Link from "next/link";
 
 const Mypage = () => {
 	const route = useRouter();
@@ -112,10 +113,11 @@ const Mypage = () => {
 								value={newNickname}
 								onChange={(e) => setNewNickname(e.target.value)}
 								maxLength={11}
-								className="px-2 py-2 w-48 text-sm rounded-lg text-black"
+								className="px-2 py-2 w-48 text-sm rounded-lg text-black mb-1"
 							/>
 						</div>
-						<p className="flex justify-end font-nexonLight text-xs text-white">
+
+						<p className="w-[calc(100%-64px)] flex justify-end font-nexonLight mx-auto text-xs text-white">
 							닉네임은 최대 11글자까지 가능합니다.
 						</p>
 						<button
@@ -131,42 +133,67 @@ const Mypage = () => {
 						</button>
 					</div>
 				) : (
-					<div>
-						<div className="w-[calc(100%-64px)] flex justify-between mx-auto">
-							<span className="font-nexonBold">닉네임</span>
-							<span>{user?.nickname} 님</span>
+					<>
+						<div>
+							<div className="w-[calc(100%-64px)] flex justify-between mx-auto">
+								<span className="font-nexonBold">닉네임</span>
+								<span>{user?.nickname} 님</span>
+							</div>
+							<button
+								className="flex justify-end items-center gap-1 w-[calc(100%-64px)] mx-auto mt-4 mb-12"
+								onClick={handleNicknameEdit}
+							>
+								<PencilCircle
+									size={20}
+									color="white"
+									weight="fill"
+								/>
+								<span className="text-sm">정보 수정하기</span>
+							</button>
 						</div>
-						<button
-							className="flex justify-end items-center gap-1 w-[calc(100%-64px)] mx-auto mt-4"
-							onClick={handleNicknameEdit}
-						>
-							<PencilCircle
-								size={20}
-								color="white"
-								weight="fill"
-							/>
-							<span className="text-sm">정보 수정하기</span>
-						</button>
-					</div>
+						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
+							<label className="font-nexonBold">피드백</label>
+							<Link
+								href="https://forms.gle/5E6PDmnWWTw273uS6"
+								target="_blank"
+							>
+								@구글폼 바로가기
+							</Link>
+						</div>
+						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
+							<label className="font-nexonBold">인스타그램</label>
+							<Link
+								href="https://www.instagram.com/ddubok_official"
+								target="_blank"
+							>
+								@ddubok_official
+							</Link>
+						</div>
+						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
+							<label className="font-nexonBold">트위터</label>
+							<Link
+								href="https://x.com/ddubokddubok"
+								target="_blank"
+							>
+								@ddubokddubok
+							</Link>
+						</div>
+					</>
 				)}
 			</div>
 			<div className="flex justify-center gap-2 pt-12 pb-16 absolute left-1/2 bottom-0 -translate-x-1/2">
-				<Button
-					text="로그아웃"
-					color="purple"
-					size="short"
-					font="bold"
-					shadow="purple"
+				<p
+					className="text-white border-b border-white border-solid font-nexonLight text-sm"
 					onClick={handleLogout}
-				/>
-				<Button
-					text="회원 탈퇴"
-					color="green"
-					size="short"
-					font="bold"
-					shadow="green"
+				>
+					로그아웃
+				</p>
+				<p
+					className="text-white border-b border-white border-solid font-nexonLight text-sm"
 					onClick={openModal}
-				/>
+				>
+					회원탈퇴
+				</p>
 			</div>
 			{isModalOpen && (
 				<Modal>
