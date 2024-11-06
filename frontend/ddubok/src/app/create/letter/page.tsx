@@ -7,6 +7,7 @@ import Image from "next/image";
 import { sendCard } from "@lib/api/card";
 import { useCardStore } from "@store/card-store";
 import Button from "@components/button/button";
+import { decryptCardId } from "@lib/utils/crypto";
 
 interface SendCardResponse {
 	code: string;
@@ -20,6 +21,8 @@ const CreateBack = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const type = searchParams?.get("type");
+	const id = searchParams?.get("id");
+	const memberId = id ? decryptCardId(id) : null;
 
 	const [isLoading, setIsLoading] = useState(false);
 	const { selectedImage, userName, letterContent, setLetterContent, setCardId } = useCardStore();
@@ -43,7 +46,7 @@ const CreateBack = () => {
 
 		try {
 			setIsLoading(true);
-			const response = (await sendCard(letterContent, userName, 1, selectedImage)) as SendCardResponse;
+			const response = (await sendCard(letterContent, userName, 1, selectedImage, memberId)) as SendCardResponse;
 
 			if (response.code === "200") {
 				setCardId(response.data.cardId);

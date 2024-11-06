@@ -121,7 +121,7 @@ const Share = () => {
 							font="both"
 							shadow="green"
 							onClick={() => {
-								router.push("/create?type=require");
+								router.push(`/create?type=require&id=${id}`);
 							}}
 						/>
 					</div>
