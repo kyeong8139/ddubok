@@ -264,7 +264,7 @@ const CardDetail = () => {
 					이미지 저장
 				</button>
 
-				<div className="mt-10 flex flex-row gap-4 w-full justify-center">
+				<div className="mt-4 flex flex-row gap-4 w-full justify-center mb-8">
 					{type === "normal" ? (
 						<>
 							<Button
@@ -300,6 +300,12 @@ const CardDetail = () => {
 						)
 					)}
 				</div>
+				<button
+					onClick={() => router.push("/")}
+					className="mt-2 mb-8 text-white font-nexonLight text-sm hover:underline cursor-pointer"
+				>
+					홈으로
+				</button>
 				{isModalOpen && (
 					<Modal>
 						<div className="flex flex-col items-center max-w-[360px] w-full">
