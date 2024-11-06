@@ -4,7 +4,7 @@ import React, { useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
-import { saveCard } from "@lib/api/card";
+import { saveCard, getCard } from "@lib/api/card";
 import { useCardStore } from "@store/card-store";
 import Card from "@components/card/card";
 import Modal from "@components/common/modal";
@@ -14,6 +14,7 @@ import useAuthToken from "@lib/utils/tokenUtils";
 
 import { LinkSimple } from "@phosphor-icons/react";
 import { toast } from "react-hot-toast";
+import useKakaoInit from "../../../hooks/useKakaoInit";
 
 const CardDetail = () => {
 	const router = useRouter();
@@ -61,30 +62,51 @@ const CardDetail = () => {
 		}
 	};
 
-	const handleShareKakao = () => {
-		// if (window.Kakao) {
-		// 	window.Kakao.Share.sendDefault({
-		// 		objectType: "feed",
-		// 		content: {
-		// 			title: "행운카드",
-		// 			description: "행운카드가 도착했어요!",
-		// 			imageUrl: cardImage,
-		// 			link: {
-		// 				mobileWebUrl: currentUrl,
-		// 				webUrl: currentUrl,
-		// 			},
-		// 		},
-		// 		buttons: [
-		// 			{
-		// 				title: "자세히 보기",
-		// 				link: {
-		// 					mobileWebUrl: currentUrl,
-		// 					webUrl: currentUrl,
-		// 				},
-		// 			},
-		// 		],
-		// 	});
-		// }
+	const isKakaoInitialized = useKakaoInit();
+
+	const handleShareKakao = async () => {
+		if (!window.Kakao) {
+			toast.error("카카오톡 SDK가 로드되지 않았습니다");
+			return;
+		}
+
+		if (!isKakaoInitialized) {
+			toast.error("카카오톡 초기화 중입니다");
+			return;
+		}
+
+		if (!cardId) {
+			toast.error("카드 정보가 없습니다");
+			return;
+		}
+
+		try {
+			const response = await getCard(cardId);
+			console.log("전체 응답:", response);
+
+			if (response.code !== "200") {
+				throw new Error(response.message || "카드를 불러올 수 없습니다.");
+			}
+
+			const fullShareUrl = getShareUrl();
+			const splitKey = process.env.NEXT_PUBLIC_SPLIT_KEY;
+			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
+			console.log(shareUrl);
+			console.log(response.data.path);
+
+			window.Kakao.Share.sendCustom({
+				templateId: 113932,
+				templateArgs: {
+					LINK_URL: shareUrl,
+					IMAGE_URL: response.data.path,
+					TITLE: "행운카드가 도착했어요! 🍀",
+					DESCRIPTION: "접속해서 받아가세요",
+				},
+			});
+		} catch (error) {
+			console.error("카카오톡 공유 중 오류 발생:", error);
+			toast.error("카카오톡 공유에 실패했습니다");
+		}
 	};
 
 	// const handleShareInstagram = () => {
