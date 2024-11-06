@@ -131,7 +131,7 @@ const Home = () => {
 				templateId: 113932,
 				templateArgs: {
 					LINK_URL: shareUrl,
-					IMAGE_URL: "/assets/basic-open.png",
+					IMAGE_URL: "https://ddubok.s3.ap-northeast-2.amazonaws.com/common/kakao.png",
 					TITLE: `${user?.nickname}님이 행운카드를 요청했어요!`,
 					DESCRIPTION: "응원을 담은 카드를 만들어주세요🍀",
 				},
