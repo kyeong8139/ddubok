@@ -27,7 +27,7 @@ const SharedCard = () => {
 	const searchParams = useSearchParams();
 	const encryptedId = searchParams?.get("id");
 	const cardId = encryptedId ? decryptCardId(encryptedId) : null;
-	const { accessToken } = useAuthToken();
+	const { accessToken, isTokenReady } = useAuthToken();
 	const [cardData, setCardData] = useState<CardData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
@@ -73,7 +73,7 @@ const SharedCard = () => {
 
 		if (isLoading) return;
 
-		if (!accessToken) {
+		if (!isTokenReady) {
 			openModal();
 			return;
 		}
@@ -136,7 +136,7 @@ const SharedCard = () => {
 
 	return (
 		<div className="flex flex-col items-center w-full">
-			<div className="text-white font-nexonBold text-2xl mt-10">
+			<div className="text-white font-nexonBold text-2xl mt-10 text-center">
 				{cardData?.writerName}님이
 				<br /> 보낸 행운카드
 			</div>
