@@ -27,7 +27,7 @@ export const selectCardDetail = (cardId: number) => {
 
 // 카드 정보 미리보기 (조르기 화면)
 export const selectPreviewList = (memberId: number) => {
-	return axios.get(`${baseURL}/auth/check-refresh-token`, {
+	return axios.get(`${baseURL}/cards/${memberId}/preview`, {
 		headers: { "Content-Type": "application/json" },
 		withCredentials: true,
 	});
