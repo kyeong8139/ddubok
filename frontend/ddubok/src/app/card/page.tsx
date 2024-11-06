@@ -27,7 +27,7 @@ const SharedCard = () => {
 	const searchParams = useSearchParams();
 	const encryptedId = searchParams?.get("id");
 	const cardId = encryptedId ? decryptCardId(encryptedId) : null;
-	const { accessToken, isTokenReady } = useAuthToken();
+	const { accessToken } = useAuthToken();
 	const [cardData, setCardData] = useState<CardData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
@@ -73,7 +73,7 @@ const SharedCard = () => {
 
 		if (isLoading) return;
 
-		if (!isTokenReady) {
+		if (!accessToken) {
 			openModal();
 			return;
 		}
