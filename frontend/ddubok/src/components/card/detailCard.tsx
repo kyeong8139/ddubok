@@ -44,6 +44,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 		try {
 			await deleteCard(cardId);
 			toast.success("카드를 영구 삭제했습니다");
+			router.refresh();
 		} catch (error) {
 			console.error(error);
 			toast.error("카드를 영구 삭제하지 못했습니다");
