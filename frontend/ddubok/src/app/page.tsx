@@ -477,7 +477,10 @@ const Home = () => {
 									size="small"
 									font="regular"
 									shadow="green"
-									onClick={() => router.push("/login")}
+									onClick={() => {
+										closeModal();
+										router.push("/login");
+									}}
 								/>
 							</div>
 						</Modal>
