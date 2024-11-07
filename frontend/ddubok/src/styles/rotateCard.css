@@ -1,0 +1,19 @@
+.perspective {
+	perspective: 1000px; /* 3D 시점 설정 */
+}
+
+.preserve-3d {
+	transform-style: preserve-3d; /* 자식 요소가 3D로 보이도록 설정 */
+}
+
+.transition-transform {
+	transition: transform 0.7s; /* 3D 회전 애니메이션 속도 */
+}
+
+.backface-hidden {
+	backface-visibility: hidden; /* 뒤집힐 때 뒷면이 보이지 않도록 설정 */
+}
+
+.rotate-y-180 {
+	transform: rotateY(180deg); /* Y축 기준으로 180도 회전 */
+}
