@@ -210,7 +210,7 @@ const Home = () => {
 						<div className="flex flex-col items-center pt-8">
 							<div className="absolute">
 								<p>
-									<span className="font-nexonBold">수능을 앞둔 친구</span>를 위한 행운 배달부🍀
+									<span className="font-nexonBold">친구</span>를 위한 행운 배달부🍀
 								</p>
 							</div>
 							<NextImage
@@ -221,7 +221,7 @@ const Home = () => {
 								className="pt-2"
 							/>
 							<p className="font-nexonLight text-sm mb-2">
-								이벤트 기간: <span>11.06 - 11.13</span>
+								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p>
 							<p className="font-nexonLight text-xs text-center">
 								행운카드 뒷면의 메세지는 <br />
@@ -477,7 +477,10 @@ const Home = () => {
 									size="small"
 									font="regular"
 									shadow="green"
-									onClick={() => router.push("/login")}
+									onClick={() => {
+										closeModal();
+										router.push("/login");
+									}}
 								/>
 							</div>
 						</Modal>

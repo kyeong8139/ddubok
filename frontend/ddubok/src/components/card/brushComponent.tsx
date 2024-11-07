@@ -3,6 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { IBrushComponentProps, IPathCreatedEvent } from "@interface/components/brush";
 import { fabric } from "fabric";
+import { Eraser } from "@phosphor-icons/react";
+
+// fabric.js Path 타입 확장
+declare module "fabric" {
+	namespace fabric {
+		interface Path {
+			isBrushPath?: boolean;
+		}
+	}
+}
 
 function BrushComponent({ canvas }: IBrushComponentProps) {
 	const [brushColor, setBrushColor] = useState("#000000");
@@ -10,6 +20,7 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 	const [customColor, setCustomColor] = useState(
 		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
 	);
+	const [isEraser, setIsEraser] = useState(false);
 
 	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
 
@@ -54,6 +65,11 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 
 			canvas.on("path:created", function (e: IPathCreatedEvent) {
 				const path = e.path;
+
+				// Set custom property
+				if (path instanceof fabric.Path) {
+					path.isBrushPath = true;
+				}
 
 				path.controls = {
 					...baseControls,
@@ -110,6 +126,47 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 		}
 	}, [canvas]);
 
+	// 지우개 모드 이벤트 핸들러
+	useEffect(() => {
+		if (!canvas) return;
+
+		const handleMouseDown = (e: fabric.IEvent) => {
+			if (!isEraser || !e.pointer) return;
+
+			const pointer = canvas.getPointer(e.e);
+			const objects = canvas.getObjects();
+
+			for (let i = objects.length - 1; i >= 0; i--) {
+				const obj = objects[i];
+				if (
+					obj instanceof fabric.Path &&
+					obj.isBrushPath &&
+					obj.containsPoint(new fabric.Point(pointer.x, pointer.y))
+				) {
+					canvas.remove(obj);
+					canvas.requestRenderAll();
+					break; // 가장 위에 있는 객체만 지우기
+				}
+			}
+		};
+
+		if (isEraser) {
+			canvas.isDrawingMode = false;
+			canvas.defaultCursor = "crosshair";
+			canvas.on("mouse:down", handleMouseDown);
+		} else {
+			canvas.isDrawingMode = true;
+			canvas.defaultCursor = "default";
+			canvas.off("mouse:down", handleMouseDown);
+		}
+
+		return () => {
+			if (canvas) {
+				canvas.off("mouse:down", handleMouseDown);
+			}
+		};
+	}, [canvas, isEraser]);
+
 	useEffect(() => {
 		if (canvas) {
 			canvas.freeDrawingBrush.color = brushColor;
@@ -118,6 +175,9 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 	}, [canvas, brushColor, brushSize]);
 
 	const handleColorChange = (color: string) => {
+		if (isEraser) {
+			setIsEraser(false);
+		}
 		setBrushColor(color);
 		if (canvas) {
 			canvas.isDrawingMode = true;
@@ -133,25 +193,46 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 	};
 
 	const handleSizeChange = (size: number) => {
+		if (isEraser) {
+			setIsEraser(false);
+		}
 		setBrushSize(size);
 		if (canvas) {
 			canvas.isDrawingMode = true;
 			canvas.freeDrawingBrush.width = size;
+			canvas.defaultCursor = "default";
 		}
+	};
+
+	const toggleEraser = () => {
+		setIsEraser(!isEraser);
 	};
 
 	const sizes = [2, 5, 8, 12, 16];
 
 	return (
-		<div className="w-full flex flex-col h-full ">
+		<div className="w-full flex flex-col h-full">
 			<div className="space-y-2">
-				<p className="text-base font-nexonRegular mt-3">색상</p>
-				<div className="grid grid-cols-5 gap-2">
+				<div className="flex items-center justify-between">
+					<p className="text-base font-nexonRegular mt-3">색상</p>
+					<button
+						onClick={toggleEraser}
+						className={`p-2 rounded-lg ${
+							isEraser
+								? "bg-ddubokPurple/10 border-2 border-ddubokPurple"
+								: "bg-gray-100 border-2 border-gray-200"
+						}`}
+						title="지우개"
+					>
+						<Eraser />
+					</button>
+				</div>
+				<div className="grid grid-cols-5 gap-2 ">
 					{colors.map((color) => (
 						<button
 							key={color}
 							className={`w-10 h-10 rounded-lg border-2 ${
-								brushColor === color ? "border-ddubokPurple" : "border-gray-200"
+								brushColor === color && !isEraser ? "border-ddubokPurple" : "border-gray-200"
 							}`}
 							style={{ backgroundColor: color }}
 							onClick={() => handleColorChange(color)}
@@ -166,7 +247,7 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 						/>
 						<button
 							className={`w-full h-full rounded-lg border-2 ${
-								brushColor === customColor ? "border-ddubokPurple" : "border-gray-200"
+								brushColor === customColor && !isEraser ? "border-ddubokPurple" : "border-gray-200"
 							}`}
 							style={{ background: customColor }}
 						/>
@@ -181,7 +262,9 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 						<button
 							key={size}
 							className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center ${
-								brushSize === size ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
+								brushSize === size && !isEraser
+									? "border-ddubokPurple bg-ddubokPurple/10"
+									: "border-gray-200"
 							}`}
 							onClick={() => handleSizeChange(size)}
 						>

@@ -80,9 +80,8 @@ const Share = () => {
 				<>
 					<div className="text-white font-nexonRegular flex flex-col items-center pt-8 text-center">
 						<p className="mb-4 text-lg leading-normal">
-							수능을 앞둔 <br />
 							<span className="font-nexonBold">{nickname}</span> 님을 위해 <br />
-							행운카드을 만들어주세요🍀
+							행운카드를 만들어주세요🍀
 						</p>
 						<p className="text-sm">
 							현재까지 <span className="font-nexonBold">{imageArray.length}</span>개의 행운카드를

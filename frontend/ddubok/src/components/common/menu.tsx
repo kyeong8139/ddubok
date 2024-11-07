@@ -8,7 +8,8 @@ import { selectUser } from "@lib/api/user-api";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import useAuthStore from "@store/auth-store";
 
-import { CaretRight } from "@phosphor-icons/react";
+import { CaretRight, ChatCircleText, EnvelopeSimple, InstagramLogo, XLogo } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
 
 const Menu = () => {
 	const accessToken = useAuthStore((state) => state.accessToken);
@@ -41,6 +42,10 @@ const Menu = () => {
 
 		getUser();
 	}, [accessToken, user?.nickname]);
+
+	const notLogin = () => {
+		toast.error("로그인이 필요한 서비스입니다");
+	};
 
 	return (
 		<div
@@ -92,40 +97,94 @@ const Menu = () => {
 						</p>
 					</div>
 				)}
-				<div className="mx-6">
-					{decodedToken ? (
-						decodedToken.role === "ROLE_ADMIN" ? (
-							<ul>
-								<li className="mb-4">
-									<Link href="/admin/user">사용자 관리</Link>
-								</li>
-								<li className="mb-4">
-									<Link href="/admin/report">신고 관리</Link>
-								</li>
-								<li className="mb-4">
-									<Link href="/admin/setting">메인 관리</Link>
-								</li>
-							</ul>
+				<div className="flex flex-col h-[calc(100%-113px-104px)] justify-between">
+					<div className="mx-6">
+						{decodedToken ? (
+							decodedToken.role === "ROLE_ADMIN" ? (
+								<ul>
+									<li className="mb-4">
+										<Link href="/admin/user">사용자 관리</Link>
+									</li>
+									<li className="mb-4">
+										<Link href="/admin/report">신고 관리</Link>
+									</li>
+									<li className="mb-4">
+										<Link href="/admin/setting">메인 관리</Link>
+									</li>
+								</ul>
+							) : (
+								<ul>
+									<li className="mb-4">
+										<Link href="/book">행운 카드북</Link>
+									</li>
+									<li className="mb-4">
+										<Link href="/fortune">오늘의 운세</Link>
+									</li>
+									<li>
+										<Link href="/create?type=normal">행운카드 만들기</Link>
+									</li>
+								</ul>
+							)
 						) : (
 							<ul>
-								<li className="mb-4">
-									<Link href="/book">행운 카드북</Link>
+								<li
+									className="mb-4"
+									onClick={notLogin}
+								>
+									행운 카드북
 								</li>
-								<li className="mb-4">
-									<Link href="/fortune">오늘의 운세</Link>
+								<li
+									className="mb-4"
+									onClick={notLogin}
+								>
+									오늘의 운세
 								</li>
 								<li>
 									<Link href="/create?type=normal">행운카드 만들기</Link>
 								</li>
 							</ul>
-						)
-					) : (
-						<ul>
+						)}
+					</div>
+					<div className="mx-6">
+						<ul className="flex flex-col gap-4">
 							<li>
-								<Link href="/create?type=normal">행운카드 만들기</Link>
+								<Link
+									href="https://www.instagram.com/ddubok_official"
+									target="_blank"
+									className="flex items-center gap-1"
+								>
+									<InstagramLogo
+										size={16}
+										color="white"
+									/>
+									<span className="text-xs">ddubok_offical</span>
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="https://x.com/ddubokddubok"
+									target="_blank"
+									className="flex items-center gap-1"
+								>
+									<XLogo
+										size={16}
+										color="white"
+									/>
+									<span className="text-xs">dduboddubok</span>
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="https://forms.gle/5E6PDmnWWTw273uS6"
+									target="_blank"
+									className="flex items-center gap-1"
+								>
+									<ChatCircleText size={16} />
+									<span className="text-xs">피드백을 하고싶다면?</span>
+								</Link>
 							</li>
 						</ul>
-					)}
+					</div>
 				</div>
 			</div>
 		</div>
