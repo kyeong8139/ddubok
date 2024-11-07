@@ -30,6 +30,7 @@ spring:
     x-secret: text-x-secret
     google-id: test-google-id
     google-secret: test-google-secret
+    domain-url: test-url
   jwt:
     secret: test-jwt-secret-key-12345678901234567890
     expiration: 3600  # 테스트용으로 1시간(3600초)

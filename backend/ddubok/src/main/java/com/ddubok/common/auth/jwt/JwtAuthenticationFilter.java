@@ -52,7 +52,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        log.error("before accessToken : {}", accessToken);
         accessToken = jwtTokenUtil.extractToken(accessToken);
 
         if (jwtTokenUtil.isExpired(accessToken)) {

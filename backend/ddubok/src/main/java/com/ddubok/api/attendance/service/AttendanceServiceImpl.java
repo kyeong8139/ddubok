@@ -96,7 +96,17 @@ public class AttendanceServiceImpl implements AttendanceService {
         int rowCount = fortuneRepository.getRowCount();
         int rowNumber = (int) (Math.random() * (rowCount - 1));
         String sentence = fortuneRepository.getRandomFortuneSentence(rowNumber);
-        int score = (int) (Math.random() * 40) + 60;
+
+        int score;
+        double randomValue = Math.random();
+
+        if (randomValue < 0.1) {
+            score = (int) (Math.random() * 11) + 60;
+        } else if (randomValue < 0.4) {
+            score = (int) (Math.random() * 11) + 90;
+        } else {  // 71 ~ 89 (70% 확률)
+            score = (int) (Math.random() * 19) + 71;
+        }
 
         return FortuneRes.builder()
             .sentence(sentence)

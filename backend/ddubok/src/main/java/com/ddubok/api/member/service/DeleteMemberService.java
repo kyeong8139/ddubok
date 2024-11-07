@@ -1,5 +1,7 @@
 package com.ddubok.api.member.service;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 public interface DeleteMemberService {
 
     /**
@@ -7,6 +9,6 @@ public interface DeleteMemberService {
      *
      * @param memberId 멤버 ID
      */
-    void deleteMember(Long memberId);
+    void deleteMember(Long memberId, HttpServletResponse response);
 
 }

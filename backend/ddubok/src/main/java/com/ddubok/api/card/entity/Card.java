@@ -38,7 +38,7 @@ public class Card {
     /**
      * 카드의 내용
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
     /**
      * 카드 생성 일자
@@ -54,7 +54,7 @@ public class Card {
     /**
      * 카드 이미지 경로 url
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String path;
     /**
      * 카드의 상태 <br> READY(오픈예정), OPEN(오픈됨), FILTERED(내용 필터링됨)

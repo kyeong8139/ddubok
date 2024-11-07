@@ -16,7 +16,7 @@ public class ScheduledTasks {
     private final CardRepositoryCustom cardRepositoryCustom;
 
     @Transactional
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(cron = "0 0 20 * * *")
     void cardOpen() {
         Long result = cardRepositoryCustom.updateCardStates();
     }
