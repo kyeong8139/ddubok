@@ -152,33 +152,6 @@ const Mypage = () => {
 								<span className="text-sm">정보 수정하기</span>
 							</button>
 						</div>
-						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
-							<label className="font-nexonBold">피드백</label>
-							<Link
-								href="https://forms.gle/5E6PDmnWWTw273uS6"
-								target="_blank"
-							>
-								@구글폼 바로가기
-							</Link>
-						</div>
-						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
-							<label className="font-nexonBold">인스타그램</label>
-							<Link
-								href="https://www.instagram.com/ddubok_official"
-								target="_blank"
-							>
-								@ddubok_official
-							</Link>
-						</div>
-						<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto text-white mb-4">
-							<label className="font-nexonBold">트위터</label>
-							<Link
-								href="https://x.com/ddubokddubok"
-								target="_blank"
-							>
-								@ddubokddubok
-							</Link>
-						</div>
 					</>
 				)}
 			</div>

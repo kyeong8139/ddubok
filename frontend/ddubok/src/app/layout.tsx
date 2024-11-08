@@ -92,13 +92,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				></meta>
 			</head>
 			<body
-				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable}`}
+				className={`${pyeongChangPeaceBold.variable} ${nexonGothicLight.variable} ${nexonGothicRegular.variable} ${nexonGothicBold.variable} bg-ddubokBackground`}
 				suppressHydrationWarning={true}
+				style={{
+					// backgroundColor: "#17153B",
+					backgroundColor: "#DDDDDD",
+				}}
 			>
 				<div
 					className="font-sans min-h-screen mx-auto w-full max-w-[480px] bg-ddubokBackground relative overflow-hidden"
 					style={{
-						boxShadow: "0 14px 28px #0000001a, 0 10px 10px #0000001a",
+						boxShadow: "0 14px 28px #00000066, 0 10px 10px #00000066",
 					}}
 				>
 					<MenuProvider>

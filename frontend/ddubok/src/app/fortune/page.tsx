@@ -86,7 +86,7 @@ const Fortune = () => {
 				<div className="px-8">
 					<div className="font-nexonRegular flex justify-between items-center px-4 my-8 text-sm bg-white w-full h-12 rounded-lg shadow-custom-gray">
 						<span>
-							<strong>{currentMonth}월</strong> 의 출석일
+							<strong>{currentMonth}월</strong> 출석일
 						</span>
 						<span>
 							<strong>{fortuneCount}</strong> 일

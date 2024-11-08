@@ -28,7 +28,11 @@ const CardDetail = () => {
 	const [showLoginModal, setShowLoginModal] = useState(false);
 
 	const titleText =
-		type === "normal" ? "행운카드를 공유해보세요" : type === "require" ? "행운카드가 배달중이예요" : "행운카드";
+		type === "normal"
+			? "행운카드를 공유해보세요"
+			: type === "require"
+			? "💌행운카드 발송이 완료되었어요"
+			: "행운카드";
 
 	const cardImage = selectedImage || "";
 	const currentUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -246,8 +250,13 @@ const CardDetail = () => {
 	return (
 		<div>
 			<div className="flex flex-col items-center w-full">
-				<div className="text-white font-nexonBold text-2xl mt-10">{titleText}</div>
-				<div className="mt-8">
+				<div className="text-white font-nexonBold text-xl mt-6">{titleText}</div>
+				{type === "require" && (
+					<p className="text-white font-nexonLight text-sm mt-2 text-center">
+						발송된 카드의 뒷면은 <br /> 11월 13일 오후 8시에 오픈됩니다!
+					</p>
+				)}
+				<div className="mt-6">
 					<Card
 						width={270}
 						height={478}
@@ -264,7 +273,7 @@ const CardDetail = () => {
 					이미지 저장
 				</button> */}
 
-				<div className="mt-4 flex flex-row gap-4 w-full justify-center mb-8">
+				<div className="mt-6 flex flex-row gap-4 w-full justify-center mb-8">
 					{type === "normal" ? (
 						<>
 							<Button
@@ -288,13 +297,30 @@ const CardDetail = () => {
 					) : (
 						type === "require" && (
 							<>
-								<Button
+								{/* <Button
 									text="홈으로"
 									color="gradient"
 									size="long"
 									font="regular"
 									shadow="gradient"
 									onClick={() => router.push("/")}
+								/> */}
+								<Button
+									text="행운카드<br/>보관하기"
+									color="purple"
+									size="short"
+									font="both"
+									shadow="purple"
+									onClick={handleSaveCard}
+									disabled={isLoading}
+								/>
+								<Button
+									text="다른 사람에게<br/>공유하기"
+									color="green"
+									size="short"
+									font="both"
+									shadow="green"
+									onClick={() => openModal()}
 								/>
 							</>
 						)
