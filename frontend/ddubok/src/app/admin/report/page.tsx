@@ -205,7 +205,7 @@ const Report = () => {
 					</div>
 					<div className="flex justify-center mt-8 gap-4">
 						<Button
-							text="등급 변경"
+							text="신고 반려"
 							color="purple"
 							size="small"
 							font="small"
@@ -213,7 +213,7 @@ const Report = () => {
 							onClick={() => {}}
 						/>
 						<Button
-							text="회원 퇴출"
+							text="신고 수락"
 							color="green"
 							size="small"
 							font="small"
