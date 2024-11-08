@@ -123,7 +123,7 @@ const User = () => {
 						<p className="font-nexonBold">역할</p>
 						<p>{selectedUser?.role}</p>
 					</div>
-					<div className="flex justify-around mt-8">
+					<div className="flex justify-center mt-8 gap-4">
 						<Button
 							text="등급 변경"
 							color="purple"
