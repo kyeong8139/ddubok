@@ -1,13 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useContext, useMemo, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
-import { IUserProps } from "@interface/components/user";
 import { IReportProps } from "@interface/components/report";
-import Image from "next/image";
 
 const Report = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
