@@ -10,6 +10,7 @@ import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
+import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
 import com.ddubok.api.admin.service.AdminReportService;
@@ -181,5 +182,15 @@ public class AdminController {
     ){
         GetSeasonDetailRes getSeasonDetailRes = seasonService.getSeasonDetail(seasonId);
         return BaseResponse.ofSuccess(getSeasonDetailRes);
+    }
+
+    /**
+     * 시즌을 전체 목록을 조회합니다.
+     *
+     */
+    @GetMapping("/seasons")
+    public BaseResponse<?> getSeasonList(){
+        List<GetSeasonListRes> getSeasonListRes = seasonService.getSeasonList();
+        return BaseResponse.ofSuccess(getSeasonListRes);
     }
 }

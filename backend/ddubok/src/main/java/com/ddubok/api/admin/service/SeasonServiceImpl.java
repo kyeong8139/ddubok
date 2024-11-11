@@ -2,12 +2,17 @@ package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
+import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
+import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import com.ddubok.api.member.exception.MemberNotFoundException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +63,21 @@ public class SeasonServiceImpl implements SeasonService {
             .openedAt(season.getOpenedAt())
             .path(season.getPath())
             .build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<GetSeasonListRes> getSeasonList() {
+        List<Season> seasons = seasonRepository.findAll();
+        return seasons.stream()
+            .sorted(Comparator.comparing(Season::getId).reversed())  // Season 객체의 id 기준으로 역순 정렬
+            .map(season -> GetSeasonListRes.builder()
+                    .id(season.getId())
+                    .name(season.getName())
+                    .build())
+                .collect(Collectors.toList());
     }
 
     /**
