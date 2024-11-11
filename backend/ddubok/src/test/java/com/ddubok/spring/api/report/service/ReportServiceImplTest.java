@@ -57,7 +57,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("수능 잘봐라 XXX야")
             .path("수능잘보라는이미지1")
             .writerName("글쓴이")
@@ -105,7 +105,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")
@@ -153,7 +153,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")
@@ -201,7 +201,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")
@@ -249,7 +249,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")
@@ -297,7 +297,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")
@@ -345,7 +345,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builder()
+        Card reportedCard = Card.builderForSeasonCard()
             .content("싸다 공부 잘하게 되는 약이 1000원")
             .path("약판매광고이미지1")
             .writerName("글쓴이")

@@ -18,6 +18,7 @@ import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.common.openai.dto.OpenAiReq;
 import com.ddubok.common.openai.dto.OpenAiRes;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Long createCard(CreateCardReqDto dto) {
-        Card card = cardRepository.save(Card.builder()
+        Card card = cardRepository.save(Card.builderForSeasonCard()
             .content(dto.getContent())
             .writerName(dto.getWriterName())
             .season(seasonRepository.findById(dto.getSeasonId()).orElseThrow(
@@ -86,6 +87,26 @@ public class CardServiceImpl implements CardService {
     @Override
     public void receiveCard(ReceiveCardReq dto) {
         saveAlbum(dto.getCardId(), dto.getMemberId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long createNormalCard(CreateCardReqDto dto) {
+        Card card = cardRepository.save(Card.builderForNormalCard()
+            .content(dto.getContent())
+            .writerName(dto.getWriterName())
+            .openedAt(LocalDateTime.now().plusHours(24))
+            .path(dto.getPath())
+            .build());
+        if (dto.getMemberId() != null) {
+            saveAlbum(card.getId(), dto.getMemberId());
+        }
+        if (filteringCheck(dto.getContent())) {
+            card.filtering();
+        }
+        return card.getId();
     }
 
     /**
