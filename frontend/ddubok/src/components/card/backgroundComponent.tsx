@@ -26,7 +26,7 @@ type BackgroundItem = BackgroundUploadItem | BackgroundWhiteItem | BackgroundIma
 const backgroundImages = Array.from({ length: 14 }, (_, index) => `/assets/background/background (${index + 1}).JPG`);
 
 function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
-	const [selectedBackground, setSelectedBackground] = useState<string>("white");
+	const [selectedBackground, setSelectedBackground] = useState<string | null>("white");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [image, setImage] = useState<string>("");
 	const cropperRef = useRef<any>(null);
@@ -57,9 +57,21 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 				const src = background.getSrc();
 				if (src) {
 					try {
-						const fullUrl = src.startsWith("data:") ? src : new URL(src, window.location.origin).href;
+						// Data URL인 경우 custom 업로드로 처리
+						if (src.startsWith("data:")) {
+							setSelectedBackground("custom");
+							return;
+						}
+
+						// 상대 경로를 절대 경로로 변환
+						const fullUrl = new URL(src, window.location.origin).href;
 						const pathname = new URL(fullUrl).pathname;
-						const matchingBackground = backgroundImages.find((bg) => pathname.includes(bg));
+
+						// backgroundImages 배열에서 매칭되는 이미지 찾기
+						const matchingBackground = backgroundImages.find((bg) =>
+							pathname.endsWith(bg.split("/").pop()!),
+						);
+
 						if (matchingBackground) {
 							setSelectedBackground(matchingBackground);
 						} else {
@@ -166,8 +178,8 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 
 				canvas.insertAt(img, 0, false);
 				canvas.renderAll();
+				setSelectedBackground(imageUrl); // 이미지 URL을 직접 저장
 			});
-			setSelectedBackground(imageUrl);
 		}
 	};
 
@@ -237,7 +249,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 					/>
 					<div
 						className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-					${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+            ${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 					>
 						<div className="relative w-full h-full">
 							<Image
