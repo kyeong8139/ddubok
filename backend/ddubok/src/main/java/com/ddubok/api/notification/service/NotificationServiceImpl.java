@@ -1,6 +1,7 @@
 package com.ddubok.api.notification.service;
 
 import com.ddubok.api.member.entity.Member;
+import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.notification.entity.NotificationToken;
 import com.ddubok.api.notification.repository.NotificationTokenRepository;
@@ -23,7 +24,8 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public void saveToken(Long memberId, String token) {
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
         member.agreeNotification();
         notificationTokenRepository.save(NotificationToken.builder().member(member).token(token).build());
     }
@@ -33,7 +35,10 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public void deleteToken(Long memberId) {
-
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new MemberNotFoundException());
+        member.disagreeNotification();
+        notificationTokenRepository.deleteByMemberId(memberId);
     }
 
     /**
