@@ -3,6 +3,8 @@ package com.ddubok.api.admin.service;
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
+import com.ddubok.api.admin.dto.response.GetSeasonListRes;
+import java.util.List;
 
 /**
  * 시즌 관련 처리를 위한 서비스
@@ -24,4 +26,11 @@ public interface SeasonService {
      * @return 해당 시즌의 정보를 받아온다.
      */
     GetSeasonDetailRes getSeasonDetail(Long seasonId);
+
+    /**
+     * 관리자가 시즌 전체 목록을 조회한다.
+     *
+     * @return 시즌 전체 목록을 반환한다.
+     */
+    List<GetSeasonListRes> getSeasonList();
 }
