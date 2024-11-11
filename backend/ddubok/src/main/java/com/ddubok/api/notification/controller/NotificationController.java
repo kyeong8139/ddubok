@@ -24,12 +24,14 @@ public class NotificationController {
     public BaseResponse<?> saveToken(@RequestBody SaveTokenReq req) {
         Long memberId = authUtil.getMemberId();
         notificationService.saveToken(memberId, req.getToken());
-        return BaseResponse.ofSuccess(HttpStatus.OK);
+        return BaseResponse.ofSuccess(HttpStatus.CREATED);
     }
 
     @DeleteMapping
     public BaseResponse<?> deleteToken() {
-        return null;
+        Long memberId = authUtil.getMemberId();
+        notificationService.deleteToken(memberId);
+        return BaseResponse.ofSuccess(HttpStatus.NO_CONTENT);
     }
 
 }
