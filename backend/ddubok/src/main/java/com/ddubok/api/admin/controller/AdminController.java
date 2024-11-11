@@ -49,7 +49,7 @@ public class AdminController {
      * @param getReportListReq 필터링 조건
      * @return 신고 목록
      */
-    @GetMapping("/reports")
+    @PostMapping("/reports")
     public BaseResponse<?> getAllReportList(
         @RequestBody GetReportListReq getReportListReq
     ) {
@@ -91,7 +91,7 @@ public class AdminController {
      * @param getMemberListReq 필터링 및 검색 조건
      * @return 사용자 목록
      */
-    @GetMapping("/members")
+    @PostMapping("/members")
     public BaseResponse<?> getAllMemberList(
         @RequestBody GetMemberListReq getMemberListReq
     ) {
