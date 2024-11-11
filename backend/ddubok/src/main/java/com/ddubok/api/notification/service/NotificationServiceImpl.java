@@ -38,7 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException());
         member.disagreeNotification();
-        notificationTokenRepository.deleteByMemberId(member.getId());
+        notificationTokenRepository.deleteByMemberId(memberId);
     }
 
     /**
