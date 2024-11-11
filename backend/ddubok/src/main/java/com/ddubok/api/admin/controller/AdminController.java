@@ -4,6 +4,7 @@ import com.ddubok.api.admin.dto.request.CreateSeasonReq;
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.request.GetMemberListReq;
 import com.ddubok.api.admin.dto.request.GetReportListReq;
+import com.ddubok.api.admin.dto.request.HandleReportReq;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
@@ -80,8 +81,8 @@ public class AdminController {
      */
     @PatchMapping("/reports/{reportId}")
     public BaseResponse<?> getReportDetail(
-        @PathVariable Long reportId, @RequestBody GetReportListReq getReportListReq) {
-        GetReportListRes getReportState = adminReportService.handleReport(reportId,getReportListReq);
+        @PathVariable Long reportId, @RequestBody HandleReportReq handleReportReq) {
+        GetReportListRes getReportState = adminReportService.handleReport(reportId,handleReportReq);
         return BaseResponse.ofSuccess(getReportState);
     }
 
