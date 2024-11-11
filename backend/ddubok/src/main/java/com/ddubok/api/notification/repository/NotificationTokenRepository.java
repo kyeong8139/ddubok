@@ -15,4 +15,7 @@ public interface NotificationTokenRepository extends JpaRepository<NotificationT
     void deleteByMemberId(@Param("memberId") Long memberId);
 
     List<NotificationToken> findAllByMemberId(Long memberId);
+
+    @Query("SELECT nt.token FROM NotificationToken nt WHERE nt.member.notificationConsent = com.ddubok.api.member.entity.NotificationConsent.ENABLED")
+    List<String> findTokensByEnabledNotification();
 }
