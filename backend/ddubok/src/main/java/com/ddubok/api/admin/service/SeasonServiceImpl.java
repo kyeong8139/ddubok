@@ -1,10 +1,12 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
+import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
+import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
 import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
@@ -78,6 +80,24 @@ public class SeasonServiceImpl implements SeasonService {
                     .name(season.getName())
                     .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UpdateSeasonRes updateSeason(Long seasonId, UpdateSeasonReqDto updateSeasonReqDto) {
+        Season season = seasonRepository.findById(seasonId)
+            .orElseThrow(() -> new SeasonNotFoundException("해당 번호의 시즌을 찾을 수 없습니다." + seasonId));
+        Season upDateSeason = seasonRepository.save(Season.builder()
+            .id(seasonId)
+            .name(updateSeasonReqDto.getSeasonName())
+            .description(updateSeasonReqDto.getSeasonDescription())
+            .path(updateSeasonReqDto.getPath())
+            .startedAt(updateSeasonReqDto.getStartedAt())
+            .endedAt(updateSeasonReqDto.getEndedAt())
+            .openedAt(updateSeasonReqDto.getOpenedAt())
+            .build());
+        return UpdateSeasonRes.builder()
+            .id(upDateSeason.getId())
+            .build();
     }
 
     /**
