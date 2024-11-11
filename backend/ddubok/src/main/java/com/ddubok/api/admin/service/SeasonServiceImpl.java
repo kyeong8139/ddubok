@@ -12,6 +12,7 @@ import com.ddubok.api.admin.exception.InvalidDateOrderException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import com.ddubok.api.member.exception.MemberNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class SeasonServiceImpl implements SeasonService {
      */
     @Override
     public CreateSeasonRes createSeason(CreateSeasonReqDto createSeasonReqDto) {
-        validateSeasonDates(createSeasonReqDto);
+        validateSeasonDates(createSeasonReqDto.getStartedAt(), createSeasonReqDto.getEndedAt());
         Season season = seasonRepository.save(Season.builder()
             .name(createSeasonReqDto.getSeasonName())
             .description(createSeasonReqDto.getSeasonDescription())
@@ -84,6 +85,7 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public UpdateSeasonRes updateSeason(Long seasonId, UpdateSeasonReqDto updateSeasonReqDto) {
+        validateSeasonDates(updateSeasonReqDto.getStartedAt(), updateSeasonReqDto.getEndedAt());
         Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new SeasonNotFoundException("해당 번호의 시즌을 찾을 수 없습니다." + seasonId));
         Season upDateSeason = seasonRepository.save(Season.builder()
@@ -101,12 +103,13 @@ public class SeasonServiceImpl implements SeasonService {
     }
 
     /**
-     * 시작일, 종료일, 오픈일 검증
+     * 시작일, 종료일 검증
      *
-     * @param createSeasonReqDto 요청 데이터
+     * @param startedAt 시즌 시작일
+     * @param endedAt 시즌 종료일
      */
-    private void validateSeasonDates(CreateSeasonReqDto createSeasonReqDto) {
-        if (createSeasonReqDto.getStartedAt().isAfter(createSeasonReqDto.getEndedAt())) {
+    private void validateSeasonDates(LocalDateTime startedAt, LocalDateTime endedAt) {
+        if (startedAt.isAfter(endedAt)) {
             throw new InvalidDateOrderException("시작일은 종료일보다 앞서야 합니다.");
         }
     }
