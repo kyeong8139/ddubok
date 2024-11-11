@@ -28,7 +28,8 @@ public class FCMService {
      * @param messageDto 메세지
      */
     public void sendNotification(NotificationMessageDto messageDto, String path) {
-        List<String> tokens = getTokens(messageDto.getMemberId());
+        List<String> tokens = messageDto.getMemberId() != null ? getTokens(messageDto.getMemberId())
+            : getTokensByAttendance();
         if (tokens.isEmpty()) {
             log.warn("No FCM tokens found for member: {}", messageDto.getMemberId());
             return;
@@ -50,7 +51,8 @@ public class FCMService {
         try {
             firebaseMessaging.sendEachForMulticast(message);
         } catch (FirebaseMessagingException e) {
-            log.error("Failed to send web push notification to member: {}", messageDto.getMemberId(), e);
+            log.error("Failed to send web push notification to member: {}",
+                messageDto.getMemberId(), e);
         }
     }
 
@@ -58,6 +60,10 @@ public class FCMService {
         return notificationTokenRepository.findAllByMemberId(memberId).stream()
             .map(NotificationToken::getToken)
             .toList();
+    }
+
+    private List<String> getTokensByAttendance() {
+        return notificationTokenRepository.findTokensByEnabledNotification();
     }
 
 

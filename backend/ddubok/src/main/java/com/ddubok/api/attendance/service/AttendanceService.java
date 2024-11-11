@@ -24,4 +24,9 @@ public interface AttendanceService {
      * @return 출석체크 결과 객체 (운세,)
      */
     CreateAttendanceRes createAttendance(Long memberId, LocalDate currentDate);
+
+    /**
+     * 출석체크 알림 전송
+     */
+    void sendAttendanceNotification();
 }
