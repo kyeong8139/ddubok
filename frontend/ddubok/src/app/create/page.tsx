@@ -20,6 +20,7 @@ const Create = () => {
 
 	const { setSelectedImage, setUserName, setLetterContent } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
@@ -89,6 +90,18 @@ const Create = () => {
 			} else {
 				sliderRef.current.slickGoTo(index);
 			}
+
+			if (currentIndex === index) {
+				setTimeout(() => {
+					if (inputRef.current) {
+						inputRef.current.focus();
+						inputRef.current.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+						});
+					}
+				}, 100);
+			}
 		}
 	};
 
@@ -146,6 +159,7 @@ const Create = () => {
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
 						<input
+							ref={inputRef}
 							type="text"
 							placeholder="익명 (최대 11글자)"
 							value={userName}

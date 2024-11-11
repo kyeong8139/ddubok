@@ -26,7 +26,69 @@ const CreateFront = () => {
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
+	const [showExitConfirm, setShowExitConfirm] = useState(false);
 	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
+	const hasUnsavedChanges = useRef(false);
+
+	const navigationType = useRef<"back" | "header" | null>(null);
+
+	useEffect(() => {
+		// Header의 클릭 이벤트 처리
+		const handleHeaderNavigation = (e: MouseEvent) => {
+			const header = document.getElementById("header");
+			if (header?.contains(e.target as Node) && hasUnsavedChanges.current) {
+				e.preventDefault();
+				e.stopPropagation();
+				navigationType.current = "header";
+				setShowExitConfirm(true);
+			}
+		};
+
+		// beforeunload 이벤트 핸들러 (새로고침, 창 닫기) - 이 부분이 빠졌었습니다
+		const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+			if (hasUnsavedChanges.current) {
+				const message = "작성하던 내용이 모두 사라집니다. 계속하시겠습니까?";
+				event.preventDefault();
+				(event as any).returnValue = message;
+				return message;
+			}
+		};
+
+		// popstate 이벤트 핸들러 (뒤로가기)
+		const handlePopState = () => {
+			if (hasUnsavedChanges.current) {
+				navigationType.current = "back";
+				setShowExitConfirm(true);
+				window.history.pushState(null, "", window.location.href);
+			} else {
+				router.back();
+			}
+		};
+
+		window.addEventListener("beforeunload", handleBeforeUnload); // 이 부분이 빠졌었습니다
+		document.addEventListener("click", handleHeaderNavigation, true);
+		window.addEventListener("popstate", handlePopState);
+		window.history.pushState(null, "", window.location.href);
+
+		return () => {
+			window.removeEventListener("beforeunload", handleBeforeUnload); // 이 부분이 빠졌었습니다
+			document.removeEventListener("click", handleHeaderNavigation, true);
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, [router]);
+
+	const handleExitConfirm = () => {
+		hasUnsavedChanges.current = false;
+		setShowExitConfirm(false);
+
+		if (navigationType.current === "header") {
+			router.push("/"); // 홈으로 이동
+		} else {
+			router.back(); // 뒤로가기
+		}
+
+		navigationType.current = null;
+	};
 
 	useEffect(() => {
 		const newCanvas = new fabric.Canvas("canvas", {
@@ -137,6 +199,19 @@ const CreateFront = () => {
 			}
 		});
 
+		// 캔버스 변경 감지
+		newCanvas.on("object:added", () => {
+			hasUnsavedChanges.current = true;
+		});
+
+		newCanvas.on("object:modified", () => {
+			hasUnsavedChanges.current = true;
+		});
+
+		newCanvas.on("object:removed", () => {
+			hasUnsavedChanges.current = true;
+		});
+
 		const whiteBg = new fabric.Rect({
 			width: newCanvas.width,
 			height: newCanvas.height,
@@ -171,6 +246,7 @@ const CreateFront = () => {
 			});
 
 			setSelectedImage(dataURL);
+			hasUnsavedChanges.current = false;
 			router.push(`/create/letter?type=${type}&id=${id}`);
 		}
 	};
@@ -191,7 +267,14 @@ const CreateFront = () => {
 			canvas.insertAt(whiteBg, 0, false);
 			canvas.renderAll();
 			setShowClearConfirm(false);
+			hasUnsavedChanges.current = true;
 		}
+	};
+
+	const handleExit = () => {
+		hasUnsavedChanges.current = false;
+		setShowExitConfirm(false);
+		router.back();
 	};
 
 	const renderActiveComponent = () => {
@@ -262,7 +345,7 @@ const CreateFront = () => {
 				</div>
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[280px] pl-4 pr-4 pt-4 ">
+			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[280px] pl-4 pr-4 pt-4">
 				{renderActiveComponent()}
 			</div>
 
@@ -330,6 +413,37 @@ const CreateFront = () => {
 							font="regular"
 							shadow="green"
 							onClick={handleNext}
+						/>
+					</div>
+				</Modal>
+			)}
+
+			{showExitConfirm && (
+				<Modal>
+					<h3 className="text-lg font-nexonBold mb-4">페이지를 나가시겠습니까?</h3>
+					<p className="text-gray-600 mb-6 font-nexonRegular">
+						저장되지 않은 변경사항이 있습니다.
+						<br />
+						작업한 내용이 모두 사라집니다.
+					</p>
+					<div className="flex justify-end gap-2">
+						<Button
+							text="취소"
+							color="gray"
+							size="small"
+							font="regular"
+							shadow="gray"
+							onClick={() => {
+								setShowExitConfirm(false);
+							}}
+						/>
+						<Button
+							text="나가기"
+							color="red"
+							size="small"
+							font="regular"
+							shadow="red"
+							onClick={handleExitConfirm}
 						/>
 					</div>
 				</Modal>
