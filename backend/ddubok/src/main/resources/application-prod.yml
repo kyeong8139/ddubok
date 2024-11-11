@@ -63,3 +63,7 @@ openai:
     key: ${OPEN_AI_KEY}
     url: ${OPEN_AI_URL}
   model: ${OPEN_AI_MODEL}
+
+firebase:
+  config:
+    path: /app/firebase/ddubokFirebase.json
