@@ -5,6 +5,9 @@ import com.ddubok.api.notification.service.NotificationService;
 import com.ddubok.common.auth.util.AuthUtil;
 import com.ddubok.common.template.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,10 +20,14 @@ public class NotificationController {
     private final AuthUtil authUtil;
     private final NotificationService notificationService;
 
+    @PostMapping
     public BaseResponse<?> saveToken(@RequestBody SaveTokenReq req) {
-        return null;
+        Long memberId = authUtil.getMemberId();
+        notificationService.saveToken(memberId, req.getToken());
+        return BaseResponse.ofSuccess(HttpStatus.OK);
     }
 
+    @DeleteMapping
     public BaseResponse<?> deleteToken() {
         return null;
     }
