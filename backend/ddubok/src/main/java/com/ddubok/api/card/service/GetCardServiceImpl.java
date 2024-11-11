@@ -77,6 +77,7 @@ public class GetCardServiceImpl implements GetCardService {
             .orElseThrow(() -> new MemberNotFoundException());
         Page<Album> albums = albumRepository.findAllBySeason(findmember, findSeason, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .total(albums.getTotalElements())
             .build();
     }
 
@@ -91,6 +92,7 @@ public class GetCardServiceImpl implements GetCardService {
             .orElseThrow(() -> new MemberNotFoundException());
         Page<Album> albums = albumRepository.findAll(findmember, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .total(albums.getTotalElements())
             .build();
     }
 
