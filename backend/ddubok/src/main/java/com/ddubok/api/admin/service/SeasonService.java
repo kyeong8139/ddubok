@@ -1,9 +1,11 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
+import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
+import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
 import java.util.List;
 
 /**
@@ -33,4 +35,11 @@ public interface SeasonService {
      * @return 시즌 전체 목록을 반환한다.
      */
     List<GetSeasonListRes> getSeasonList();
+
+    /**
+     * 관리자가 시즌을 수정한다.
+     *
+     * @return 수정된 시즌의 번호를 반환한다.
+     */
+    UpdateSeasonRes updateSeason(Long seasonId, UpdateSeasonReqDto updateSeasonReqDto);
 }

@@ -5,6 +5,8 @@ import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.request.GetMemberListReq;
 import com.ddubok.api.admin.dto.request.GetReportListReq;
 import com.ddubok.api.admin.dto.request.HandleReportReq;
+import com.ddubok.api.admin.dto.request.UpdateSeasonReq;
+import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.GetMemberDetailRes;
 import com.ddubok.api.admin.dto.response.GetMemberListRes;
@@ -13,6 +15,7 @@ import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
+import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
 import com.ddubok.api.admin.service.AdminReportService;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.admin.service.MemberStatusService;
@@ -20,6 +23,7 @@ import com.ddubok.api.admin.service.SeasonService;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.template.response.BaseResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -193,4 +198,36 @@ public class AdminController {
         List<GetSeasonListRes> getSeasonListRes = seasonService.getSeasonList();
         return BaseResponse.ofSuccess(getSeasonListRes);
     }
+
+    /**
+     * 관리자가 시즌을 변경합니다.
+     *
+     * @param seasonId 수정할 시즌의 ID
+     * @param images 배너에 활용될 이미지 리스트
+     * @param updateSeasonReq 수정될 시즌의 정보를 갖고 있는 객체
+     */
+    @PutMapping("/seasons/{seasonId}")
+    public BaseResponse<?> updateSeason(
+        @PathVariable Long seasonId,  // PathVariable로 시즌 ID를 받음
+        @RequestPart(name = "image", required = false) List<MultipartFile> images,
+        @RequestPart UpdateSeasonReq updateSeasonReq
+    ) {
+        List<String> paths =  images.stream()
+            .map(image -> s3ImageService.uploadBannerImg(image))
+            .map(FileMetaInfo::getUrl)
+            .collect(Collectors.toList());
+
+        UpdateSeasonRes updateSeasonId = seasonService.updateSeason(seasonId,
+            UpdateSeasonReqDto.builder()
+                .seasonName(updateSeasonReq.getSeasonName())
+                .seasonDescription(updateSeasonReq.getSeasonDescription())
+                .startedAt(updateSeasonReq.getStartedAt())
+                .endedAt(updateSeasonReq.getEndedAt())
+                .openedAt(updateSeasonReq.getOpenedAt())
+                .path(paths)
+                .build()
+        );
+        return BaseResponse.ofSuccess(updateSeasonId);
+    }
+
 }
