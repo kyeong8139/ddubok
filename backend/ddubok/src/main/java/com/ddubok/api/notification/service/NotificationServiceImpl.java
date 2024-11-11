@@ -3,20 +3,32 @@ package com.ddubok.api.notification.service;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
+import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.api.notification.entity.NotificationToken;
 import com.ddubok.api.notification.repository.NotificationTokenRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final FCMService fcmService;
+    private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
+    private final String CARDBOOK_URL = "https://ddubok.com/book";
+    private final String ATTENDANCE_URL = "https://ddubok.com/fortune";
+    private final RedisMessageListenerContainer redisMessageListener;
     private final NotificationTokenRepository notificationTokenRepository;
 
     /**
@@ -41,27 +53,51 @@ public class NotificationServiceImpl implements NotificationService {
         notificationTokenRepository.deleteByMemberId(memberId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendCardOpenedPushNotification(String memberId, String title, String body) {
+    @PostConstruct
+    public void subscribe() {
+        redisMessageListener.addMessageListener(
+            (message, pattern) -> {
+                try {
+                    NotificationMessageDto notification = objectMapper.readValue(
+                        message.getBody(),
+                        NotificationMessageDto.class
+                    );
+                    fcmService.sendNotification(notification, CARDBOOK_URL);
+                } catch (Exception e) {
+                    log.error("create card notification error", e);
+                }
+            },
+            new ChannelTopic("create-card")
+        );
 
-    }
+        redisMessageListener.addMessageListener(
+            (message, pattern) -> {
+                try {
+                    NotificationMessageDto notification = objectMapper.readValue(
+                        message.getBody(),
+                        NotificationMessageDto.class
+                    );
+                    fcmService.sendNotification(notification, CARDBOOK_URL);
+                } catch (Exception e) {
+                    log.error("open card notification error", e);
+                }
+            },
+            new ChannelTopic("open-card")
+        );
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendCardWrittenPushNotification(String memberId, String title, String body) {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendCheckAttendancePushNotification(String memberId, String title, String body) {
-
+        redisMessageListener.addMessageListener(
+            (message, pattern) -> {
+                try {
+                    NotificationMessageDto notification = objectMapper.readValue(
+                        message.getBody(),
+                        NotificationMessageDto.class
+                    );
+                    fcmService.sendNotification(notification, ATTENDANCE_URL);
+                } catch (Exception e) {
+                    log.error("attendance check notification error", e);
+                }
+            },
+            new ChannelTopic("attendance-check")
+        );
     }
 }

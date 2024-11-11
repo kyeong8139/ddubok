@@ -16,11 +16,14 @@ import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
+import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.common.openai.dto.OpenAiReq;
 import com.ddubok.common.openai.dto.OpenAiRes;
 import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -38,6 +41,7 @@ public class CardServiceImpl implements CardService {
 
     private final RestTemplate template;
 
+    private final RedisTemplate<String, Object> redisTemplate;
     private final CardRepository cardRepository;
     private final SeasonRepository seasonRepository;
     private final AlbumRepository albumRepository;
@@ -56,6 +60,15 @@ public class CardServiceImpl implements CardService {
             .path(dto.getPath())
             .build());
         if (dto.getMemberId() != null) {
+            NotificationMessageDto message = NotificationMessageDto.builder()
+                .memberId(dto.getMemberId())
+                .title("새로운 행운카드가 배송되었어요!")
+                .body("뚜복에 접속해 행운카드를 확인해보세요!")
+                .data(Map.of())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+            redisTemplate.convertAndSend("create-card", message);
             saveAlbum(card.getId(), dto.getMemberId());
         }
         if (filteringCheck(dto.getContent())) {
