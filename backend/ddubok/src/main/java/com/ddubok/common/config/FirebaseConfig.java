@@ -19,7 +19,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebaseApp() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            Resource resource = new ClassPathResource("firebase/GoogleServiceAccount.json");
+            Resource resource = new ClassPathResource(firebaseConfigPath);
             InputStream serviceAccount = resource.getInputStream();
 
             FirebaseOptions options = FirebaseOptions.builder()
