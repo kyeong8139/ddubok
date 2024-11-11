@@ -11,3 +11,9 @@ export interface IReportProps {
 		path: string;
 	};
 }
+
+export interface IReportListProps {
+	id: number;
+	title: string;
+	state: string;
+}

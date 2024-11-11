@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
@@ -8,32 +8,70 @@ import { ModalContext } from "@context/modal-context";
 import { IUserProps } from "@interface/components/user";
 
 import { MagnifyingGlass } from "@phosphor-icons/react";
+import { selectMember, selectMemberList, updateMemberRole, updateMemberState } from "@lib/api/admin-api";
+import toast from "react-hot-toast";
 
 const User = () => {
-	const { isModalOpen, openModal } = useContext(ModalContext);
+	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [selected, setSelected] = useState(0);
+	const [userList, setUserList] = useState<IUserProps[]>([]);
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
+	const [searchName, setSearchName] = useState("");
+
+	const getMemberList = async () => {
+		try {
+			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : "";
+			const response = await selectMemberList(state, searchName);
+			console.log(response.data.data);
+			let users = response.data.data;
+			setUserList(users);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		getMemberList();
+	}, [selected, searchName]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
 	};
 
-	const handleDetailClick = (user: IUserProps) => {
-		setSelectedUser(user);
-		openModal();
+	const handleDetailClick = async (memberId: number) => {
+		try {
+			const response = await selectMember(memberId);
+			console.log(response.data.data);
+			setSelectedUser(response.data.data);
+			openModal();
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
-	const userInfo = useMemo(
-		() => [
-			{ memberId: 1, nickname: "서민정닮은코딩주머니뀨", state: "활성", role: "사용자" },
-			{ memberId: 2, nickname: "다환궁예", state: "활성", role: "사용자" },
-			{ memberId: 3, nickname: "마일리지천만보경", state: "활성", role: "사용자" },
-			{ memberId: 4, nickname: "합성대마법사성혁", state: "활성", role: "사용자" },
-			{ memberId: 5, nickname: "관리자_김경민", state: "활성", role: "사용자" },
-			{ memberId: 6, nickname: "유니스", state: "활성", role: "사용자" },
-		],
-		[],
-	); // 임시 데이터
+	const handleUpdateMemberState = async () => {
+		if (!selectedUser) return;
+		try {
+			await updateMemberState(selectedUser.memberId);
+			toast.success("회원 상태가 변경되었습니다.");
+			getMemberList();
+		} catch (error) {
+			console.error(error);
+			toast.error("회원 상태 변경 중에 오류가 발생했습니다.");
+		}
+	};
+
+	const handleUpdateMemberRole = async () => {
+		if (!selectedUser) return;
+		try {
+			await updateMemberRole(selectedUser.memberId);
+			toast.success("회원 등급이 변경되었습니다.");
+			getMemberList();
+		} catch (error) {
+			console.error(error);
+			toast.error("회원 등급 변경 중에 오류가 발생했습니다.");
+		}
+	};
 
 	return (
 		<div id="admin-user">
@@ -44,7 +82,7 @@ const User = () => {
 				</div>
 				<div className="flex justify-center pt-4">
 					<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-						{["전체", "활성화", "비활성화"].map((item, index) => (
+						{["전체", "활성화", "비활성화", "차단"].map((item, index) => (
 							<li
 								key={index}
 								onClick={() => handleClick(index)}
@@ -69,6 +107,8 @@ const User = () => {
 						type="text"
 						placeholder="사용자 닉네임을 입력하세요"
 						className="text-sm w-full outline-none"
+						value={searchName}
+						onChange={(e) => setSearchName(e.target.value)}
 					/>
 				</div>
 				<div>
@@ -81,7 +121,7 @@ const User = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{userInfo.map((user) => (
+							{userList.map((user) => (
 								<tr
 									key={user.memberId}
 									className="text-center text-xs border-b-[1px] border-solid border-white"
@@ -91,7 +131,7 @@ const User = () => {
 									<td className="px-2 py-[10px]">
 										<button
 											className="underline"
-											onClick={() => handleDetailClick(user)}
+											onClick={() => handleDetailClick(user.memberId)}
 										>
 											상세보기
 										</button>
@@ -130,15 +170,15 @@ const User = () => {
 							size="small"
 							font="small"
 							shadow="purple"
-							onClick={() => {}}
+							onClick={handleUpdateMemberRole}
 						/>
 						<Button
-							text="회원 퇴출"
+							text="상태 변경"
 							color="green"
 							size="small"
 							font="small"
 							shadow="green"
-							onClick={() => {}}
+							onClick={handleUpdateMemberState}
 						/>
 					</div>
 				</Modal>

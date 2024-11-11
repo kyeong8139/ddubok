@@ -1,9 +1,39 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { ISeasonListProps } from "@interface/components/season";
+import { selectSeasonList } from "@lib/api/admin-api";
 import Button from "@components/button/button";
-import { PlusCircle } from "@phosphor-icons/react";
 
 const Setting = () => {
+	const router = useRouter();
+	const [seasonList, setSeasonList] = useState<ISeasonListProps[]>([]);
+
+	const getSeasonList = async () => {
+		try {
+			const response = await selectSeasonList();
+			console.log(response.data.data);
+			let seasons = response.data.data;
+			setSeasonList(seasons);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		getSeasonList();
+	});
+
+	const handleDetailClick = (seasonId: number) => {
+		router.push(`/admin/setting/${seasonId}`);
+	};
+
+	const handleInsertClick = () => {
+		router.push(`/admin/setting/insert`);
+	};
+
 	return (
 		<div id="admin-setting">
 			<div className="py-6">
@@ -11,65 +41,44 @@ const Setting = () => {
 					<h1 className="font-nexonBold text-xl mb-2">메인 설정</h1>
 					<p className="font-nexonRegular text-sm">이벤트마다 메인의 설정을 변경할 수 있어요</p>
 				</div>
-				<div className="text-white w-[calc(100%-64px)] mx-auto mb-8">
-					<h2 className="font-nexonBold text-lg mb-2">메인 텍스트 설정</h2>
-					<div className="flex flex-col gap-4">
-						<input
-							type="text"
-							placeholder="메인 키워드를 입력하세요"
-							className="font-nexonRegular p-3 bg-transparent border border-solid border-white rounded-lg"
-						/>
-						<input
-							type="text"
-							placeholder="서브 키워드를 입력하세요"
-							className="font-nexonRegular p-3 bg-transparent border border-solid border-white rounded-lg"
-						/>
-					</div>
+				<div className="flex-grow overflow-y-auto">
+					<table className="text-white  font-nexonRegular w-[calc(100%-64px)] mx-auto">
+						<thead>
+							<tr className="text-xs border-y-2 border-solid border-white">
+								<th className="px-1 py-[10px]">글번호</th>
+								<th className="px-2 py-[10px]">제목</th>
+								<th className="px-1 py-[10px]">상세보기</th>
+							</tr>
+						</thead>
+						<tbody>
+							{seasonList.map((season) => (
+								<tr
+									key={season.id}
+									className="text-center text-xs border-b-[1px] border-solid border-white"
+								>
+									<td className="px-1 py-[10px]">{season.id}</td>
+									<td className="px-2 py-[10px]">{season.name}</td>
+									<td className="px-1 py-[10px]">
+										<button
+											className="underline"
+											onClick={() => handleDetailClick(season.id)}
+										>
+											상세보기
+										</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
-				<div className="text-white w-[calc(100%-64px)] mx-auto mb-8">
-					<h2 className="font-nexonBold text-lg mb-2">이벤트 날짜 설정</h2>
-					<div className="flex justify-between items-center gap-4">
-						<input
-							type="date"
-							className="font-nexonRegular w-full p-3 bg-transparent border border-solid border-white rounded-lg"
-						/>
-						<span> ~ </span>
-						<input
-							type="date"
-							className="font-nexonRegular w-full p-3 bg-transparent border border-solid border-white rounded-lg"
-						/>
-					</div>
-				</div>
-				<div className="text-white w-[calc(100%-64px)] mx-auto mb-8">
-					<h2 className="font-nexonBold text-lg mb-2">메인 이미지 설정 (최소 3개)</h2>
-					<div>
-						<label
-							htmlFor="banner-image"
-							className="block w-[140px] h-[247.5px] rounded-lg bg-transparent border border-solid border-white"
-						>
-							<PlusCircle
-								size={32}
-								color="white"
-								className="mx-auto h-full"
-							/>
-						</label>
-						<input
-							id="banner-image"
-							type="file"
-							accept="image/*"
-							multiple
-							className="hidden"
-						/>
-					</div>
-				</div>
-				<div className="text-center">
+				<div className="absolute bottom-8 left-0 right-0 text-center">
 					<Button
-						text="메인 정보 수정하기"
+						text="시즌 정보 추가하기"
 						color="gradient"
 						size="long"
 						font="bold"
 						shadow="gradient"
-						onClick={() => {}}
+						onClick={handleInsertClick}
 					/>
 				</div>
 			</div>
