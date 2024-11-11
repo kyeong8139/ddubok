@@ -71,13 +71,13 @@ public class Card {
      * 카드가 속할 시즌의 고유 id
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "season_id", nullable = false)
+    @JoinColumn(name = "season_id", nullable = true)
     private Season season;
 
     /**
-     * 카드 객체를 생성하는 생성자
+     * 시즌 카드 객체를 생성하는 생성자
      * <p>
-     * 기본 생성자이며, 카드의 오픈일자를 시즌의 카드 오픈일자로 지정하고, 상태를 {@code State.READY}로 설정
+     * 카드의 오픈일자를 시즌의 카드 오픈일자로 지정하고, 상태를 {@code State.READY}로 설정
      * </p>
      *
      * @param content    카드의 내용
@@ -85,11 +85,25 @@ public class Card {
      * @param writerName 카드를 보낸 사람 닉네임
      * @param season     카드의 시즌 정보
      */
-    @Builder
-    public Card(String content, String path, String writerName,
-        Season season) {
-        this(content, season.getOpenedAt(), path, State.READY, writerName,
-            season);
+    @Builder(builderMethodName = "builderForSeasonCard")
+    public Card(String content, String path, String writerName, Season season) {
+        this(content, season.getOpenedAt(), path, State.READY, writerName, season);
+    }
+
+    /**
+     * 기본 카드 객체를 생성하는 생성자
+     * <p>
+     * 카드의 오픈일자를 지정하여 카드를 생성하고, 시즌 부분이 존재하지 않는다.
+     * </p>
+     *
+     * @param content    카드의 내용
+     * @param openedAt   카드 오픈 일자
+     * @param path       카드 이미지 url
+     * @param writerName 카드를 보낸 사람 닉네임
+     */
+    @Builder(builderMethodName = "builderForNormalCard")
+    public Card(String content, LocalDateTime openedAt, String path, String writerName) {
+        this(content, openedAt, path, State.READY, writerName, null);
     }
 
     /**

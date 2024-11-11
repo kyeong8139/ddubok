@@ -7,7 +7,7 @@ import com.ddubok.api.card.dto.request.ReceiveCardReq;
 public interface CardService {
 
     /**
-     * 카드를 생성한다.
+     * 시즌 카드를 생성한다.
      *
      * @param dto 카드를 생성하는데 필요한 정보
      * @return 생성된 카드의 고유 id
@@ -27,4 +27,12 @@ public interface CardService {
      * @param dto 전달 받을 카드 id
      */
     void receiveCard(ReceiveCardReq dto);
+
+    /**
+     * 일반 카드를 생성한다.
+     *
+     * @param dto 카드를 생성하는데 필요한 정보
+     * @return 생성된 카드의 고유 id
+     */
+    Long createNormalCard(CreateCardReqDto dto);
 }
