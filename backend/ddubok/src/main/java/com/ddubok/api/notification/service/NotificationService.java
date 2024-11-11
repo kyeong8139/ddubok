@@ -4,6 +4,7 @@ public interface NotificationService {
 
     /**
      * 멤버의 FCM 토큰을 저장한다.
+     * 멤버의 알림 수신 여부를 동의로 바꾼다.
      *
      * @param memberId 멤버 ID
      * @param token    해당 멤버의 FCM 토큰

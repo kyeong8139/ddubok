@@ -22,7 +22,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDetailRes getMemberDetail(Long memberId) {
         Member member = findAndVerifyMember(memberId);
-        return MemberDetailRes.builder().nickname(member.getNickname()).build();
+        return MemberDetailRes.builder().nickname(member.getNickname())
+            .notificationConsent(member.getNotificationConsent()).build();
     }
 
     /**

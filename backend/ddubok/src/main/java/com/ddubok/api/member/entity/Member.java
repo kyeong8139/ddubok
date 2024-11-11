@@ -75,10 +75,18 @@ public class Member {
     private LocalDateTime deletedAt;
 
     /**
+     * 알림 동의 여부
+     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NotificationConsent notificationConsent;
+
+    /**
      * 생성 시 자동 할당해주는 메서드
      */
     @PrePersist
     protected void onCreate() {
+        this.notificationConsent = NotificationConsent.DISABLED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.state = UserState.ACTIVATED;
@@ -141,6 +149,20 @@ public class Member {
             default:
                 throw new UnknownStateException("알 수 없는 상태입니다. " + state);
         }
+    }
+
+    /**
+     * 알림 수신에 동의한다.
+     */
+    public void agreeNotification() {
+        this.notificationConsent = NotificationConsent.ENABLED;
+    }
+
+    /**
+     * 알림 수신에 거부한다.
+     */
+    public void disagreeNotification() {
+        this.notificationConsent = NotificationConsent.DISABLED;
     }
 
     /**
