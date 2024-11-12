@@ -17,6 +17,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 	const [startX, setStartX] = useState(0);
 	const [scrollLeft, setScrollLeft] = useState(0);
 	const sliderRef = useRef<HTMLDivElement>(null);
+	const colorSliderRef = useRef<HTMLDivElement>(null);
 
 	const fonts = [
 		{ id: 1, name: "NEXON Lv1 Gothic Bold", label: "화이팅" },
@@ -25,7 +26,22 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		{ id: 4, name: "GumiRomanceTTF", label: "화이팅" },
 	];
 
-	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
+	const colors = [
+		"#000000",
+		"#DFE6E9",
+		"#FF7675",
+		"#FAB1A0",
+		"#FD79A8",
+		"#A855F7",
+		"#8B5CF6",
+		"#0984E3",
+		"#74B9FF",
+		"#55EFC4",
+		"#00B894",
+		"#FFEAA7",
+		"#E17055",
+		"#D63031",
+	];
 
 	useEffect(() => {
 		if (!canvas) return;
@@ -89,11 +105,11 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		handleColorChange(newColor);
 	};
 
-	const handleMouseDown = (e: React.MouseEvent) => {
+	const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>) => {
 		setIsDragging(true);
-		if (sliderRef.current) {
-			setStartX(e.pageX - sliderRef.current.offsetLeft);
-			setScrollLeft(sliderRef.current.scrollLeft);
+		if (ref.current) {
+			setStartX(e.pageX - ref.current.offsetLeft);
+			setScrollLeft(ref.current.scrollLeft);
 		}
 	};
 
@@ -101,12 +117,12 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		setIsDragging(false);
 	};
 
-	const handleMouseMove = (e: React.MouseEvent) => {
-		if (!isDragging || !sliderRef.current) return;
+	const handleMouseMove = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>) => {
+		if (!isDragging || !ref.current) return;
 		e.preventDefault();
-		const x = e.pageX - sliderRef.current.offsetLeft;
+		const x = e.pageX - ref.current.offsetLeft;
 		const walk = (x - startX) * 2;
-		sliderRef.current.scrollLeft = scrollLeft - walk;
+		ref.current.scrollLeft = scrollLeft - walk;
 	};
 
 	const addText = (font: string, initialText: string) => {
@@ -209,19 +225,19 @@ function TextComponent({ canvas }: ITextComponentProps) {
 	return (
 		<div className="w-full flex flex-col h-full">
 			<div className="space-y-2">
-				<p className="text-base font-nexonRegular mt-3">색상</p>
-				<div className="grid grid-cols-5 gap-2">
-					{colors.map((color) => (
-						<button
-							key={color}
-							className={`w-10 h-10 rounded-lg border-2 ${
-								textColor === color ? "border-ddubokPurple" : "border-gray-200"
-							}`}
-							style={{ backgroundColor: color }}
-							onClick={() => handleColorChange(color)}
-						/>
-					))}
-					<div className="relative w-10 h-10">
+				<p className="text-base font-nexonRegular mt-2">색상</p>
+				<div
+					ref={colorSliderRef}
+					className="flex overflow-x-auto space-x-1 whitespace-nowrap scrollbar-hide select-none cursor-grab active:cursor-grabbing pb-2"
+					onMouseDown={(e) => handleMouseDown(e, colorSliderRef)}
+					onMouseUp={handleMouseUp}
+					onMouseLeave={handleMouseUp}
+					onMouseMove={(e) => handleMouseMove(e, colorSliderRef)}
+				>
+					<div
+						className="relative w-10 h-10 flex-shrink-0"
+						onDragStart={(e) => e.preventDefault()}
+					>
 						<input
 							type="color"
 							value={customColor}
@@ -229,12 +245,29 @@ function TextComponent({ canvas }: ITextComponentProps) {
 							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
 						/>
 						<button
-							className={`w-full h-full rounded-lg border-2 ${
-								textColor === customColor ? "border-ddubokPurple" : "border-gray-200"
+							className={`w-full h-full rounded-lg border-2 transition-all duration-200 ${
+								textColor === customColor
+									? "border-ddubokPurple shadow-lg"
+									: "border-gray-200 hover:border-gray-300"
 							}`}
 							style={{ background: customColor }}
+							onDragStart={(e) => e.preventDefault()}
 						/>
 					</div>
+					{colors.map((color) => (
+						<button
+							key={color}
+							className={`w-10 h-10 rounded-lg border-2 flex-shrink-0 transition-all duration-200 ${
+								textColor === color
+									? "border-ddubokPurple shadow-sm"
+									: "border-gray-200 hover:border-gray-300"
+							}`}
+							style={{ backgroundColor: color }}
+							onClick={() => handleColorChange(color)}
+							onDragStart={(e) => e.preventDefault()}
+							draggable={false}
+						/>
+					))}
 				</div>
 			</div>
 			<div className="space-y-2">
@@ -271,10 +304,10 @@ function TextComponent({ canvas }: ITextComponentProps) {
 				<div
 					ref={sliderRef}
 					className="flex overflow-x-auto space-x-2 whitespace-nowrap scrollbar-hide select-none cursor-grab active:cursor-grabbing"
-					onMouseDown={handleMouseDown}
+					onMouseDown={(e) => handleMouseDown(e, sliderRef)}
 					onMouseUp={handleMouseUp}
 					onMouseLeave={handleMouseUp}
-					onMouseMove={handleMouseMove}
+					onMouseMove={(e) => handleMouseMove(e, sliderRef)}
 				>
 					{fonts.map((font) => (
 						<button

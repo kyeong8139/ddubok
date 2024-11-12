@@ -345,7 +345,7 @@ const CreateFront = () => {
 				</div>
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[280px] pl-4 pr-4 pt-4">
+			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[300px] pl-4 pr-4 pt-4">
 				{renderActiveComponent()}
 			</div>
 
