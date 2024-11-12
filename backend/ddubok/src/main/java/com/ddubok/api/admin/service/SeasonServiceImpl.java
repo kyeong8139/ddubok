@@ -3,7 +3,6 @@ package com.ddubok.api.admin.service;
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
-import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
@@ -11,12 +10,13 @@ import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
-import com.ddubok.api.member.exception.MemberNotFoundException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SeasonServiceImpl implements SeasonService {
 
-    final private SeasonRepository seasonRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final SeasonRepository seasonRepository;
 
     /**
      * {@inheritDoc}
@@ -45,6 +46,7 @@ public class SeasonServiceImpl implements SeasonService {
             .openedAt(createSeasonReqDto.getOpenedAt())
             .build()
         );
+        setExpirationForNotification(season);
         return CreateSeasonRes.builder()
             .id(season.getId())
             .build();
@@ -77,10 +79,10 @@ public class SeasonServiceImpl implements SeasonService {
         return seasons.stream()
             .sorted(Comparator.comparing(Season::getId).reversed())  // Season 객체의 id 기준으로 역순 정렬
             .map(season -> GetSeasonListRes.builder()
-                    .id(season.getId())
-                    .name(season.getName())
-                    .build())
-                .collect(Collectors.toList());
+                .id(season.getId())
+                .name(season.getName())
+                .build())
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -97,6 +99,7 @@ public class SeasonServiceImpl implements SeasonService {
             .endedAt(updateSeasonReqDto.getEndedAt())
             .openedAt(updateSeasonReqDto.getOpenedAt())
             .build());
+        setExpirationForNotification(upDateSeason);
         return UpdateSeasonRes.builder()
             .id(upDateSeason.getId())
             .build();
@@ -106,11 +109,23 @@ public class SeasonServiceImpl implements SeasonService {
      * 시작일, 종료일 검증
      *
      * @param startedAt 시즌 시작일
-     * @param endedAt 시즌 종료일
+     * @param endedAt   시즌 종료일
      */
     private void validateSeasonDates(LocalDateTime startedAt, LocalDateTime endedAt) {
         if (startedAt.isAfter(endedAt)) {
             throw new InvalidDateOrderException("시작일은 종료일보다 앞서야 합니다.");
         }
+    }
+
+    /**
+     * 시즌의 종료 일자에 맞추어 키를 레디스에 저장하는 메서드
+     *
+     * @param season 카드의 시즌 정보
+     */
+    private void setExpirationForNotification(Season season) {
+        String redisKey = "season:expiration:" + season.getId();
+        LocalDateTime getOpenedAt = season.getOpenedAt();
+        Duration expirationDuration = Duration.between(LocalDateTime.now(), getOpenedAt);
+        redisTemplate.opsForValue().set(redisKey, season.getName(), expirationDuration);
     }
 }
