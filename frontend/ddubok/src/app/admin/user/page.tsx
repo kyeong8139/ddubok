@@ -20,7 +20,7 @@ const User = () => {
 
 	const getMemberList = async () => {
 		try {
-			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : "";
+			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : null;
 			const response = await selectMemberList(state, searchName);
 			console.log(response.data.data);
 			let users = response.data.data;
@@ -55,9 +55,11 @@ const User = () => {
 			await updateMemberState(selectedUser.memberId);
 			toast.success("회원 상태가 변경되었습니다.");
 			getMemberList();
+			closeModal();
 		} catch (error) {
 			console.error(error);
 			toast.error("회원 상태 변경 중에 오류가 발생했습니다.");
+			closeModal();
 		}
 	};
 
@@ -121,23 +123,34 @@ const User = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{userList.map((user) => (
-								<tr
-									key={user.memberId}
-									className="text-center text-xs border-b-[1px] border-solid border-white"
-								>
-									<td className="px-2 py-[10px]">{user.memberId}</td>
-									<td className="px-2 py-[10px]">{user.nickname}</td>
-									<td className="px-2 py-[10px]">
-										<button
-											className="underline"
-											onClick={() => handleDetailClick(user.memberId)}
-										>
-											상세보기
-										</button>
+							{userList.length > 0 ? (
+								userList.map((user) => (
+									<tr
+										key={user.memberId}
+										className="text-center text-xs border-b-[1px] border-solid border-white"
+									>
+										<td className="px-2 py-[10px]">{user.memberId}</td>
+										<td className="px-2 py-[10px]">{user.nickname}</td>
+										<td className="px-2 py-[10px]">
+											<button
+												className="underline"
+												onClick={() => handleDetailClick(user.memberId)}
+											>
+												상세보기
+											</button>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td
+										colSpan={3}
+										className="text-center py-[10px]"
+									>
+										데이터가 없습니다.
 									</td>
 								</tr>
-							))}
+							)}
 						</tbody>
 					</table>
 				</div>

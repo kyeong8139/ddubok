@@ -6,7 +6,7 @@ import axiosInstance from "@lib/api/axiosInstance";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // 신고 목록 조회
-export const selectReportList = (state: string, page: number, size: number) => {
+export const selectReportList = (state: string | null, page: number, size: number) => {
 	return axiosInstance.post(`/admins/reports`, {
 		state,
 		page,
@@ -25,7 +25,7 @@ export const updateReport = (reportId: number) => {
 };
 
 // 사용자 목록 조회
-export const selectMemberList = (state: string, searchName: string) => {
+export const selectMemberList = (state: string | null, searchName: string) => {
 	return axiosInstance.post(`admins/members`, {
 		state,
 		searchName,
@@ -44,7 +44,7 @@ export const updateMemberState = (memberId: number) => {
 
 // 사용자 역할 변경
 export const updateMemberRole = (memberId: number) => {
-	return axiosInstance.patch(`/admins/memberrs/role/${memberId}`);
+	return axiosInstance.patch(`/admins/members/role/${memberId}`);
 };
 
 // 시즌 등록

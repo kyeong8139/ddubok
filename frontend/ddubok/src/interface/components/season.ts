@@ -19,6 +19,4 @@ export interface ISeasonDetailProps {
 export interface ISeasonListProps {
 	id: number;
 	name: string;
-	started_at: string;
-	ended_at: string;
 }

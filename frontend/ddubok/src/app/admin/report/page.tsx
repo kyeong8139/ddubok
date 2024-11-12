@@ -20,7 +20,7 @@ const Report = () => {
 
 	const getReportList = async () => {
 		try {
-			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : "";
+			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
 			const response = await selectReportList(state, page, 50);
 			console.log(response.data.data);
 			let reports = response.data.data;
@@ -95,24 +95,35 @@ const Report = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{reportList.map((report) => (
-								<tr
-									key={report.id}
-									className="text-center text-xs border-b-[1px] border-solid border-white"
-								>
-									<td className="px-1 py-[10px]">{report.id}</td>
-									<td className="px-2 py-[10px]">{report.title}</td>
-									<td className="px-2 py-[10px]">{report.state}</td>
-									<td className="px-1 py-[10px]">
-										<button
-											className="underline"
-											onClick={() => handleDetailClick(report.id)}
-										>
-											상세보기
-										</button>
+							{reportList.length > 0 ? (
+								reportList.map((report) => (
+									<tr
+										key={report.id}
+										className="text-center text-xs border-b-[1px] border-solid border-white"
+									>
+										<td className="px-1 py-[10px]">{report.id}</td>
+										<td className="px-2 py-[10px]">{report.title}</td>
+										<td className="px-2 py-[10px]">{report.state}</td>
+										<td className="px-1 py-[10px]">
+											<button
+												className="underline"
+												onClick={() => handleDetailClick(report.id)}
+											>
+												상세보기
+											</button>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td
+										colSpan={4}
+										className="text-center py-[10px]"
+									>
+										데이터가 없습니다.
 									</td>
 								</tr>
-							))}
+							)}
 						</tbody>
 					</table>
 				</div>
@@ -124,11 +135,11 @@ const Report = () => {
 				<Modal>
 					<div className="flex justify-between text-xs mb-3">
 						<p className="font-nexonBold">신고자 아이디</p>
-						<p>{selectedReport?.report_member_id}</p>
+						<p>{selectedReport?.reportMemberId}</p>
 					</div>
 					<div className="flex justify-between text-xs mb-3">
 						<p className="font-nexonBold">신고자 닉네임</p>
-						<p>{selectedReport?.report_member_nickname}</p>
+						<p>{selectedReport?.reportMemberNickname}</p>
 					</div>
 					<div className="flex justify-between text-xs mb-3">
 						<p className="font-nexonBold">신고 제목</p>
@@ -141,17 +152,17 @@ const Report = () => {
 					<hr className="border border-solid border-black mb-3" />
 					<div className="flex justify-between text-xs mb-3">
 						<p className="font-nexonBold">신고된 카드 번호</p>
-						<p>{selectedReport?.card.card_id}</p>
+						<p>{selectedReport?.cardId}</p>
 					</div>
 					<div className="flex flex-col justify-between text-xs mb-3">
 						<p className="font-nexonBold mb-2">신고된 카드 내용</p>
-						<p>{selectedReport?.card.card_content}</p>
+						<p>{selectedReport?.cardContent}</p>
 					</div>
 					<div className="flex justify-between text-xs mb-3">
 						<p className="font-nexonBold mb-2">신고된 카드 이미지</p>
 						{selectedReport ? (
 							<Image
-								src={selectedReport.card.path}
+								src={selectedReport.cardPath}
 								alt="신고된 카드 이미지"
 								width={70}
 								height={200}

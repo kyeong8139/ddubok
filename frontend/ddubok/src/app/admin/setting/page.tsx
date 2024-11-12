@@ -51,23 +51,34 @@ const Setting = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{seasonList.map((season) => (
-								<tr
-									key={season.id}
-									className="text-center text-xs border-b-[1px] border-solid border-white"
-								>
-									<td className="px-1 py-[10px]">{season.id}</td>
-									<td className="px-2 py-[10px]">{season.name}</td>
-									<td className="px-1 py-[10px]">
-										<button
-											className="underline"
-											onClick={() => handleDetailClick(season.id)}
-										>
-											상세보기
-										</button>
+							{seasonList.length > 0 ? (
+								seasonList.map((season) => (
+									<tr
+										key={season.id}
+										className="text-center text-xs border-b-[1px] border-solid border-white"
+									>
+										<td className="px-1 py-[10px]">{season.id}</td>
+										<td className="px-2 py-[10px]">{season.name}</td>
+										<td className="px-1 py-[10px]">
+											<button
+												className="underline"
+												onClick={() => handleDetailClick(season.id)}
+											>
+												상세보기
+											</button>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td
+										colSpan={3}
+										className="text-center py-[10px]"
+									>
+										데이터가 없습니다.
 									</td>
 								</tr>
-							))}
+							)}
 						</tbody>
 					</table>
 				</div>
