@@ -126,6 +126,6 @@ public class SeasonServiceImpl implements SeasonService {
         String redisKey = "season:expiration:" + season.getId();
         LocalDateTime getOpenedAt = season.getOpenedAt();
         Duration expirationDuration = Duration.between(LocalDateTime.now(), getOpenedAt);
-        redisTemplate.opsForValue().set(redisKey, "test", expirationDuration);
+        redisTemplate.opsForValue().set(redisKey, season.getName(), expirationDuration);
     }
 }

@@ -122,7 +122,7 @@ public class CardServiceImpl implements CardService {
         if (filteringCheck(dto.getContent())) {
             card.filtering();
         }
-        setExpirationForNotification(card.getId());
+        setExpirationForNotification(card);
         return card.getId();
     }
 
@@ -159,10 +159,10 @@ public class CardServiceImpl implements CardService {
     /**
      * 24시간 후 만료되는 키를 레디스에 저장하는 메서드
      *
-     * @param cardId 키로 사용할 생성된 카드 id
+     * @param card 키로 사용할 생성된 카드
      */
-    private void setExpirationForNotification(Long cardId) {
-        String redisKey = "card:expiration:" + cardId;
-        redisTemplate.opsForValue().set(redisKey, "test", Duration.ofHours(24));
+    private void setExpirationForNotification(Card card) {
+        String redisKey = "card:expiration:" + card.getId();
+        redisTemplate.opsForValue().set(redisKey, card.getWriterName(), Duration.ofHours(24));
     }
 }
