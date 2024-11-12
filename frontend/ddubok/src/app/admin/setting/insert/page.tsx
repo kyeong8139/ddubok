@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Button from "@components/button/button";
 import { ISeasonProps } from "@interface/components/season";
@@ -15,15 +15,15 @@ const SettingDetail = () => {
 	const router = useRouter();
 	const [seasonData, setSeasonData] = useState<ISeasonProps>({
 		name: "",
-		description: "",
-		started_at: "",
-		ended_at: "",
-		opened_at: "",
+		seasonDescription: "",
+		startedAt: "",
+		endedAt: "",
+		openedAt: "",
 	});
 	const [images, setImages] = useState<File[]>([]);
 	const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-	const putSeason = async () => {
+	const createSeason = async () => {
 		try {
 			await insertSeason(images, seasonData);
 			toast.success("새로운 시즌이 등록되었습니다");
@@ -72,7 +72,7 @@ const SettingDetail = () => {
 							name="description"
 							placeholder="시즌 안내문을 입력하세요"
 							className="font-nexonRegular text-sm p-2 rounded-lg"
-							value={seasonData.description}
+							value={seasonData.seasonDescription}
 							onChange={handleInputChange}
 						/>
 					</div>
@@ -84,7 +84,7 @@ const SettingDetail = () => {
 							type="date"
 							name="started_at"
 							className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-							value={seasonData.started_at.slice(0, 10)}
+							value={seasonData.startedAt}
 							onChange={handleInputChange}
 						/>
 						<span className="text-white"> ~ </span>
@@ -92,7 +92,7 @@ const SettingDetail = () => {
 							type="date"
 							name="ended_at"
 							className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-							value={seasonData.ended_at.slice(0, 10)}
+							value={seasonData.endedAt}
 							onChange={handleInputChange}
 						/>
 					</div>
@@ -104,7 +104,7 @@ const SettingDetail = () => {
 							type="date"
 							name="opened_at"
 							className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-							value={seasonData.opened_at.slice(0, 10)}
+							value={seasonData.openedAt}
 							onChange={handleInputChange}
 						/>
 					</div>
@@ -150,7 +150,7 @@ const SettingDetail = () => {
 						size="semiLong"
 						font="bold"
 						shadow="gradient"
-						onClick={putSeason}
+						onClick={createSeason}
 					/>
 				</div>
 			</div>

@@ -1,18 +1,18 @@
 export interface ISeasonProps {
 	name: string;
-	description: string;
-	started_at: string;
-	ended_at: string;
-	opened_at: string;
+	seasonDescription: string;
+	startedAt: string;
+	endedAt: string;
+	openedAt: string;
 }
 
 export interface ISeasonDetailProps {
 	id: number;
 	name: string;
-	description: string;
-	started_at: string;
-	ended_at: string;
-	opened_at: string;
+	seasonDescription: string;
+	startedAt: string;
+	endedAt: string;
+	openedAt: string;
 	path: string[];
 }
 
