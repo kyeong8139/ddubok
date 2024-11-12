@@ -18,10 +18,10 @@ const SettingDetail = () => {
 	const { isTokenReady } = useAuthToken();
 	const [seasonData, setSeasonData] = useState<ISeasonProps>({
 		name: "",
-		description: "",
-		started_at: "",
-		ended_at: "",
-		opened_at: "",
+		seasonDescription: "",
+		startedAt: "",
+		endedAt: "",
+		openedAt: "",
 	});
 	const [images, setImages] = useState<File[]>([]);
 	const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -37,10 +37,10 @@ const SettingDetail = () => {
 			console.log(data);
 			setSeasonData({
 				name: data.name,
-				description: data.seasonDescription,
-				started_at: data.startedAt.split("T")[0],
-				ended_at: data.endedAt.split("T")[0],
-				opened_at: data.openedAt.split("T")[0],
+				seasonDescription: data.seasonDescription,
+				startedAt: data.startedAt,
+				endedAt: data.endedAt,
+				openedAt: data.openedAt,
 			});
 			setPreviewImages(data.path);
 		} catch (error) {
@@ -107,7 +107,7 @@ const SettingDetail = () => {
 								name="description"
 								placeholder="시즌 안내문을 입력하세요"
 								className="font-nexonRegular text-sm p-2 rounded-lg"
-								value={seasonData.description}
+								value={seasonData.seasonDescription}
 								onChange={handleInputChange}
 							/>
 						</div>
@@ -119,7 +119,7 @@ const SettingDetail = () => {
 								type="date"
 								name="started_at"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-								value={seasonData.started_at}
+								value={seasonData.startedAt}
 								onChange={handleInputChange}
 							/>
 							<span className="text-white"> ~ </span>
@@ -127,7 +127,7 @@ const SettingDetail = () => {
 								type="date"
 								name="ended_at"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-								value={seasonData.ended_at}
+								value={seasonData.endedAt}
 								onChange={handleInputChange}
 							/>
 						</div>
@@ -139,7 +139,7 @@ const SettingDetail = () => {
 								type="date"
 								name="opened_at"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-								value={seasonData.opened_at.slice(0, 10)}
+								value={seasonData.openedAt}
 								onChange={handleInputChange}
 							/>
 						</div>
