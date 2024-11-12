@@ -7,11 +7,15 @@ import { ISeasonListProps } from "@interface/components/season";
 import { selectSeasonList } from "@lib/api/admin-api";
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
+import useAuthToken from "@lib/utils/tokenUtils";
 
 const Setting = () => {
 	const router = useRouter();
+	const { isTokenReady } = useAuthToken();
 	const [seasonList, setSeasonList] = useState<ISeasonListProps[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+
+	const isPageReady = isLoading || !isTokenReady;
 
 	const getSeasonList = async () => {
 		try {
@@ -40,7 +44,7 @@ const Setting = () => {
 
 	return (
 		<div id="admin-setting">
-			{isLoading ? (
+			{isPageReady ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
 				</div>

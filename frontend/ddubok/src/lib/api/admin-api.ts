@@ -20,8 +20,8 @@ export const selectReport = (reportId: number) => {
 };
 
 // 신고 처리
-export const updateReport = (reportId: number) => {
-	return axiosInstance.patch(`admins/reports/${reportId}`);
+export const updateReport = (reportId: number, state: string) => {
+	return axiosInstance.patch(`admins/reports/${reportId}`, { state });
 };
 
 // 사용자 목록 조회
