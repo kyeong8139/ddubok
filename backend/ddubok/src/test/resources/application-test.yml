@@ -63,4 +63,4 @@ openai:
 
 firebase:
   config:
-    path: classpath:firebase/ddubokFirebase.json
+    path: firebase/ddubokFirebase.json
