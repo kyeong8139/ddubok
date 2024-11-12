@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NotificationMessageDto {
 
-    private Long memberId;
+    private Long id;
     private String title;
     private String body;
     private Map<String, String> data;

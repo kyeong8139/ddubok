@@ -1,11 +1,19 @@
 package com.ddubok.common.notification;
 
+import com.ddubok.api.notification.dto.request.NotificationMessageDto;
+import java.time.LocalDateTime;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class RedisKeyExpirationListener implements MessageListener {
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -21,10 +29,26 @@ public class RedisKeyExpirationListener implements MessageListener {
     }
 
     private void sendCardNotification(Long key) {
-        // TODO: Firebase를 통해 사용자에게 알림을 보내는 로직을 구현
+        NotificationMessageDto message = NotificationMessageDto.builder()
+            .id(key)
+            .title("행운카드가 열렸어요!")
+            .body("뚜복에 접속해 행운카드 속 메세지를 확인해보세요!")
+            .data(Map.of())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        redisTemplate.convertAndSend("open-card", message);
     }
 
     private void sendSeasonNotification(Long key) {
-        // TODO: Firebase를 통해 사용자에게 알림을 보내는 로직을 구현
+        NotificationMessageDto message = NotificationMessageDto.builder()
+            .id(key)
+            .title("시즌이 종료되었어요!")
+            .body("뚜복에 접속해 행운카드 속 메세지를 확인해보세요!")
+            .data(Map.of())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        redisTemplate.convertAndSend("end-season", message);
     }
 }
