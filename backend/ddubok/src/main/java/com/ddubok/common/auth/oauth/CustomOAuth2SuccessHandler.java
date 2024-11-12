@@ -62,13 +62,17 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String role = customUser.getRole();
         String socialAccessToken = customUser.getSocialAccessToken();
 
-        String refreshToken = jwtTokenUtil.createToken(REFRESH_TOKEN_COOKIE_NAME, userId, role,
-            socialAccessToken, expiration);
-        Cookie refreshCookie = createCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
-        saveRefreshTokenToRedis(userId, refreshToken);
+        if (role.equals("ROLE_PRISONER")) {
+            response.sendRedirect(redirectUrl + "/jail");
+        } else {
+            String refreshToken = jwtTokenUtil.createToken(REFRESH_TOKEN_COOKIE_NAME, userId, role,
+                socialAccessToken, expiration);
+            Cookie refreshCookie = createCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
+            saveRefreshTokenToRedis(userId, refreshToken);
 
-        response.addCookie(refreshCookie);
-        response.sendRedirect(redirectUrl);
+            response.addCookie(refreshCookie);
+            response.sendRedirect(redirectUrl);
+        }
     }
 
     /**

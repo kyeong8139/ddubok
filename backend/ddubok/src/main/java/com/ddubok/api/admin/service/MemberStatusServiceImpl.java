@@ -6,6 +6,7 @@ import com.ddubok.api.admin.dto.response.GetMemberListRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberRoleRes;
 import com.ddubok.api.admin.dto.response.UpdateMemberStateRes;
 import com.ddubok.api.member.entity.Member;
+import com.ddubok.api.member.entity.Role;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberStatusServiceImpl implements MemberStatusService {
 
     private final MemberRepository memberRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
 
     /**
      * @inheritDoc
@@ -37,7 +41,8 @@ public class MemberStatusServiceImpl implements MemberStatusService {
         String stateString = getMemberListReq.getState();
         String searchName = getMemberListReq.getSearchName();
 
-        Pageable pageable = PageRequest.of(getMemberListReq.getPage(), getMemberListReq.getSize(), Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(getMemberListReq.getPage(), getMemberListReq.getSize(),
+            Sort.by("id").descending());
 
         Page<Member> memberPage = getMembersByConditions(stateString, searchName, pageable);
 
@@ -73,6 +78,9 @@ public class MemberStatusServiceImpl implements MemberStatusService {
         Member member = memberRepository.findById(memberId).orElseThrow(
             () -> new MemberNotFoundException("유저 번호가 정확하지 않습니다 : " + memberId));
         member.updateRole(member.getRole());
+        if (member.getRole().equals(Role.ROLE_PRISONER)) {
+            redisTemplate.delete(REDIS_REFRESH_TOKEN_PREFIX + memberId);
+        }
         return UpdateMemberRoleRes.builder()
             .id(member.getId())
             .roleName(member.getRole().toRoleName())
@@ -93,17 +101,18 @@ public class MemberStatusServiceImpl implements MemberStatusService {
             .build();
     }
 
-    private Page<Member> getMembersByConditions(String stateString, String searchName, Pageable pageable) {
-        if(stateString == null) {
-            if(searchName == null) {
+    private Page<Member> getMembersByConditions(String stateString, String searchName,
+        Pageable pageable) {
+        if (stateString == null) {
+            if (searchName == null) {
                 return memberRepository.findAll(pageable);
             }
-            return memberRepository.findByNicknameContaining(searchName,pageable);
+            return memberRepository.findByNicknameContaining(searchName, pageable);
         }
         UserState userState = UserState.fromUserStateName(stateString);
-        if(searchName == null) {
-            return memberRepository.findByState(userState,pageable);
+        if (searchName == null) {
+            return memberRepository.findByState(userState, pageable);
         }
-        return memberRepository.findByStateAndNickname(userState, searchName,pageable);
+        return memberRepository.findByStateAndNickname(userState, searchName, pageable);
     }
 }
