@@ -80,7 +80,7 @@ const SettingDetail = () => {
 
 	return (
 		<div id="setting-detail">
-			{isPageReady ? (
+			{!isPageReady ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
 				</div>
