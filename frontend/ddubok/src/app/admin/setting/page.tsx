@@ -32,7 +32,7 @@ const Setting = () => {
 
 	useEffect(() => {
 		getSeasonList();
-	}, []);
+	}, [isTokenReady]);
 
 	const handleDetailClick = (seasonId: number) => {
 		router.push(`/admin/setting/${seasonId}`);

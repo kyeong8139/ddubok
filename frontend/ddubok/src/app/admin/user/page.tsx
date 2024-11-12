@@ -1,78 +1,93 @@
 "use client";
 
-import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
 import { ModalContext } from "@context/modal-context";
-import { IReportListProps, IReportProps } from "@interface/components/report";
-import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
+import { IUserProps } from "@interface/components/user";
+import { selectMember, selectMemberList, updateMemberRole, updateMemberState } from "@lib/api/admin-api";
 import useAuthToken from "@lib/utils/tokenUtils";
 
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
-const Report = () => {
+const User = () => {
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const { isTokenReady } = useAuthToken();
 	const [selected, setSelected] = useState(0);
-	const [reportList, setReportList] = useState<IReportListProps[]>([]);
-	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
-	const [page, setPage] = useState(0);
+	const [userList, setUserList] = useState<IUserProps[]>([]);
+	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
+	const [searchName, setSearchName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 
 	const isPageReady = isLoading || !isTokenReady;
 
-	const getReportList = async () => {
-		setIsLoading(true); // 로딩 시작
+	const getMemberList = async () => {
+		setIsLoading(true);
 		try {
-			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
-			const response = await selectReportList(state, page, 50);
+			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : null;
+			const response = await selectMemberList(state, searchName);
 			console.log(response.data.data);
-			let reports = response.data.data;
-			setReportList(reports);
+			let users = response.data.data;
+			setUserList(users);
 		} catch (error) {
 			console.error(error);
 		} finally {
-			setIsLoading(false); // 로딩 완료
+			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
-		getReportList();
-	}, [selected, page]);
+		getMemberList();
+	}, [isTokenReady, selected, searchName]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
-		setPage(0);
 	};
 
-	const handleDetailClick = async (reportId: number) => {
+	const handleDetailClick = async (memberId: number) => {
 		try {
-			const response = await selectReport(reportId);
+			const response = await selectMember(memberId);
 			console.log(response.data.data);
-			setSelectedReport(response.data.data);
+			setSelectedUser(response.data.data);
 			openModal();
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	const handleUpdateReport = async (reportId: number, action: "수락" | "반려") => {
+	const handleUpdateMemberState = async () => {
+		if (!selectedUser) return;
 		try {
-			await updateReport(reportId, action);
-			toast.success(`신고가 ${action}되었습니다`);
-			getReportList();
+			await updateMemberState(selectedUser.memberId);
+			toast.success("회원 상태가 변경되었습니다.");
+			getMemberList();
 			closeModal();
 		} catch (error) {
 			console.error(error);
-			toast.error("신고 처리 중에 오류가 발생했습니다.");
+			toast.error("회원 상태 변경 중에 오류가 발생했습니다.");
+			closeModal();
+		}
+	};
+
+	const handleUpdateMemberRole = async () => {
+		if (!selectedUser) return;
+		try {
+			await updateMemberRole(selectedUser.memberId);
+			toast.success("회원 등급이 변경되었습니다.");
+			getMemberList();
+			closeModal();
+		} catch (error) {
+			console.error(error);
+			toast.error("회원 등급 변경 중에 오류가 발생했습니다.");
+			closeModal();
 		}
 	};
 
 	return (
-		<div id="admin-report">
+		<div id="admin-user">
 			{isPageReady ? (
 				<div className="flex w-full h-screen items-center justify-center">
 					<Loading />
@@ -80,12 +95,12 @@ const Report = () => {
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">
-						<h1 className="font-nexonBold text-xl mb-2">신고 관리</h1>
-						<p className="font-nexonRegular text-sm">신고된 게시물 정보를 확인할 수 있어요</p>
+						<h1 className="font-nexonBold text-xl mb-2">사용자 관리</h1>
+						<p className="font-nexonRegular text-sm">가입된 사용자의 정보를 확인할 수 있어요</p>
 					</div>
-					<div className="flex justify-center pt-4 pb-6">
+					<div className="flex justify-center pt-4">
 						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-							{["전체", "미처리", "수락", "반려"].map((item, index) => (
+							{["전체", "활성화", "비활성화", "차단"].map((item, index) => (
 								<li
 									key={index}
 									onClick={() => handleClick(index)}
@@ -98,30 +113,44 @@ const Report = () => {
 							))}
 						</ul>
 					</div>
+					<div className="bg-white flex items-center gap-2 w-[calc(100%-64px)] mx-auto my-4 p-3 rounded-lg font-nexonRegular">
+						<label htmlFor="search">
+							<MagnifyingGlass
+								size={20}
+								color="#AAAAAA"
+							/>
+						</label>
+						<input
+							id="search"
+							type="text"
+							placeholder="사용자 닉네임을 입력하세요"
+							className="text-sm w-full outline-none"
+							value={searchName}
+							onChange={(e) => setSearchName(e.target.value)}
+						/>
+					</div>
 					<div>
-						<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
+						<table className="text-white  font-nexonRegular w-[calc(100%-64px)] mx-auto">
 							<thead>
-								<tr className="text-xs border-y-2 border-solid border-white">
-									<th className="px-1 py-[10px]">글번호</th>
-									<th className="px-2 py-[10px]">제목</th>
-									<th className="px-2 py-[10px]">상태</th>
-									<th className="px-1 py-[10px]">상세</th>
+								<tr className="text-xs border-b-2 border-solid border-white">
+									<th className="px-2 py-[10px]">번호</th>
+									<th className="px-2 py-[10px]">닉네임</th>
+									<th className="px-2 py-[10px]">상세</th>
 								</tr>
 							</thead>
 							<tbody>
-								{reportList.length > 0 ? (
-									reportList.map((report) => (
+								{userList.length > 0 ? (
+									userList.map((user) => (
 										<tr
-											key={report.id}
+											key={user.memberId}
 											className="text-center text-xs border-b-[1px] border-solid border-white"
 										>
-											<td className="px-1 py-[10px]">{report.id}</td>
-											<td className="px-2 py-[10px]">{report.title}</td>
-											<td className="px-2 py-[10px]">{report.state}</td>
-											<td className="px-1 py-[10px]">
+											<td className="px-2 py-[10px]">{user.memberId}</td>
+											<td className="px-2 py-[10px]">{user.nickname}</td>
+											<td className="px-2 py-[10px]">
 												<button
 													className="underline"
-													onClick={() => handleDetailClick(report.id)}
+													onClick={() => handleDetailClick(user.memberId)}
 												>
 													상세보기
 												</button>
@@ -131,7 +160,7 @@ const Report = () => {
 								) : (
 									<tr>
 										<td
-											colSpan={4}
+											colSpan={3}
 											className="text-center py-[10px]"
 										>
 											데이터가 없습니다.
@@ -149,59 +178,38 @@ const Report = () => {
 				}`}
 			>
 				<Modal>
-					<div className="flex justify-between text-xs mb-3">
-						<p className="font-nexonBold">신고자 아이디</p>
-						<p>{selectedReport?.reportMemberId}</p>
+					<div className="flex justify-between text-sm mb-4">
+						<p className="font-nexonBold">번호</p>
+						<p>{selectedUser?.memberId}</p>
 					</div>
-					<div className="flex justify-between text-xs mb-3">
-						<p className="font-nexonBold">신고자 닉네임</p>
-						<p>{selectedReport?.reportMemberNickname}</p>
+					<div className="flex justify-between text-sm mb-4">
+						<p className="font-nexonBold">닉네임</p>
+						<p>{selectedUser?.nickname}</p>
 					</div>
-					<div className="flex justify-between text-xs mb-3">
-						<p className="font-nexonBold">신고 제목</p>
-						<p>{selectedReport?.title}</p>
+					<div className="flex justify-between text-sm mb-4">
+						<p className="font-nexonBold">상태</p>
+						<p>{selectedUser?.state}</p>
 					</div>
-					<div className="flex flex-col justify-between text-xs mb-3">
-						<p className="font-nexonBold mb-2">신고 내용</p>
-						<p>{selectedReport?.content}</p>
-					</div>
-					<hr className="border border-solid border-black mb-3" />
-					<div className="flex justify-between text-xs mb-3">
-						<p className="font-nexonBold">신고된 카드 번호</p>
-						<p>{selectedReport?.cardId}</p>
-					</div>
-					<div className="flex flex-col justify-between text-xs mb-3">
-						<p className="font-nexonBold mb-2">신고된 카드 내용</p>
-						<p>{selectedReport?.cardContent}</p>
-					</div>
-					<div className="flex justify-between text-xs mb-3">
-						<p className="font-nexonBold mb-2">신고된 카드 이미지</p>
-						{selectedReport ? (
-							<Image
-								src={selectedReport.cardPath}
-								alt="신고된 카드 이미지"
-								width={70}
-								height={200}
-								className="rounded"
-							/>
-						) : null}
+					<div className="flex justify-between text-sm mb-4">
+						<p className="font-nexonBold">역할</p>
+						<p>{selectedUser?.role}</p>
 					</div>
 					<div className="flex justify-center mt-8 gap-4">
 						<Button
-							text="신고 반려"
+							text="등급 변경"
 							color="purple"
 							size="small"
 							font="small"
 							shadow="purple"
-							onClick={() => handleUpdateReport(selectedReport!.id, "반려")}
+							onClick={handleUpdateMemberRole}
 						/>
 						<Button
-							text="신고 수락"
+							text="상태 변경"
 							color="green"
 							size="small"
 							font="small"
 							shadow="green"
-							onClick={() => handleUpdateReport(selectedReport!.id, "수락")}
+							onClick={handleUpdateMemberState}
 						/>
 					</div>
 				</Modal>
@@ -210,4 +218,4 @@ const Report = () => {
 	);
 };
 
-export default Report;
+export default User;

@@ -39,7 +39,7 @@ const Report = () => {
 
 	useEffect(() => {
 		getReportList();
-	}, [selected, page]);
+	}, [isTokenReady, selected, page]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
@@ -28,6 +28,12 @@ const SettingDetail = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const isPageReady = isLoading || !isTokenReady;
+
+	useEffect(() => {
+		if (isTokenReady) {
+			setIsLoading(false);
+		}
+	}, [isTokenReady]);
 
 	const putSeason = async () => {
 		try {

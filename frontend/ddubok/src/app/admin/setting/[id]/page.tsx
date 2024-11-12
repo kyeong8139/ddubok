@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
-import { ISeasonDetailProps, ISeasonProps } from "@interface/components/season";
+import { ISeasonProps } from "@interface/components/season";
 import { selectSeason, updateSeason } from "@lib/api/admin-api";
 import useAuthToken from "@lib/utils/tokenUtils";
 
@@ -38,9 +38,9 @@ const SettingDetail = () => {
 			setSeasonData({
 				name: data.name,
 				description: data.description,
-				started_at: data.started_at,
-				ended_at: data.ended_at,
-				opened_at: data.opened_at,
+				started_at: data.started_at.split("T")[0],
+				ended_at: data.ended_at.split("T")[0],
+				opened_at: data.opened_at.split("T")[0],
 			});
 			setPreviewImages(data.path);
 		} catch (error) {
@@ -52,7 +52,7 @@ const SettingDetail = () => {
 
 	useEffect(() => {
 		if (id) getSeasonDetail();
-	}, [id]);
+	}, [isTokenReady, id]);
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = Array.from(event.target.files || []);
@@ -119,7 +119,7 @@ const SettingDetail = () => {
 								type="date"
 								name="started_at"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-								value={seasonData.started_at.slice(0, 10)}
+								value={seasonData.started_at}
 								onChange={handleInputChange}
 							/>
 							<span className="text-white"> ~ </span>
@@ -127,7 +127,7 @@ const SettingDetail = () => {
 								type="date"
 								name="ended_at"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
-								value={seasonData.ended_at.slice(0, 10)}
+								value={seasonData.ended_at}
 								onChange={handleInputChange}
 							/>
 						</div>
