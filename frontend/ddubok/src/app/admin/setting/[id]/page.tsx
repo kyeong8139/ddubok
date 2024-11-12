@@ -146,36 +146,38 @@ const SettingDetail = () => {
 					</div>
 					<div className="mb-8">
 						<h2 className="font-nexonBold text-white mb-2">메인 이미지 설정 (최소 3개)</h2>
-						<div className="flex gap-4">
-							<label
-								htmlFor="banner-image"
-								className="block w-[120px] h-[212px] rounded-lg bg-white"
-							>
-								<PlusCircle
-									size={32}
-									color="black"
-									weight="thin"
-									className="mx-auto h-full"
+						<div className="overflow-x-auto">
+							<div className="flex gap-4 w-max">
+								<label
+									htmlFor="banner-image"
+									className="block w-[120px] h-[212px] rounded-lg bg-white"
+								>
+									<PlusCircle
+										size={32}
+										color="black"
+										weight="thin"
+										className="mx-auto h-full"
+									/>
+								</label>
+								<input
+									id="banner-image"
+									type="file"
+									accept="image/*"
+									multiple
+									className="hidden"
+									onChange={handleImageChange}
 								/>
-							</label>
-							<input
-								id="banner-image"
-								type="file"
-								accept="image/*"
-								multiple
-								className="hidden"
-								onChange={handleImageChange}
-							/>
-							{previewImages.map((imageSrc, index) => (
-								<Image
-									key={index}
-									src={imageSrc}
-									alt={`Season Image ${index + 1}`}
-									width={120}
-									height={212}
-									className="w-[120px] h-[212px] rounded-lg bg-white object-cover"
-								/>
-							))}
+								{previewImages.map((imageSrc, index) => (
+									<Image
+										key={index}
+										src={imageSrc}
+										alt={`Season Image ${index + 1}`}
+										width={120}
+										height={212}
+										className="w-[120px] h-[212px] rounded-lg bg-white object-cover"
+									/>
+								))}
+							</div>
 						</div>
 					</div>
 					<div className="text-center mb-6">
