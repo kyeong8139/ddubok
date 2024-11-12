@@ -85,7 +85,7 @@ export const updateSeason = (seasonId: number, images: File[], seasonData: ISeas
 
 	formData.append("req", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
 
-	return axiosInstance.patch(`/admins/seasons/${seasonId}`, formData, {
+	return axiosInstance.put(`/admins/seasons/${seasonId}`, formData, {
 		withCredentials: true,
 		headers: {
 			"Content-Type": "multipart/form-data",
