@@ -142,9 +142,11 @@ public class Member {
         switch (state) {
             case BANNED:
                 this.state = UserState.ACTIVATED;
+                this.role = Role.ROLE_USER;
                 break;
             case ACTIVATED:
                 this.state = UserState.BANNED;
+                this.role = Role.ROLE_PRISONER;
                 break;
             default:
                 throw new UnknownStateException("알 수 없는 상태입니다. " + state);
