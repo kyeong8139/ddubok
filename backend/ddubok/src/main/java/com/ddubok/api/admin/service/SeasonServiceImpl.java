@@ -77,7 +77,7 @@ public class SeasonServiceImpl implements SeasonService {
     public List<GetSeasonListRes> getSeasonList() {
         List<Season> seasons = seasonRepository.findAll();
         return seasons.stream()
-            .sorted(Comparator.comparing(Season::getId).reversed())  // Season 객체의 id 기준으로 역순 정렬
+            .sorted(Comparator.comparing(Season::getId).reversed())
             .map(season -> GetSeasonListRes.builder()
                 .id(season.getId())
                 .name(season.getName())
@@ -90,7 +90,7 @@ public class SeasonServiceImpl implements SeasonService {
         validateSeasonDates(updateSeasonReqDto.getStartedAt(), updateSeasonReqDto.getEndedAt());
         Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new SeasonNotFoundException("해당 번호의 시즌을 찾을 수 없습니다." + seasonId));
-        Season upDateSeason = seasonRepository.save(Season.builder()
+        Season updateSeason = seasonRepository.save(Season.builder()
             .id(seasonId)
             .name(updateSeasonReqDto.getSeasonName())
             .description(updateSeasonReqDto.getSeasonDescription())
@@ -99,9 +99,9 @@ public class SeasonServiceImpl implements SeasonService {
             .endedAt(updateSeasonReqDto.getEndedAt())
             .openedAt(updateSeasonReqDto.getOpenedAt())
             .build());
-        setExpirationForNotification(upDateSeason);
+        setExpirationForNotification(updateSeason);
         return UpdateSeasonRes.builder()
-            .id(upDateSeason.getId())
+            .id(updateSeason.getId())
             .build();
     }
 
