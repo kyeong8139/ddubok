@@ -60,3 +60,7 @@ openai:
     key: test-openai-key
     url: https://api.openai.test.com
   model: test-model
+
+firebase:
+  config:
+    path: /app/firebase/ddubokFirebase.json
