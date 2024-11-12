@@ -40,7 +40,7 @@ const User = () => {
 	};
 
 	useEffect(() => {
-		getMemberList();
+		if (isTokenReady) getMemberList();
 	}, [isTokenReady, selected, searchName]);
 
 	const handleClick = (index: number) => {
