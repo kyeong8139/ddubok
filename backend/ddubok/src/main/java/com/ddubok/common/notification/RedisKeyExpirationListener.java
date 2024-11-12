@@ -15,8 +15,8 @@ public class RedisKeyExpirationListener implements MessageListener {
             sendCardNotification(cardId);
         }
         if (expiredKey.startsWith("season:expiration:")) {
-            Long cardId = Long.parseLong(expiredKey.replace("season:expiration:", ""));
-            sendSeasonNotification(cardId);
+            Long seasonId = Long.parseLong(expiredKey.replace("season:expiration:", ""));
+            sendSeasonNotification(seasonId);
         }
     }
 
