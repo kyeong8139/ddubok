@@ -24,7 +24,7 @@ const Setting = () => {
 
 	useEffect(() => {
 		getSeasonList();
-	});
+	}, []);
 
 	const handleDetailClick = (seasonId: number) => {
 		router.push(`/admin/setting/${seasonId}`);
