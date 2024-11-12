@@ -9,10 +9,6 @@ import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
-import com.ddubok.api.report.entity.Report;
-import com.ddubok.api.report.entity.State;
-import com.ddubok.api.report.exception.ReportNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +44,7 @@ public class MemberStatusServiceImpl implements MemberStatusService {
         return memberPage.stream()
             .map(member -> GetMemberListRes.builder()
                 .memberId(member.getId())
-                .nickName(member.getNickname())
+                .nickname(member.getNickname())
                 .state(member.getState().toUserStateName())
                 .build())
             .collect(Collectors.toList());
@@ -62,7 +58,7 @@ public class MemberStatusServiceImpl implements MemberStatusService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException("유저 번호가 정확하지 않습니다 : " + memberId));
         return GetMemberDetailRes.builder()
-            .id(member.getId())
+            .memberId(member.getId())
             .nickname(member.getNickname())
             .role(member.getRole().toRoleName())
             .state(member.getState().toUserStateName())

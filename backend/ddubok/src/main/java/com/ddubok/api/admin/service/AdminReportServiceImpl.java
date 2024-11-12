@@ -64,10 +64,16 @@ public class AdminReportServiceImpl implements AdminReportService {
             () -> new ReportNotFoundException("report not found: " + reportId)
         );
         return GetReportDetailRes.builder()
+            .id(report.getId())
             .title(report.getTitle())
-            .reportType(report.getReportType().toTypeName())
-            .cardId(report.getCard().getId())
+            .state(report.getState().toName())
             .content(report.getContent())
+            .reportType(report.getReportType().toTypeName())
+            .reportMemberId(report.getMember().getId())
+            .reportMemberNickname(report.getMember().getNickname())
+            .cardId(report.getCard().getId())
+            .cardContent(report.getCard().getContent())
+            .cardPath(report.getCard().getPath())
             .build();
     }
 
