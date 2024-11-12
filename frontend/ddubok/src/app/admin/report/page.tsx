@@ -9,18 +9,21 @@ import Loading from "@components/common/loading"; // 로딩 컴포넌트 추가
 import { ModalContext } from "@context/modal-context";
 import { IReportListProps, IReportProps } from "@interface/components/report";
 import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
+import useAuthToken from "@lib/utils/tokenUtils";
+
 import toast from "react-hot-toast";
 
 const Report = () => {
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
+	const { isTokenReady } = useAuthToken();
 	const [selected, setSelected] = useState(0);
 	const [reportList, setReportList] = useState<IReportListProps[]>([]);
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
-	const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+	const [isLoading, setIsLoading] = useState(true);
 
 	const getReportList = async () => {
-		setIsLoading(true); // 로딩 시작
+		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
 			const response = await selectReportList(state, page, 50);
@@ -30,7 +33,7 @@ const Report = () => {
 		} catch (error) {
 			console.error(error);
 		} finally {
-			setIsLoading(false); // 로딩 완료
+			setIsLoading(false);
 		}
 	};
 
@@ -56,7 +59,7 @@ const Report = () => {
 
 	const handleUpdateReport = async (reportId: number, action: "수락" | "반려") => {
 		try {
-			await updateReport(reportId);
+			await updateReport(reportId, action);
 			toast.success(`신고가 ${action}되었습니다`);
 			getReportList();
 			closeModal();
