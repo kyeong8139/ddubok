@@ -3,10 +3,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ITextComponentProps } from "@interface/components/text";
 import { fabric } from "fabric";
+import { TextAlignCenter, TextAlignLeft, TextAlignRight } from "@phosphor-icons/react";
 
 function TextComponent({ canvas }: ITextComponentProps) {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
+	const [textAlign, setTextAlign] = useState("center");
 	const [customColor, setCustomColor] = useState(
 		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
 	);
@@ -34,6 +36,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 				setSelectedText(selectedObject as fabric.IText);
 				setFontFamily((selectedObject as fabric.IText).get("fontFamily") || "Arial");
 				setTextColor(((selectedObject as fabric.IText).get("fill") as string) || "#000000");
+				setTextAlign(((selectedObject as fabric.IText).get("textAlign") as string) || "center");
 			} else {
 				setSelectedText(null);
 			}
@@ -54,13 +57,13 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		};
 	}, [canvas]);
 
-	const handleFontChange = (newFont: string) => {
+	const handleFontChange = (newFont: string, label: string) => {
 		setFontFamily(newFont);
 		if (selectedText && canvas) {
 			selectedText.set("fontFamily", newFont);
 			canvas.renderAll();
 		} else {
-			addText(newFont);
+			addText(newFont, label);
 		}
 	};
 
@@ -68,6 +71,14 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		setTextColor(newColor);
 		if (selectedText && canvas) {
 			selectedText.set("fill", newColor);
+			canvas.renderAll();
+		}
+	};
+
+	const handleAlignChange = (alignment: string) => {
+		setTextAlign(alignment);
+		if (selectedText && canvas) {
+			selectedText.set("textAlign", alignment);
 			canvas.renderAll();
 		}
 	};
@@ -98,10 +109,10 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		sliderRef.current.scrollLeft = scrollLeft - walk;
 	};
 
-	const addText = (font: string) => {
+	const addText = (font: string, initialText: string) => {
 		if (!canvas) return;
 
-		const text = new fabric.IText("", {
+		const text = new fabric.IText(initialText, {
 			left: (canvas.width || 0) / 2,
 			top: (canvas.height || 0) / 2,
 			fontFamily: font,
@@ -118,6 +129,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 			cursorColor: "#7e22ce",
 			cursorWidth: 2,
 			editingBorderColor: "#7e22ce",
+			textAlign: textAlign,
 		});
 
 		canvas.add(text);
@@ -226,6 +238,35 @@ function TextComponent({ canvas }: ITextComponentProps) {
 				</div>
 			</div>
 			<div className="space-y-2">
+				<p className="text-base font-nexonRegular mt-4">정렬</p>
+				<div className="flex space-x-2">
+					<button
+						className={`px-4 py-2 rounded-lg border-2 ${
+							textAlign === "left" ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
+						}`}
+						onClick={() => handleAlignChange("left")}
+					>
+						<TextAlignLeft />
+					</button>
+					<button
+						className={`px-4 py-2 rounded-lg border-2 ${
+							textAlign === "center" ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
+						}`}
+						onClick={() => handleAlignChange("center")}
+					>
+						<TextAlignCenter />
+					</button>
+					<button
+						className={`px-4 py-2 rounded-lg border-2 ${
+							textAlign === "right" ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
+						}`}
+						onClick={() => handleAlignChange("right")}
+					>
+						<TextAlignRight />
+					</button>
+				</div>
+			</div>
+			<div className="space-y-2">
 				<p className="text-base font-nexonRegular mt-4">폰트</p>
 				<div
 					ref={sliderRef}
@@ -242,7 +283,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 								fontFamily === font.name ? "border-ddubokPurple bg-ddubokPurple/10" : "border-gray-200"
 							}`}
 							style={{ fontFamily: font.name }}
-							onClick={() => handleFontChange(font.name)}
+							onClick={() => handleFontChange(font.name, font.label)}
 						>
 							{font.label}
 						</button>
