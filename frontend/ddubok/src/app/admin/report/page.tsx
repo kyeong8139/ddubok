@@ -1,110 +1,66 @@
 "use client";
 
 import Image from "next/image";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
-import { IReportProps } from "@interface/components/report";
+import { IReportListProps, IReportProps } from "@interface/components/report";
+import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
+
+import toast from "react-hot-toast";
 
 const Report = () => {
-	const { isModalOpen, openModal } = useContext(ModalContext);
+	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [selected, setSelected] = useState(0);
+	const [reportList, setReportList] = useState<IReportListProps[]>([]);
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
+	const [page, setPage] = useState(0);
+
+	const getReportList = async () => {
+		try {
+			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : "";
+			const response = await selectReportList(state, page, 50);
+			console.log(response.data.data);
+			let reports = response.data.data;
+			setReportList(reports);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		getReportList();
+	}, [selected, page]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
+		setPage(0);
 	};
 
-	const handleDetailClick = (report: IReportProps) => {
-		setSelectedReport(report);
-		openModal();
+	const handleDetailClick = async (reportId: number) => {
+		try {
+			const response = await selectReport(reportId);
+			console.log(response.data.data);
+			setSelectedReport(response.data.data);
+			openModal();
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
-	const reportInfo = useMemo(
-		() => [
-			{
-				id: 1,
-				title: "Report Title 1",
-				content: "부적절해요",
-				state: "미처리",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-			{
-				id: 2,
-				title: "Report Title 2",
-				content: "부적절해요",
-				state: "미처리",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-			{
-				id: 3,
-				title: "Report Title 3",
-				content: "부적절해요",
-				state: "수락",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-			{
-				id: 4,
-				title: "Report Title 4",
-				content: "부적절해요",
-				state: "반려",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-			{
-				id: 5,
-				title: "Report Title 5",
-				content: "부적절해요",
-				state: "수락",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-			{
-				id: 6,
-				title: "Report Title 6",
-				content: "부적절해요",
-				state: "반려",
-				report_member_id: 501,
-				report_member_nickname: "친절한 사자",
-				card: {
-					card_id: 1001,
-					card_content: "재수나 해라!",
-					path: "/assets/template/kkm-card-2.png",
-				},
-			},
-		],
-		[],
-	); // 임시 데이터
+	const handleUpdateReport = async (reportId: number, action: "수락" | "반려") => {
+		try {
+			await updateReport(reportId);
+			toast.success(`신고가 ${action}되었습니다`);
+			getReportList();
+			closeModal();
+		} catch (error) {
+			console.error(error);
+			toast.error("신고 처리 중에 오류가 발생했습니다.");
+		}
+	};
 
 	return (
 		<div id="admin-report">
@@ -115,7 +71,7 @@ const Report = () => {
 				</div>
 				<div className="flex justify-center pt-4 pb-6">
 					<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-						{["전체", "처리", "미처리"].map((item, index) => (
+						{["전체", "미처리", "수락", "반려"].map((item, index) => (
 							<li
 								key={index}
 								onClick={() => handleClick(index)}
@@ -139,7 +95,7 @@ const Report = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{reportInfo.map((report) => (
+							{reportList.map((report) => (
 								<tr
 									key={report.id}
 									className="text-center text-xs border-b-[1px] border-solid border-white"
@@ -150,7 +106,7 @@ const Report = () => {
 									<td className="px-1 py-[10px]">
 										<button
 											className="underline"
-											onClick={() => handleDetailClick(report)}
+											onClick={() => handleDetailClick(report.id)}
 										>
 											상세보기
 										</button>
@@ -210,7 +166,7 @@ const Report = () => {
 							size="small"
 							font="small"
 							shadow="purple"
-							onClick={() => {}}
+							onClick={() => handleUpdateReport(selectedReport!.id, "반려")}
 						/>
 						<Button
 							text="신고 수락"
@@ -218,7 +174,7 @@ const Report = () => {
 							size="small"
 							font="small"
 							shadow="green"
-							onClick={() => {}}
+							onClick={() => handleUpdateReport(selectedReport!.id, "수락")}
 						/>
 					</div>
 				</Modal>

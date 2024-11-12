@@ -4,8 +4,8 @@ import Router from "next/router";
 import { checkRefreshToken, reissue } from "@lib/api/login-api";
 import useAuthStore from "@store/auth-store";
 
-const axiosInstance = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+const axiosInstanceV2 = axios.create({
+	baseURL: process.env.NEXT_PUBLIC_BASE_URL_V2,
 	withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",
@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 });
 
 // 요청 인터셉터
-axiosInstance.interceptors.request.use(
+axiosInstanceV2.interceptors.request.use(
 	(config) => {
 		const { accessToken } = useAuthStore.getState();
 		if (accessToken) config.headers["Authorization"] = accessToken;
@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // 응답 인터셉터
-axiosInstance.interceptors.response.use(
+axiosInstanceV2.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const originalRequest = error.config;
@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
 					setAccessToken(newAccessToken);
 
 					originalRequest.headers["Authorization"] = newAccessToken;
-					return axiosInstance(originalRequest);
+					return axiosInstanceV2(originalRequest);
 				} else if (refreshResponse.data.code === "800") {
 					const clearAccessToken = useAuthStore.getState().clearAccessToken;
 					clearAccessToken();
@@ -61,4 +61,4 @@ axiosInstance.interceptors.response.use(
 	},
 );
 
-export default axiosInstance;
+export default axiosInstanceV2;
