@@ -38,9 +38,9 @@ const SettingDetail = () => {
 			setSeasonData({
 				name: data.name,
 				seasonDescription: data.seasonDescription,
-				startedAt: data.startedAt.split("T")[0],
-				endedAt: data.endedAt.split("T")[0],
-				openedAt: data.openedAt.split("T")[0],
+				startedAt: data.startedAt,
+				endedAt: data.endedAt,
+				openedAt: data.openedAt,
 			});
 			setPreviewImages(data.path);
 		} catch (error) {
@@ -116,7 +116,7 @@ const SettingDetail = () => {
 						<h2 className="font-nexonBold text-white mb-2">이벤트 기간 설정</h2>
 						<div className="flex flex-col justify-between items-center gap-1">
 							<input
-								type="date"
+								type="datetime-local"
 								name="startedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.startedAt}
@@ -124,7 +124,7 @@ const SettingDetail = () => {
 							/>
 							<span className="text-white"> ~ </span>
 							<input
-								type="date"
+								type="datetime-local"
 								name="endedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.endedAt}
@@ -136,7 +136,7 @@ const SettingDetail = () => {
 						<h2 className="font-nexonBold text-white mb-2">오픈일 설정</h2>
 						<div>
 							<input
-								type="date"
+								type="datetime-local"
 								name="openedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.openedAt}
