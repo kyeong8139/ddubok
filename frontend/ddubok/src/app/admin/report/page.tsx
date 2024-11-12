@@ -38,7 +38,7 @@ const Report = () => {
 	};
 
 	useEffect(() => {
-		getReportList();
+		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
 	const handleClick = (index: number) => {

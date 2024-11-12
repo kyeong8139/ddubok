@@ -31,7 +31,7 @@ const Setting = () => {
 	};
 
 	useEffect(() => {
-		getSeasonList();
+		if (isTokenReady) getSeasonList();
 	}, [isTokenReady]);
 
 	const handleDetailClick = (seasonId: number) => {

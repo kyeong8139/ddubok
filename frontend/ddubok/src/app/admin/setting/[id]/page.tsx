@@ -51,7 +51,7 @@ const SettingDetail = () => {
 	};
 
 	useEffect(() => {
-		if (id) getSeasonDetail();
+		if (isTokenReady && id) getSeasonDetail();
 	}, [isTokenReady, id]);
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
