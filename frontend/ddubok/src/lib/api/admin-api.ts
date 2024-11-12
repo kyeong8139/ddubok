@@ -55,7 +55,7 @@ export const insertSeason = (images: File[], seasonData: ISeasonProps) => {
 		formData.append("image", image);
 	});
 
-	formData.append("createSeasonReq.started_at", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
+	formData.append("createSeasonReq", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
 
 	return axiosInstance.post(`${baseURL}/admins/seasons`, formData, {
 		withCredentials: true,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -14,6 +15,7 @@ import { PlusCircle } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
 const SettingDetail = () => {
+	const router = useRouter();
 	const { id } = useParams();
 	const { isTokenReady } = useAuthToken();
 	const [seasonData, setSeasonData] = useState<ISeasonProps>({
@@ -72,6 +74,7 @@ const SettingDetail = () => {
 		try {
 			await updateSeason(Number(id), images, seasonData);
 			toast.success("시즌 정보가 수정되었습니다.");
+			router.push("/admin/setting");
 		} catch (error) {
 			console.error("시즌 정보 수정 실패:", error);
 			toast.success("시즌 정보가 수정 중에 오류가 발생했습니다");
