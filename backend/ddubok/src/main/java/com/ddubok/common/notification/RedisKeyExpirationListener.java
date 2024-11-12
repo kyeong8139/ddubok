@@ -12,11 +12,19 @@ public class RedisKeyExpirationListener implements MessageListener {
         String expiredKey = message.toString();
         if (expiredKey.startsWith("card:expiration:")) {
             Long cardId = Long.parseLong(expiredKey.replace("card:expiration:", ""));
-            sendNotification(cardId);
+            sendCardNotification(cardId);
+        }
+        if (expiredKey.startsWith("season:expiration:")) {
+            Long cardId = Long.parseLong(expiredKey.replace("season:expiration:", ""));
+            sendSeasonNotification(cardId);
         }
     }
 
-    private void sendNotification(Long key) {
+    private void sendCardNotification(Long key) {
+        // TODO: Firebase를 통해 사용자에게 알림을 보내는 로직을 구현
+    }
+
+    private void sendSeasonNotification(Long key) {
         // TODO: Firebase를 통해 사용자에게 알림을 보내는 로직을 구현
     }
 }
