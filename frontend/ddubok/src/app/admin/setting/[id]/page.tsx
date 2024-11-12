@@ -38,9 +38,9 @@ const SettingDetail = () => {
 			setSeasonData({
 				name: data.name,
 				seasonDescription: data.seasonDescription,
-				startedAt: data.startedAt,
-				endedAt: data.endedAt,
-				openedAt: data.openedAt,
+				startedAt: data.startedAt.split("T")[0],
+				endedAt: data.endedAt.split("T")[0],
+				openedAt: data.openedAt.split("T")[0],
 			});
 			setPreviewImages(data.path);
 		} catch (error) {
