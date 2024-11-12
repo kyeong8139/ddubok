@@ -7,6 +7,9 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = {
 	output: "standalone",
+	images: {
+		domains: ["ddubok.s3.ap-northeast-2.amazonaws.com"],
+	},
 	webpack: (config) => {
 		config.externals.push({
 			"utf-8-validate": "commonjs utf-8-validate",

@@ -161,7 +161,7 @@ const User = () => {
 			>
 				<Modal>
 					<div className="flex justify-between text-sm mb-4">
-						<p className="font-nexonBold">아이디</p>
+						<p className="font-nexonBold">번호</p>
 						<p>{selectedUser?.memberId}</p>
 					</div>
 					<div className="flex justify-between text-sm mb-4">
