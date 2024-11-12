@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useState } from "react";
 
 import Button from "@components/button/button";
-import { ISeasonDetailProps, ISeasonProps } from "@interface/components/season";
-import { insertSeason, selectSeason, updateSeason } from "@lib/api/admin-api";
+import { ISeasonProps } from "@interface/components/season";
+import { insertSeason } from "@lib/api/admin-api";
 
 import { PlusCircle } from "@phosphor-icons/react";
 import toast from "react-hot-toast";

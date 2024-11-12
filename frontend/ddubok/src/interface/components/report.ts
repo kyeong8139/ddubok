@@ -2,14 +2,13 @@ export interface IReportProps {
 	id: number;
 	title: string;
 	content: string;
-	state: string;
-	report_member_id: number;
-	report_member_nickname: string;
-	card: {
-		card_id: number;
-		card_content: string;
-		path: string;
-	};
+	state: string | null;
+	reportType: string;
+	reportMemberId: number;
+	reportMemberNickname: string;
+	cardId: number;
+	cardContent: string;
+	cardPath: string;
 }
 
 export interface IReportListProps {
