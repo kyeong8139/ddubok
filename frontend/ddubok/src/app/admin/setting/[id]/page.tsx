@@ -37,10 +37,10 @@ const SettingDetail = () => {
 			console.log(data);
 			setSeasonData({
 				name: data.name,
-				description: data.description,
-				started_at: data.started_at.split("T")[0],
-				ended_at: data.ended_at.split("T")[0],
-				opened_at: data.opened_at.split("T")[0],
+				description: data.seasonDescription,
+				started_at: data.startedAt.split("T")[0],
+				ended_at: data.endedAt.split("T")[0],
+				opened_at: data.openedAt.split("T")[0],
 			});
 			setPreviewImages(data.path);
 		} catch (error) {
