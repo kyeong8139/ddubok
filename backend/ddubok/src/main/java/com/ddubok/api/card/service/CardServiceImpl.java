@@ -1,5 +1,6 @@
 package com.ddubok.api.card.service;
 
+import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
@@ -19,6 +20,7 @@ import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.common.openai.dto.OpenAiReq;
 import com.ddubok.common.openai.dto.OpenAiRes;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -52,11 +54,12 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Long createCard(CreateCardReqDto dto) {
+        Season season = seasonRepository.findById(dto.getSeasonId()).orElseThrow(
+            () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId()));
         Card card = cardRepository.save(Card.builderForSeasonCard()
             .content(dto.getContent())
             .writerName(dto.getWriterName())
-            .season(seasonRepository.findById(dto.getSeasonId()).orElseThrow(
-                () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId())))
+            .season(season)
             .path(dto.getPath())
             .build());
         if (dto.getMemberId() != null) {
@@ -74,6 +77,7 @@ public class CardServiceImpl implements CardService {
         if (filteringCheck(dto.getContent())) {
             card.filtering();
         }
+        setExpirationForNotification(card.getId(), season);
         return card.getId();
     }
 
@@ -119,6 +123,7 @@ public class CardServiceImpl implements CardService {
         if (filteringCheck(dto.getContent())) {
             card.filtering();
         }
+        setExpirationForNotification(card.getId());
         return card.getId();
     }
 
@@ -150,5 +155,30 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new CardNotFoundException()))
             .member(memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException())).build());
+    }
+
+    /**
+     * 24시간 후 만료되는 키를 레디스에 저장하는 메서드
+     *
+     * @param cardId 키로 사용할 생성된 카드 id
+     */
+    private void setExpirationForNotification(Long cardId) {
+        String redisKey = "card:expiration:" + cardId;
+        redisTemplate.opsForValue().set(redisKey, "test", Duration.ofHours(24));
+    }
+
+    /**
+     * 시즌 카드의 종료 일자에 맞추어 키를 레디스에 저장하는 메서드
+     *
+     * @param cardId 키로 사용할 생성된 카드 id
+     * @param season 카드의 시즌 정보
+     */
+    private void setExpirationForNotification(Long cardId, Season season) {
+        String redisKey = "card:expiration:" + cardId;
+
+        LocalDateTime endedAt = season.getEndedAt();
+        Duration expirationDuration = Duration.between(LocalDateTime.now(), endedAt);
+
+        redisTemplate.opsForValue().set(redisKey, "test", expirationDuration);
     }
 }
