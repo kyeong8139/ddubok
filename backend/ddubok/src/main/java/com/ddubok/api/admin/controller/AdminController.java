@@ -23,7 +23,6 @@ import com.ddubok.api.admin.service.SeasonService;
 import com.ddubok.common.s3.S3ImageService;
 import com.ddubok.common.s3.dto.FileMetaInfo;
 import com.ddubok.common.template.response.BaseResponse;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -165,7 +164,7 @@ public class AdminController {
             .collect(Collectors.toList());
         CreateSeasonRes seasonId = seasonService.createSeason(
             CreateSeasonReqDto.builder()
-                .seasonName(createSeasonReq.getSeasonName())
+                .seasonName(createSeasonReq.getName())
                 .seasonDescription(createSeasonReq.getSeasonDescription())
                 .startedAt(createSeasonReq.getStartedAt())
                 .endedAt(createSeasonReq.getEndedAt())
@@ -209,7 +208,7 @@ public class AdminController {
     @PutMapping("/seasons/{seasonId}")
     public BaseResponse<?> updateSeason(
         @PathVariable Long seasonId,  // PathVariable로 시즌 ID를 받음
-        @RequestPart(name = "image", required = false) List<MultipartFile> images,
+        @RequestPart(name = "image") List<MultipartFile> images,
         @RequestPart UpdateSeasonReq updateSeasonReq
     ) {
         List<String> paths =  images.stream()
@@ -219,7 +218,7 @@ public class AdminController {
 
         UpdateSeasonRes updateSeasonId = seasonService.updateSeason(seasonId,
             UpdateSeasonReqDto.builder()
-                .seasonName(updateSeasonReq.getSeasonName())
+                .seasonName(updateSeasonReq.getName())
                 .seasonDescription(updateSeasonReq.getSeasonDescription())
                 .startedAt(updateSeasonReq.getStartedAt())
                 .endedAt(updateSeasonReq.getEndedAt())
