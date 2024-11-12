@@ -28,10 +28,9 @@ public class FCMService {
      * @param messageDto 메세지
      */
     public void sendNotification(NotificationMessageDto messageDto, String path) {
-        List<String> tokens = messageDto.getMemberId() != null ? getTokens(messageDto.getMemberId())
-            : getTokensByAttendance();
+        List<String> tokens = getcreateCardTokens(messageDto.getId());
         if (tokens.isEmpty()) {
-            log.warn("No FCM tokens found for member: {}", messageDto.getMemberId());
+            log.warn("No FCM tokens found for member: {}", messageDto.getId());
             return;
         }
 
@@ -52,12 +51,123 @@ public class FCMService {
             firebaseMessaging.sendEachForMulticast(message);
         } catch (FirebaseMessagingException e) {
             log.error("Failed to send web push notification to member: {}",
-                messageDto.getMemberId(), e);
+                messageDto.getId(), e);
         }
     }
 
-    private List<String> getTokens(Long memberId) {
+    /**
+     * 카드 오픈 여부를 파이어베이스에 알림을 전송한다.
+     *
+     * @param messageDto 메세지
+     */
+    public void sendCardOpenedNotification(NotificationMessageDto messageDto, String path) {
+        List<String> tokens = sendCardOpenedNotification(messageDto.getId());
+        if (tokens.isEmpty()) {
+            log.warn("No FCM tokens found for card: {}", messageDto.getId());
+            return;
+        }
+
+        MulticastMessage message = MulticastMessage.builder()
+            .addAllTokens(tokens)
+            .setWebpushConfig(WebpushConfig.builder()
+                .setNotification(WebpushNotification.builder()
+                    .setTitle(messageDto.getTitle())
+                    .setBody(messageDto.getBody())
+                    .build())
+                .setFcmOptions(WebpushFcmOptions.builder()
+                    .setLink(path)
+                    .build())
+                .build())
+            .build();
+
+        try {
+            firebaseMessaging.sendEachForMulticast(message);
+        } catch (FirebaseMessagingException e) {
+            log.error("Failed to send web push notification to member: {}",
+                messageDto.getId(), e);
+        }
+    }
+
+    /**
+     * 시즌 종료 사실을 파이어베이스에 알림을 전송한다.
+     *
+     * @param messageDto 메세지
+     */
+    public void sendSeasonEndedNotification(NotificationMessageDto messageDto, String path) {
+        List<String> tokens = sendSeasonEndedNotification(messageDto.getId());
+        if (tokens.isEmpty()) {
+            log.warn("No FCM tokens found for season: {}", messageDto.getId());
+            return;
+        }
+
+        MulticastMessage message = MulticastMessage.builder()
+            .addAllTokens(tokens)
+            .setWebpushConfig(WebpushConfig.builder()
+                .setNotification(WebpushNotification.builder()
+                    .setTitle(messageDto.getTitle())
+                    .setBody(messageDto.getBody())
+                    .build())
+                .setFcmOptions(WebpushFcmOptions.builder()
+                    .setLink(path)
+                    .build())
+                .build())
+            .build();
+
+        try {
+            firebaseMessaging.sendEachForMulticast(message);
+        } catch (FirebaseMessagingException e) {
+            log.error("Failed to send web push notification to member: {}",
+                messageDto.getId(), e);
+        }
+    }
+
+    /**
+     * 시즌 종료 사실을 파이어베이스에 알림을 전송한다.
+     *
+     * @param messageDto 메세지
+     */
+    public void sendAttendanceNotification(NotificationMessageDto messageDto, String path) {
+        List<String> tokens = getTokensByAttendance();
+        if (tokens.isEmpty()) {
+            log.warn("No FCM tokens");
+            return;
+        }
+
+        MulticastMessage message = MulticastMessage.builder()
+            .addAllTokens(tokens)
+            .setWebpushConfig(WebpushConfig.builder()
+                .setNotification(WebpushNotification.builder()
+                    .setTitle(messageDto.getTitle())
+                    .setBody(messageDto.getBody())
+                    .build())
+                .setFcmOptions(WebpushFcmOptions.builder()
+                    .setLink(path)
+                    .build())
+                .build())
+            .build();
+
+        try {
+            firebaseMessaging.sendEachForMulticast(message);
+        } catch (FirebaseMessagingException e) {
+            log.error("Failed to send web push notification to member: {}",
+                messageDto.getId(), e);
+        }
+    }
+
+    private List<String> getcreateCardTokens(Long memberId) {
         return notificationTokenRepository.findAllByMemberId(memberId).stream()
+            .map(NotificationToken::getToken)
+            .toList();
+    }
+
+    private List<String> sendCardOpenedNotification(Long cardId) {
+        return notificationTokenRepository.findNotificationTokensByCardId(cardId).stream()
+            .map(NotificationToken::getToken)
+            .toList();
+    }
+
+    private List<String> sendSeasonEndedNotification(Long seasonId) {
+        return notificationTokenRepository.findNotificationTokensBySeasonId(seasonId).stream()
             .map(NotificationToken::getToken)
             .toList();
     }

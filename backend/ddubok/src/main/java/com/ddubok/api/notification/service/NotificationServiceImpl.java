@@ -77,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
                         message.getBody(),
                         NotificationMessageDto.class
                     );
-                    fcmService.sendNotification(notification, CARDBOOK_URL);
+                    fcmService.sendCardOpenedNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
                     log.error("open card notification error", e);
                 }
@@ -92,7 +92,22 @@ public class NotificationServiceImpl implements NotificationService {
                         message.getBody(),
                         NotificationMessageDto.class
                     );
-                    fcmService.sendNotification(notification, ATTENDANCE_URL);
+                    fcmService.sendSeasonEndedNotification(notification, CARDBOOK_URL);
+                } catch (Exception e) {
+                    log.error("open card notification error", e);
+                }
+            },
+            new ChannelTopic("end-season")
+        );
+
+        redisMessageListener.addMessageListener(
+            (message, pattern) -> {
+                try {
+                    NotificationMessageDto notification = objectMapper.readValue(
+                        message.getBody(),
+                        NotificationMessageDto.class
+                    );
+                    fcmService.sendAttendanceNotification(notification, ATTENDANCE_URL);
                 } catch (Exception e) {
                     log.error("attendance check notification error", e);
                 }
