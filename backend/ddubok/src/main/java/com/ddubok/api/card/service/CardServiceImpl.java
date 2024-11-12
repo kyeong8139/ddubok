@@ -41,7 +41,7 @@ public class CardServiceImpl implements CardService {
     @Value("${openai.api.url}")
     private String apiURL;
 
-    private final RestTemplate template;
+    private final RestTemplate openAiTemplate;
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final CardRepository cardRepository;
@@ -77,7 +77,6 @@ public class CardServiceImpl implements CardService {
         if (filteringCheck(dto.getContent())) {
             card.filtering();
         }
-        setExpirationForNotification(card.getId(), season);
         return card.getId();
     }
 
@@ -135,7 +134,7 @@ public class CardServiceImpl implements CardService {
      */
     private Boolean filteringCheck(String content) {
         OpenAiReq request = new OpenAiReq(model, content);
-        OpenAiRes openAiRes = template.postForObject(apiURL, request, OpenAiRes.class);
+        OpenAiRes openAiRes = openAiTemplate.postForObject(apiURL, request, OpenAiRes.class);
         return openAiRes.getChoices().get(0).getMessage().getContent().equals("DENIED");
     }
 
@@ -165,20 +164,5 @@ public class CardServiceImpl implements CardService {
     private void setExpirationForNotification(Long cardId) {
         String redisKey = "card:expiration:" + cardId;
         redisTemplate.opsForValue().set(redisKey, "test", Duration.ofHours(24));
-    }
-
-    /**
-     * 시즌 카드의 종료 일자에 맞추어 키를 레디스에 저장하는 메서드
-     *
-     * @param cardId 키로 사용할 생성된 카드 id
-     * @param season 카드의 시즌 정보
-     */
-    private void setExpirationForNotification(Long cardId, Season season) {
-        String redisKey = "card:expiration:" + cardId;
-
-        LocalDateTime endedAt = season.getEndedAt();
-        Duration expirationDuration = Duration.between(LocalDateTime.now(), endedAt);
-
-        redisTemplate.opsForValue().set(redisKey, "test", expirationDuration);
     }
 }
