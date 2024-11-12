@@ -27,7 +27,7 @@ const SettingDetail = () => {
 	const [previewImages, setPreviewImages] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const isPageReady = isLoading || !isTokenReady;
+	const isPageReady = !isLoading && isTokenReady;
 
 	const getSeasonDetail = async () => {
 		setIsLoading(true);
