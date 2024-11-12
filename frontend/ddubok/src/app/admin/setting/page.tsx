@@ -14,8 +14,9 @@ const Setting = () => {
 	const getSeasonList = async () => {
 		try {
 			const response = await selectSeasonList();
+			console.log(response.data);
 			console.log(response.data.data);
-			let seasons = response.data.data;
+			let seasons = response.data;
 			setSeasonList(seasons);
 		} catch (error) {
 			console.error(error);
