@@ -104,7 +104,7 @@ const SettingDetail = () => {
 						<div className="flex flex-col gap-2">
 							<input
 								type="text"
-								name="description"
+								name="seasonDescription"
 								placeholder="시즌 안내문을 입력하세요"
 								className="font-nexonRegular text-sm p-2 rounded-lg"
 								value={seasonData.seasonDescription}
@@ -117,7 +117,7 @@ const SettingDetail = () => {
 						<div className="flex flex-col justify-between items-center gap-1">
 							<input
 								type="date"
-								name="started_at"
+								name="startedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.startedAt}
 								onChange={handleInputChange}
@@ -125,7 +125,7 @@ const SettingDetail = () => {
 							<span className="text-white"> ~ </span>
 							<input
 								type="date"
-								name="ended_at"
+								name="endedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.endedAt}
 								onChange={handleInputChange}
@@ -137,7 +137,7 @@ const SettingDetail = () => {
 						<div>
 							<input
 								type="date"
-								name="opened_at"
+								name="openedAt"
 								className="font-nexonRegular w-full text-sm p-2 border border-solid border-black rounded-lg"
 								value={seasonData.openedAt}
 								onChange={handleInputChange}
