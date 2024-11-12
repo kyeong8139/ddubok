@@ -82,7 +82,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public void sendAttendanceNotification() {
         NotificationMessageDto message = NotificationMessageDto.builder()
-            .memberId(null)
+            .id(null)
             .title("오늘의 운세가 배달됐어요!")
             .body("오늘의 운세를 확인해보세요!")
             .data(Map.of())
