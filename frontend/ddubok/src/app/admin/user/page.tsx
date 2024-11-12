@@ -27,7 +27,7 @@ const User = () => {
 	const getMemberList = async () => {
 		setIsLoading(true);
 		try {
-			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : null;
+			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
 			const response = await selectMemberList(state, searchName);
 			console.log(response.data.data);
 			let users = response.data.data;
