@@ -22,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v2/cards")
 public class NormalCardController {
 
-    private final AuthUtil authUtil;
-
     private final S3ImageService s3ImageService;
     private final CardService cardService;
 
@@ -41,7 +39,7 @@ public class NormalCardController {
     /**
      * 카드 이미지를 업로드합니다.
      *
-     * @param cardImg  업로드할 카드 이미지 파일입니다.
+     * @param cardImg 업로드할 카드 이미지 파일입니다.
      * @return 업로드된 이미지의 URL을 반환합니다.
      */
     private String uploadCardImg(MultipartFile cardImg, String writerName) {

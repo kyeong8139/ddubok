@@ -50,8 +50,8 @@ public class S3ImageServiceImpl implements S3ImageService {
     /**
      * 이미지의 FileMetaInfo를 생성한다.
      *
-     * @param file     업로드할 파일
-     * @param ImgDir   업로드할 이미지의 디렉토리
+     * @param file   업로드할 파일
+     * @param ImgDir 업로드할 이미지의 디렉토리
      * @return 이미지의 정보 반환
      */
     private FileMetaInfo getFileMetaInfo(MultipartFile file, String ImgDir) {
@@ -70,8 +70,8 @@ public class S3ImageServiceImpl implements S3ImageService {
     /**
      * S3로 이미지 파일 업로드 하기
      *
-     * @param file     변환된 File
-     * @param dirName  디렉토리 명
+     * @param file    변환된 File
+     * @param dirName 디렉토리 명
      * @return 이미지 url
      */
     private String upload(MultipartFile file, String dirName) {
