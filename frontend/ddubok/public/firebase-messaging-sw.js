@@ -21,9 +21,6 @@ messaging.onBackgroundMessage((payload) => {
 	const notificationOptions = {
 		body: payload.notification.body,
 		icon: "/assets/basic-open.png",
-		data: {
-			link: payload.fcmOptions.link,
-		},
 	};
 
 	self.registration.showNotification(notificationTitle, notificationOptions);
