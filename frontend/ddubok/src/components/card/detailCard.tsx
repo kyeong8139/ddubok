@@ -72,16 +72,20 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
 					<p>From. {writerName}</p>
 					<div className="flex gap-x-1">
-						<span
-							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
-							onClick={() => (id ? clickUnlockContent(id) : undefined)}
-						>
-							<Star
-								size={14}
-								color="#d5b207"
-								weight="fill"
-							/>
-						</span>
+						{state === "FILTERED_OPEN" ? (
+							<span
+								className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
+								onClick={() => (id ? clickUnlockContent(id) : undefined)}
+							>
+								<Star
+									size={14}
+									color="#d5b207"
+									weight="fill"
+								/>
+							</span>
+						) : (
+							<span></span>
+						)}
 						<span
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E] mr-1"
 							onClick={() => setShowOption(!showOption)}
