@@ -60,6 +60,7 @@ const Setting = () => {
 								<tr className="text-xs border-y-2 border-solid border-white">
 									<th className="px-1 py-[10px]">글번호</th>
 									<th className="px-2 py-[10px]">제목</th>
+									<th className="px-1 py-[10px]">상태</th>
 									<th className="px-1 py-[10px]">상세보기</th>
 								</tr>
 							</thead>
@@ -72,6 +73,7 @@ const Setting = () => {
 										>
 											<td className="px-1 py-[10px]">{season.id}</td>
 											<td className="px-2 py-[10px]">{season.name}</td>
+											<td className="px-1 py-[10px]">{season.isActiveSeason ? "활성" : "비활성"}</td>
 											<td className="px-1 py-[10px]">
 												<button
 													className="underline"

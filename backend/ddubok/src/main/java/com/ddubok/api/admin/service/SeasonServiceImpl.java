@@ -81,6 +81,8 @@ public class SeasonServiceImpl implements SeasonService {
             .map(season -> GetSeasonListRes.builder()
                 .id(season.getId())
                 .name(season.getName())
+                .isActiveSeason(season.getStartedAt().isBefore(LocalDateTime.now())
+                    && season.getEndedAt().isAfter(LocalDateTime.now()))
                 .build())
             .collect(Collectors.toList());
     }
