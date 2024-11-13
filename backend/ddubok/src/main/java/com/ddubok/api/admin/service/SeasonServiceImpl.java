@@ -202,6 +202,7 @@ public class SeasonServiceImpl implements SeasonService {
         for (Season season : seasonList) {
             if (season.getEndedAt().isAfter(now) && seasonStartDate.isAfter(
                 season.getStartedAt())) {
+                seasonStartDate = season.getStartedAt();
                 nextSeason = season;
             }
         }
