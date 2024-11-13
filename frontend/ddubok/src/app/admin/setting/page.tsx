@@ -71,7 +71,18 @@ const Setting = () => {
 											className="text-center text-xs border-b-[1px] border-solid border-white"
 										>
 											<td className="px-1 py-[10px]">{season.id}</td>
-											<td className="px-2 py-[10px]">{season.name}</td>
+											<td className="px-2 py-[10px]">
+												<span
+														className={
+															season.isActiveSeason
+																? "text-green-400 font-nexonBold"
+																: ""
+														}
+													>
+														{season.name}
+														{season.isActiveSeason && " (활성)"}
+													</span>
+											</td>
 											<td className="px-1 py-[10px]">
 												<button
 													className="underline"
