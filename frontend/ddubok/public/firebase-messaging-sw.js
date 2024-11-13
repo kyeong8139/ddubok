@@ -19,12 +19,12 @@ messaging.onBackgroundMessage((payload) => {
 	const notificationTitle = payload.notification.title;
 	const notificationOptions = {
 		body: payload.notification.body,
-		icon: "/assets/basic-open.png",
+		icon: "/assets/push.png",
 	};
 
 	self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
+s;
 self.addEventListener("notificationClick", (event) => {
 	event.notification.close();
 
