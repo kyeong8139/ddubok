@@ -1,6 +1,6 @@
 // firebase.ts
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, Messaging, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,8 +11,11 @@ const firebaseConfig = {
 	appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+let messaging: Messaging;
+if (typeof window !== "undefined") {
+	const app = initializeApp(firebaseConfig);
+	messaging = getMessaging(app);
+}
 
 export const requestPermission = async () => {
 	try {

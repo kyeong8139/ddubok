@@ -2,14 +2,12 @@
 
 import { useEffect } from "react";
 
-import { onMessageListener, requestPermission } from "@lib/utils/firebase";
+import { onMessageListener } from "@lib/utils/firebase";
 import { MessagePayload } from "@firebase/messaging";
 
 const Notification = () => {
 	useEffect(() => {
 		if (typeof window !== "undefined" && "Notification" in window) {
-			requestPermission();
-
 			(async () => {
 				try {
 					const payload = await onMessageListener();
