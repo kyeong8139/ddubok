@@ -57,12 +57,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("수능 잘봐라 XXX야")
-            .path("수능잘보라는이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("수능 잘봐라 XXX야", "수능잘보라는이미지1", "글쓴이", season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -105,12 +100,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -153,12 +144,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -201,12 +188,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -249,12 +232,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -297,12 +276,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
@@ -333,7 +308,7 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
 
     @DisplayName("적절하지 않은 신고 사유가 들어올 경우 InvalidTypeException가 발생한다")
     @Test
-    void reportCardWithInvalidType(){
+    void reportCardWithInvalidType() {
         // given
         Season season = Season.builder()
             .name("시즌1")
@@ -345,12 +320,8 @@ class ReportServiceImplTest extends BusinessLayerTestSupport {
             .build();
         seasonRepository.save(season);
 
-        Card reportedCard = Card.builderForSeasonCard()
-            .content("싸다 공부 잘하게 되는 약이 1000원")
-            .path("약판매광고이미지1")
-            .writerName("글쓴이")
-            .season(season)
-            .build();
+        Card reportedCard = Card.createSeasonCard("싸다 공부 잘하게 되는 약이 1000원", "약판매광고이미지1", "글쓴이",
+            season);
         cardRepository.save(reportedCard);
 
         ReportCardReq reportCardReq = ReportCardReq.builder()
