@@ -234,13 +234,23 @@ public class AdminController {
     }
 
     /**
+     * 관리자가 기본 메인 화면 정보를 가지고 옵니다.
+     *
+     * @return 기본 메인 정보를 갖고 있는 객체
+     */
+    @GetMapping("/seasons/default")
+    public BaseResponse<?> getDefaultSeason() {
+        return BaseResponse.ofSuccess(seasonService.getDefaultSeason());
+    }
+
+    /**
      * 관리자가 기본 메인 화면을 설정합니다.
      *
      * @param images           배너에 활용될 이미지 리스트
      * @param defaultSeasonReq 기본 메인 정보를 갖고 있는 객체
      */
     @PutMapping("/seasons/default")
-    public BaseResponse<?> updateDefault(
+    public BaseResponse<?> updateDefaultSeason(
         @RequestPart(name = "image") List<MultipartFile> images,
         @RequestPart DefaultSeasonReq defaultSeasonReq
     ) {

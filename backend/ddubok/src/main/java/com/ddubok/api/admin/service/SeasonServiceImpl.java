@@ -109,6 +109,19 @@ public class SeasonServiceImpl implements SeasonService {
     }
 
     @Override
+    public DefaultSeasonRes getDefaultSeason() {
+        String key = "main:default";
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            return (DefaultSeasonRes) redisTemplate.opsForValue().get(key);
+        }
+
+        return DefaultSeasonRes.builder()
+            .seasonDescription("현재 기본 시즌이 설정되지 않았습니다.")
+            .path(null)
+            .build();
+    }
+
+    @Override
     public void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes) {
         String key = "main:default";
         redisTemplate.opsForValue().set(key, defaultSeasonRes);
