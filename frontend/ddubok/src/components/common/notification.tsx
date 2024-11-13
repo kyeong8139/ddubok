@@ -12,7 +12,6 @@ const Notification = () => {
 				try {
 					await onMessageListener().then((payload) => {
 						const message = payload as MessagePayload;
-						console.log("Received foreground message ", payload);
 
 						const notificationTitle = message.notification?.title ?? "알림";
 						const notificationOptions = {

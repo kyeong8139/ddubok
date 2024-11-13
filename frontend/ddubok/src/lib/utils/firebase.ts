@@ -23,11 +23,10 @@ export const requestPermission = async () => {
 			scope: "/",
 		});
 
-		const token = await getToken(messaging, {
+		getToken(messaging, {
 			vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
 			serviceWorkerRegistration: registration,
 		});
-		if (token) console.log("Notification token:", token);
 	} catch (error) {
 		console.error("Failed to get permission for notifications:", error);
 	}
