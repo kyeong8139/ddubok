@@ -116,6 +116,13 @@ public class CardServiceImpl implements CardService {
             dto.getWriterName()
         ));
         if (dto.getMemberId() != null) {
+            NotificationMessageDto message = NotificationMessageDto.builder()
+                .id(dto.getMemberId())
+                .title("✨새로운 행운카드가 배송되었어요!✨")
+                .body("뚜복에 접속해 행운카드를 확인해보세요!")
+                .build();
+
+            redisTemplate.convertAndSend("create-card", message);
             saveAlbum(card.getId(), dto.getMemberId());
         }
         if (filteringCheck(dto.getContent())) {
