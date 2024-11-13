@@ -11,8 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.File;
@@ -30,9 +28,7 @@ public class FineTuneExecutor {
 
     public void executeFineTuning() throws IOException {
         List<Object[]> cardReportData = cardRepository.findAllCardsWithReports();
-        System.out.println(cardReportData);
         File jsonlFile = createTrainingDataFile(cardReportData);
-        System.out.println(jsonlFile);
         fineTuneService.startFineTuning(jsonlFile);
     }
 
