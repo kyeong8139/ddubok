@@ -2,12 +2,12 @@ package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
+import com.ddubok.api.admin.dto.response.MainSeasonRes;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
 import com.ddubok.api.admin.dto.response.DefaultSeasonRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
-import com.ddubok.common.template.response.ResponseCode;
 import java.util.List;
 
 /**
@@ -54,4 +54,10 @@ public interface SeasonService {
      * 관리자가 기본 메인을 설정한다.
      */
     void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes);
+
+    /**
+     * 메인 정보를 return 한다.
+     * @return 메인 정보가 담긴 객체
+     */
+    MainSeasonRes getActiveSeason();
 }
