@@ -27,13 +27,43 @@ const CreateFront = () => {
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
 	const [showExitConfirm, setShowExitConfirm] = useState(false);
+	const [isPanelOpen, setIsPanelOpen] = useState(false);
 	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
 	const hasUnsavedChanges = useRef(false);
 
 	const navigationType = useRef<"back" | "header" | null>(null);
 
+	const [shouldFixButtons, setShouldFixButtons] = useState(false);
+	const controlsRef = useRef<HTMLDivElement>(null);
+
 	useEffect(() => {
-		// Header의 클릭 이벤트 처리
+		if (!isPanelOpen) {
+			setShouldFixButtons(false);
+		}
+	}, [isPanelOpen]);
+
+	useEffect(() => {
+		if (!isPanelOpen) return;
+
+		const handleScroll = () => {
+			if (controlsRef.current) {
+				const controlsBottom = controlsRef.current.getBoundingClientRect().bottom;
+				const windowHeight = window.innerHeight;
+				const panelHeight = 300;
+
+				setShouldFixButtons(controlsBottom > windowHeight - panelHeight);
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		handleScroll();
+
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, [isPanelOpen]);
+
+	useEffect(() => {
 		const handleHeaderNavigation = (e: MouseEvent) => {
 			const header = document.getElementById("header");
 			if (header?.contains(e.target as Node) && hasUnsavedChanges.current) {
@@ -44,7 +74,6 @@ const CreateFront = () => {
 			}
 		};
 
-		// beforeunload 이벤트 핸들러 (새로고침, 창 닫기) - 이 부분이 빠졌었습니다
 		const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 			if (hasUnsavedChanges.current) {
 				const message = "작성하던 내용이 모두 사라집니다. 계속하시겠습니까?";
@@ -54,7 +83,6 @@ const CreateFront = () => {
 			}
 		};
 
-		// popstate 이벤트 핸들러 (뒤로가기)
 		const handlePopState = () => {
 			if (hasUnsavedChanges.current) {
 				navigationType.current = "back";
@@ -65,13 +93,13 @@ const CreateFront = () => {
 			}
 		};
 
-		window.addEventListener("beforeunload", handleBeforeUnload); // 이 부분이 빠졌었습니다
+		window.addEventListener("beforeunload", handleBeforeUnload);
 		document.addEventListener("click", handleHeaderNavigation, true);
 		window.addEventListener("popstate", handlePopState);
 		window.history.pushState(null, "", window.location.href);
 
 		return () => {
-			window.removeEventListener("beforeunload", handleBeforeUnload); // 이 부분이 빠졌었습니다
+			window.removeEventListener("beforeunload", handleBeforeUnload);
 			document.removeEventListener("click", handleHeaderNavigation, true);
 			window.removeEventListener("popstate", handlePopState);
 		};
@@ -82,9 +110,9 @@ const CreateFront = () => {
 		setShowExitConfirm(false);
 
 		if (navigationType.current === "header") {
-			router.push("/"); // 홈으로 이동
+			router.push("/");
 		} else {
-			router.back(); // 뒤로가기
+			router.back();
 		}
 
 		navigationType.current = null;
@@ -199,7 +227,6 @@ const CreateFront = () => {
 			}
 		});
 
-		// 캔버스 변경 감지
 		newCanvas.on("object:added", () => {
 			hasUnsavedChanges.current = true;
 		});
@@ -277,6 +304,11 @@ const CreateFront = () => {
 		router.back();
 	};
 
+	const handleComponentClick = (value: string) => {
+		setActiveComponent(value);
+		setIsPanelOpen(true);
+	};
+
 	const renderActiveComponent = () => {
 		switch (activeComponent) {
 			case "background":
@@ -297,28 +329,30 @@ const CreateFront = () => {
 	};
 
 	return (
-		<div className="flex flex-col items-center w-full h-full">
+		<div className="relative flex flex-col items-center w-full h-full">
 			<canvas
 				id="canvas"
 				className="rounded-lg"
-			></canvas>
+			/>
 
-			<div className="mt-6 flex w-[320px] place-content-between">
-				<div className="flex">
-					{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
-						<label
-							key={value}
-							className="flex items-center cursor-pointer"
-						>
-							<input
-								type="radio"
-								value={value}
-								checked={activeComponent === value}
-								onChange={() => setActiveComponent(value)}
-								className="hidden"
-							/>
-							<p
-								className={`px-[6px] py-2 mr-[2px] rounded-lg font-nexonBold text-xs ${
+			{/* Control buttons */}
+			<div
+				ref={controlsRef}
+				className={`w-full max-w-[480px]  mt-2 mx-auto ${
+					isPanelOpen ? "transition-transform duration-300 ease-in-out" : ""
+				} ${
+					shouldFixButtons && isPanelOpen
+						? "fixed bottom-0 left-0 right-0 translate-y-[-300px] z-50"
+						: "translate-y-0"
+				}`}
+			>
+				<div className="mx-auto flex w-[320px] place-content-between">
+					<div className="flex">
+						{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
+							<button
+								key={value}
+								onClick={() => handleComponentClick(value)}
+								className={`px-[6px] py-2 mr-[1px] rounded-lg font-nexonBold text-xs border border-black ${
 									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
 								}`}
 							>
@@ -328,27 +362,76 @@ const CreateFront = () => {
 								{value === "character" && "캐릭터"}
 								{value === "text" && "텍스트"}
 								{value === "brush" && "브러쉬"}
-							</p>
-						</label>
-					))}
+							</button>
+						))}
+					</div>
+					<div>
+						<button
+							onClick={() => setShowClearConfirm(true)}
+							className="p-2 rounded-lg"
+						>
+							<Trash
+								size={20}
+								color="#6EFFBF"
+							/>
+						</button>
+					</div>
 				</div>
-				<div>
-					<button
-						onClick={() => setShowClearConfirm(true)}
-						className="p-2 rounded-lg"
+			</div>
+
+			{/* Slide Up Panel */}
+			{isPanelOpen && (
+				<div
+					className="fixed inset-0 pointer-events-none"
+					onClick={() => setIsPanelOpen(false)}
+				>
+					<div
+						className="absolute inset-0 pointer-events-auto"
+						style={{ bottom: "300px" }}
+					/>
+				</div>
+			)}
+			<div
+				className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg transition-transform duration-300 ease-in-out ${
+					isPanelOpen ? "translate-y-0" : "translate-y-full"
+				}`}
+				style={{
+					width: "100%",
+					maxWidth: "480px",
+					height: "300px",
+					boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
+					zIndex: 40,
+				}}
+			>
+				<div
+					className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg transition-transform duration-300 ease-in-out ${
+						isPanelOpen ? "translate-y-0" : "translate-y-full"
+					}`}
+					style={{
+						width: "100%",
+						maxWidth: "480px",
+						height: "300px",
+						boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
+						zIndex: 40,
+					}}
+				>
+					<div
+						className="relative w-full h-full"
+						onClick={(e) => e.stopPropagation()}
 					>
-						<Trash
-							size={20}
-							color="#6EFFBF"
-						/>
-					</button>
+						<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
+						<button
+							className="absolute top-4 right-4 text-gray-500"
+							onClick={() => setIsPanelOpen(false)}
+						>
+							✕
+						</button>
+						<div className="pt-8 px-4 h-full overflow-y-auto">{renderActiveComponent()}</div>
+					</div>
 				</div>
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[300px] pl-4 pr-4 pt-4">
-				{renderActiveComponent()}
-			</div>
-
+			{/* Next button */}
 			<div className="mt-6 w-full flex justify-center mb-8">
 				<Button
 					text="다음으로"

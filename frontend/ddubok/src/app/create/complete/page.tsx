@@ -95,6 +95,9 @@ const CardDetail = () => {
 			const fullShareUrl = getShareUrl();
 			const splitKey = process.env.NEXT_PUBLIC_SPLIT_KEY;
 			const shareUrl = splitKey ? fullShareUrl.split(splitKey)[1] : fullShareUrl;
+			console.log(fullShareUrl);
+			console.log(splitKey);
+			console.log(shareUrl);
 
 			window.Kakao.Share.sendCustom({
 				templateId: 113932,
