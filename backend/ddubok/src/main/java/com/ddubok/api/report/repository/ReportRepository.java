@@ -15,4 +15,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("SELECT r FROM Report r ORDER BY r.id DESC")
     Page<Report> findAll(Pageable pageable);
+
+    List<Report> findByStateIn(List<String> states);
 }

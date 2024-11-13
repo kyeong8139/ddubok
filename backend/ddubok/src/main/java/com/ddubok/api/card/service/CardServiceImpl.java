@@ -20,6 +20,7 @@ import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.common.openai.dto.OpenAiReq;
 import com.ddubok.common.openai.dto.OpenAiRes;
+import com.ddubok.common.openai.repository.ModelIdRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -35,15 +36,13 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CardServiceImpl implements CardService {
 
-    @Value("${openai.model}")
-    private String model;
-
     @Value("${openai.api.url}")
     private String apiURL;
 
     private final RestTemplate openAiTemplate;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ModelIdRepository modelIdRepository;
     private final CardRepository cardRepository;
     private final SeasonRepository seasonRepository;
     private final AlbumRepository albumRepository;
@@ -131,6 +130,7 @@ public class CardServiceImpl implements CardService {
      * @return 필터링 결과를 반환
      */
     private Boolean filteringCheck(String content) {
+        String model = modelIdRepository.getCurrentModelId();
         OpenAiReq request = new OpenAiReq(model, content);
         OpenAiRes openAiRes = openAiTemplate.postForObject(apiURL, request, OpenAiRes.class);
         return openAiRes.getChoices().get(0).getMessage().getContent().equals("DENIED");
