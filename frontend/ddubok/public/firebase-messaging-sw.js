@@ -16,16 +16,15 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-	console.log("Received background message ", payload);
 	const notificationTitle = payload.notification.title;
 	const notificationOptions = {
 		body: payload.notification.body,
-		icon: "/assets/basic-open.png",
+		icon: "/assets/push.png",
 	};
 
 	self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
+s;
 self.addEventListener("notificationClick", (event) => {
 	event.notification.close();
 

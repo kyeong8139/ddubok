@@ -12,12 +12,11 @@ const Notification = () => {
 				try {
 					await onMessageListener().then((payload) => {
 						const message = payload as MessagePayload;
-						console.log("Received foreground message ", payload);
 
 						const notificationTitle = message.notification?.title ?? "알림";
 						const notificationOptions = {
 							body: message.notification?.body ?? "새로운 알림이 있습니다.",
-							icon: "/assets/basic-open.png",
+							icon: "/assets/push.png",
 						};
 
 						new window.Notification(notificationTitle, notificationOptions);
