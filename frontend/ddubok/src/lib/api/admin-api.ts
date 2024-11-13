@@ -1,6 +1,6 @@
 "use client";
 
-import { ISeasonProps } from "@interface/components/season";
+import { ISeasonProps, ISeasonDefaultProps } from "@interface/components/season";
 import axiosInstance from "@lib/api/axiosInstance";
 
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -86,6 +86,29 @@ export const updateSeason = (seasonId: number, images: File[], seasonData: ISeas
 	formData.append("updateSeasonReq", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
 
 	return axiosInstance.put(`/admins/seasons/${seasonId}`, formData, {
+		withCredentials: true,
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
+};
+
+// 기본 시즌 조회
+export const selectSeasonDefault = () => {
+	return axiosInstance.get(`/admins/seasons/default`);
+}
+
+// 기본 시즌 설정
+export const updateSeasonDefault = (images: File[], seasonData: ISeasonDefaultProps) => {
+	const formData = new FormData();
+
+	images.forEach((image) => {
+		formData.append("image", image);
+	});
+
+	formData.append("DefaultSeasonReq", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
+
+	return axiosInstance.post(`${baseURL}/admins/seasons/default`, formData, {
 		withCredentials: true,
 		headers: {
 			"Content-Type": "multipart/form-data",

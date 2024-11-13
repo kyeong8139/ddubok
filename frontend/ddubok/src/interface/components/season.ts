@@ -21,3 +21,7 @@ export interface ISeasonListProps {
 	name: string;
 	isActiveSeason: boolean;
 }
+
+export interface ISeasonDefaultProps {
+	seasonDescription: string;
+}

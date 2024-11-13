@@ -34,6 +34,10 @@ const Setting = () => {
 		if (isTokenReady) getSeasonList();
 	}, [isTokenReady]);
 
+	const handleDefaultClick = () => {
+		router.push(`/admin/setting/default`);
+	}
+
 	const handleDetailClick = (seasonId: number) => {
 		router.push(`/admin/setting/${seasonId}`);
 	};
@@ -106,7 +110,15 @@ const Setting = () => {
 							</tbody>
 						</table>
 					</div>
-					<div className="absolute bottom-8 left-0 right-0 text-center">
+					<div className="absolute bottom-8 left-4 right-4 flex justify-center text-center space-x-4">
+						<Button
+							text="기본 시즌 수정하기"
+							color="gradient"
+							size="long"
+							font="bold"
+							shadow="gradient"
+							onClick={handleDefaultClick}
+						/>
 						<Button
 							text="시즌 정보 추가하기"
 							color="gradient"
