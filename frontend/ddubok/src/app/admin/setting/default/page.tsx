@@ -23,7 +23,7 @@ const SettingDefault = () => {
 	const [previewImages, setPreviewImages] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 	
-    const isPageReady = isLoading || !isTokenReady;
+    const isPageReady = !isLoading && isTokenReady;
 
     const getSeasonDefault = async () => {
         setIsLoading(true);
@@ -31,7 +31,7 @@ const SettingDefault = () => {
 			const response = await selectSeasonDefault();
 			console.log(response.data.data);
 			let season = response.data.data;
-			setSeasonDefault(season.seasonDescription);
+			setSeasonDefault({ seasonDescription: season.seasonDescription });
             setPreviewImages(season.path);
 		} catch (error) {
 			console.error(error);
