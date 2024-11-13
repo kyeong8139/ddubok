@@ -58,7 +58,13 @@ const CreateBack = () => {
 
 		try {
 			setIsLoading(true);
-			const response = (await sendCard(letterContent, userName, 1, selectedImage, memberId)) as SendCardResponse;
+			const response = (await sendCard(
+				letterContent,
+				userName,
+				null, // V2.1 수정
+				selectedImage,
+				memberId,
+			)) as SendCardResponse;
 
 			if (response.code === "200") {
 				setCardId(response.data.cardId);
