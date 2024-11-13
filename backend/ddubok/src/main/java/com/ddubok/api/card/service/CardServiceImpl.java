@@ -12,6 +12,7 @@ import com.ddubok.api.card.exception.AlbumAlreadyDeletedException;
 import com.ddubok.api.card.exception.AlbumAlreadyExistException;
 import com.ddubok.api.card.exception.AlbumNotFoundException;
 import com.ddubok.api.card.exception.CardNotFoundException;
+import com.ddubok.api.card.exception.InvalidCardDateException;
 import com.ddubok.api.card.repository.AlbumRepository;
 import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.UserState;
@@ -55,6 +56,9 @@ public class CardServiceImpl implements CardService {
     public Long createCard(CreateCardReqDto dto) {
         Season season = seasonRepository.findById(dto.getSeasonId()).orElseThrow(
             () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId()));
+        if(season.getEndedAt().isBefore(LocalDateTime.now())) {
+            throw new InvalidCardDateException();
+        }
         Card card = cardRepository.save(Card.createSeasonCard(
             dto.getContent(),
             dto.getPath(),
