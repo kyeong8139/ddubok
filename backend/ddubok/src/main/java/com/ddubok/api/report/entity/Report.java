@@ -92,8 +92,7 @@ public class Report {
 
     /**
      * 신고 엔티티를 생성하는 빌더.
-     * <p>
-     * 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며, 신고 상태는 기본값으로 {@code State.UNPROCESSED}로 설정됩니다.
+     * 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며, 신고 상태는 기본값으로 UNPROCESSED로 설정됩니다.
      *
      * @param title   신고 제목
      * @param content 신고 내용 또는 사유
