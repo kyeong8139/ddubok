@@ -343,7 +343,7 @@ const CreateFront = () => {
 						: "translate-y-0"
 				}`}
 			>
-				<div className="mx-auto flex w-[320px] place-content-between">
+				<div className="mx-auto flex w-[320px] place-content-between items-center">
 					<div className="flex">
 						{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
 							<button
@@ -365,11 +365,11 @@ const CreateFront = () => {
 					<div>
 						<button
 							onClick={() => setShowClearConfirm(true)}
-							className="p-2 rounded-lg"
+							className="p-2 rounded-lg bg-white h-[33px] flex justify-center items-center border border-black "
 						>
 							<Trash
-								size={20}
-								color="#6EFFBF"
+								size={16}
+								color="#aaaaaa"
 							/>
 						</button>
 					</div>
