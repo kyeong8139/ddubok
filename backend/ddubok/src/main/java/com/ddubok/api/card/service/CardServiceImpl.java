@@ -1,5 +1,6 @@
 package com.ddubok.api.card.service;
 
+import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import com.ddubok.api.card.dto.request.CreateCardReqDto;
@@ -11,15 +12,22 @@ import com.ddubok.api.card.exception.AlbumAlreadyDeletedException;
 import com.ddubok.api.card.exception.AlbumAlreadyExistException;
 import com.ddubok.api.card.exception.AlbumNotFoundException;
 import com.ddubok.api.card.exception.CardNotFoundException;
+import com.ddubok.api.card.exception.InvalidCardDateException;
 import com.ddubok.api.card.repository.AlbumRepository;
 import com.ddubok.api.card.repository.CardRepository;
 import com.ddubok.api.member.entity.UserState;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
+import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.common.openai.dto.OpenAiReq;
 import com.ddubok.common.openai.dto.OpenAiRes;
+import com.ddubok.common.openai.repository.ModelIdRepository;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -29,14 +37,13 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CardServiceImpl implements CardService {
 
-    @Value("${openai.model}")
-    private String model;
-
     @Value("${openai.api.url}")
     private String apiURL;
 
-    private final RestTemplate template;
+    private final RestTemplate openAiTemplate;
 
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ModelIdRepository modelIdRepository;
     private final CardRepository cardRepository;
     private final SeasonRepository seasonRepository;
     private final AlbumRepository albumRepository;
@@ -47,14 +54,24 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Long createCard(CreateCardReqDto dto) {
-        Card card = cardRepository.save(Card.builder()
-            .content(dto.getContent())
-            .writerName(dto.getWriterName())
-            .season(seasonRepository.findById(dto.getSeasonId()).orElseThrow(
-                () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId())))
-            .path(dto.getPath())
-            .build());
+        Season season = seasonRepository.findById(dto.getSeasonId()).orElseThrow(
+            () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId()));
+        if(season.getEndedAt().isBefore(LocalDateTime.now())) {
+            throw new InvalidCardDateException();
+        }
+        Card card = cardRepository.save(Card.createSeasonCard(
+            dto.getContent(),
+            dto.getPath(),
+            dto.getWriterName(),
+            season));
         if (dto.getMemberId() != null) {
+            NotificationMessageDto message = NotificationMessageDto.builder()
+                .id(dto.getMemberId())
+                .title("✨새로운 행운카드가 배송되었어요!✨")
+                .body("뚜복에 접속해 행운카드를 확인해보세요!")
+                .build();
+
+            redisTemplate.convertAndSend("create-card", message);
             saveAlbum(card.getId(), dto.getMemberId());
         }
         if (filteringCheck(dto.getContent())) {
@@ -89,14 +106,42 @@ public class CardServiceImpl implements CardService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long createNormalCard(CreateCardReqDto dto) {
+        Card card = cardRepository.save(Card.createNormalCard(
+            dto.getContent(),
+            dto.getPath(),
+            dto.getWriterName()
+        ));
+        if (dto.getMemberId() != null) {
+            NotificationMessageDto message = NotificationMessageDto.builder()
+                .id(dto.getMemberId())
+                .title("✨새로운 행운카드가 배송되었어요!✨")
+                .body("뚜복에 접속해 행운카드를 확인해보세요!")
+                .build();
+
+            redisTemplate.convertAndSend("create-card", message);
+            saveAlbum(card.getId(), dto.getMemberId());
+        }
+        if (filteringCheck(dto.getContent())) {
+            card.filtering();
+        }
+        setExpirationForNotification(card);
+        return card.getId();
+    }
+
+    /**
      * 카드의 내용이 적절한지 부적절한지 판별하는 메서드
      *
      * @param content 카드에 들어가는 편지 내용
      * @return 필터링 결과를 반환
      */
     private Boolean filteringCheck(String content) {
+        String model = modelIdRepository.getCurrentModelId();
         OpenAiReq request = new OpenAiReq(model, content);
-        OpenAiRes openAiRes = template.postForObject(apiURL, request, OpenAiRes.class);
+        OpenAiRes openAiRes = openAiTemplate.postForObject(apiURL, request, OpenAiRes.class);
         return openAiRes.getChoices().get(0).getMessage().getContent().equals("DENIED");
     }
 
@@ -116,5 +161,15 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new CardNotFoundException()))
             .member(memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException())).build());
+    }
+
+    /**
+     * 24시간 후 만료되는 키를 레디스에 저장하는 메서드
+     *
+     * @param card 키로 사용할 생성된 카드
+     */
+    private void setExpirationForNotification(Card card) {
+        String redisKey = "card:expiration:" + card.getId();
+        redisTemplate.opsForValue().set(redisKey, card.getWriterName(), Duration.ofHours(24));
     }
 }

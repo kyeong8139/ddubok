@@ -31,8 +31,6 @@ axiosInstance.interceptors.response.use(
 		if (error.response && !originalRequest._retry && error.response.status === 803) {
 			originalRequest._retry = true;
 
-			const refreshResponse = await checkRefreshToken();
-
 			try {
 				const refreshResponse = await checkRefreshToken();
 

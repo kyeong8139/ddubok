@@ -12,4 +12,5 @@ public class GetCardListRes {
     @JsonProperty(value = "hasNext")
     private boolean hasNext;
     List<GetCardDetailRes> cards;
+    private Long total;
 }

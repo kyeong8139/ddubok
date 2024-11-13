@@ -10,10 +10,13 @@ import com.ddubok.api.attendance.repository.FortuneRepository;
 import com.ddubok.api.member.entity.Member;
 import com.ddubok.api.member.exception.MemberNotFoundException;
 import com.ddubok.api.member.repository.MemberRepository;
+import com.ddubok.api.notification.dto.request.NotificationMessageDto;
+import com.ddubok.api.notification.repository.NotificationTokenRepository;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService {
 
+    final private NotificationTokenRepository notificationTokenRepository;
     final private AttendanceRepository attendanceRepository;
     final private FortuneRepository fortuneRepository;
     final private MemberRepository memberRepository;
@@ -73,6 +77,17 @@ public class AttendanceServiceImpl implements AttendanceService {
         saveCreateAttendanceResToRedis(key, createAttendanceRes);
 
         return createAttendanceRes;
+    }
+
+    @Override
+    public void sendAttendanceNotification() {
+        NotificationMessageDto message = NotificationMessageDto.builder()
+            .id(null)
+            .title("오늘의 운세가 배달됐어요!📬")
+            .body("오늘의 운세를 확인해보세요!")
+            .build();
+
+        redisTemplate.convertAndSend("attendance-check", message);
     }
 
     private void saveCreateAttendanceResToRedis(String key,

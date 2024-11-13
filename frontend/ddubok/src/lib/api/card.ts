@@ -1,11 +1,12 @@
 import axios from "axios";
 import axiosInstance from "@lib/api/axiosInstance";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+const baseURL2 = process.env.NEXT_PUBLIC_BASE_URL_V2;
 
 export const sendCard = async (
 	content: string,
 	writerName: string,
-	seasonId: number,
+	seasonId: number | null,
 	image: string | null,
 	memberId?: number | null,
 ) => {
@@ -19,7 +20,7 @@ export const sendCard = async (
 					JSON.stringify({
 						content: content,
 						writerName: writerName,
-						seasonId: seasonId,
+						...(seasonId !== null ? { seasonId: seasonId } : {}),
 						...(memberId ? { memberId: memberId } : {}),
 					}),
 				],
@@ -73,7 +74,8 @@ export const sendCard = async (
 			}
 		}
 
-		const response = await axios.post(`${baseURL}/cards`, formData, {
+		const response = await axios.post(`${baseURL2}/cards`, formData, {
+			// V2.1 수정
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},

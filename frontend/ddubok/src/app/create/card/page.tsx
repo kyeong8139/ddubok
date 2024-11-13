@@ -22,11 +22,106 @@ const CreateFront = () => {
 	const type = searchParams?.get("type");
 	const id = searchParams?.get("id");
 
-	const [activeComponent, setActiveComponent] = useState<string>("background");
+	const [activeComponent, setActiveComponent] = useState<string | null>(null);
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
+	const [showExitConfirm, setShowExitConfirm] = useState(false);
+	const [isPanelOpen, setIsPanelOpen] = useState(false);
 	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
+	const hasUnsavedChanges = useRef(false);
+
+	const navigationType = useRef<"back" | "header" | null>(null);
+
+	const [shouldFixButtons, setShouldFixButtons] = useState(false);
+	const controlsRef = useRef<HTMLDivElement>(null);
+
+	const handlePanelClose = () => {
+		setIsPanelOpen(false);
+		setActiveComponent(null);
+	};
+
+	useEffect(() => {
+		if (!isPanelOpen) {
+			setShouldFixButtons(false);
+		}
+	}, [isPanelOpen]);
+
+	useEffect(() => {
+		if (!isPanelOpen) return;
+
+		const handleScroll = () => {
+			if (controlsRef.current) {
+				const controlsBottom = controlsRef.current.getBoundingClientRect().bottom;
+				const windowHeight = window.innerHeight;
+				const panelHeight = 300;
+
+				setShouldFixButtons(controlsBottom > windowHeight - panelHeight);
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		handleScroll();
+
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, [isPanelOpen]);
+
+	useEffect(() => {
+		const handleHeaderNavigation = (e: MouseEvent) => {
+			const header = document.getElementById("header");
+			if (header?.contains(e.target as Node) && hasUnsavedChanges.current) {
+				e.preventDefault();
+				e.stopPropagation();
+				navigationType.current = "header";
+				setShowExitConfirm(true);
+			}
+		};
+
+		const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+			if (hasUnsavedChanges.current) {
+				const message = "작성하던 내용이 모두 사라집니다. 계속하시겠습니까?";
+				event.preventDefault();
+				(event as any).returnValue = message;
+				return message;
+			}
+		};
+
+		const handlePopState = () => {
+			if (hasUnsavedChanges.current) {
+				navigationType.current = "back";
+				setShowExitConfirm(true);
+				window.history.pushState(null, "", window.location.href);
+			} else {
+				router.back();
+			}
+		};
+
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		document.addEventListener("click", handleHeaderNavigation, true);
+		window.addEventListener("popstate", handlePopState);
+		window.history.pushState(null, "", window.location.href);
+
+		return () => {
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+			document.removeEventListener("click", handleHeaderNavigation, true);
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, [router]);
+
+	const handleExitConfirm = () => {
+		hasUnsavedChanges.current = false;
+		setShowExitConfirm(false);
+
+		if (navigationType.current === "header") {
+			router.push("/");
+		} else {
+			router.back();
+		}
+
+		navigationType.current = null;
+	};
 
 	useEffect(() => {
 		const newCanvas = new fabric.Canvas("canvas", {
@@ -137,6 +232,18 @@ const CreateFront = () => {
 			}
 		});
 
+		newCanvas.on("object:added", () => {
+			hasUnsavedChanges.current = true;
+		});
+
+		newCanvas.on("object:modified", () => {
+			hasUnsavedChanges.current = true;
+		});
+
+		newCanvas.on("object:removed", () => {
+			hasUnsavedChanges.current = true;
+		});
+
 		const whiteBg = new fabric.Rect({
 			width: newCanvas.width,
 			height: newCanvas.height,
@@ -171,6 +278,7 @@ const CreateFront = () => {
 			});
 
 			setSelectedImage(dataURL);
+			hasUnsavedChanges.current = false;
 			router.push(`/create/letter?type=${type}&id=${id}`);
 		}
 	};
@@ -191,7 +299,19 @@ const CreateFront = () => {
 			canvas.insertAt(whiteBg, 0, false);
 			canvas.renderAll();
 			setShowClearConfirm(false);
+			hasUnsavedChanges.current = true;
 		}
+	};
+
+	const handleExit = () => {
+		hasUnsavedChanges.current = false;
+		setShowExitConfirm(false);
+		router.back();
+	};
+
+	const handleComponentClick = (value: string) => {
+		setActiveComponent(value);
+		setIsPanelOpen(true);
 	};
 
 	const renderActiveComponent = () => {
@@ -214,29 +334,28 @@ const CreateFront = () => {
 	};
 
 	return (
-		<div className="flex flex-col items-center w-full h-full">
+		<div className="relative flex flex-col items-center w-full h-full">
 			<canvas
 				id="canvas"
 				className="rounded-lg"
-			></canvas>
+			/>
 
-			<div className="mt-6 flex w-[320px] place-content-between">
-				<div className="flex">
-					{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
-						<label
-							key={value}
-							className="flex items-center cursor-pointer"
-						>
-							<input
-								type="radio"
-								value={value}
-								checked={activeComponent === value}
-								onChange={() => setActiveComponent(value)}
-								className="hidden"
-							/>
-							<p
-								className={`px-[6px] py-2 mr-[2px] rounded-lg font-nexonBold text-xs ${
-									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
+			<div
+				ref={controlsRef}
+				className={`w-full max-w-[480px]  mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
+					shouldFixButtons && isPanelOpen
+						? "fixed bottom-0 left-0 right-0 translate-y-[-320px] z-50"
+						: "translate-y-0"
+				}`}
+			>
+				<div className="mx-auto flex w-[320px] place-content-between items-center">
+					<div className="flex">
+						{["background", "border", "character", "sticker", "text", "brush"].map((value) => (
+							<button
+								key={value}
+								onClick={() => handleComponentClick(value)}
+								className={`px-[6px] py-2 mr-[1px] rounded-lg font-nexonBold text-xs border border-black ${
+									activeComponent && activeComponent === value ? "bg-ddubokPurple" : "bg-white"
 								}`}
 							>
 								{value === "background" && "배경"}
@@ -245,25 +364,61 @@ const CreateFront = () => {
 								{value === "character" && "캐릭터"}
 								{value === "text" && "텍스트"}
 								{value === "brush" && "브러쉬"}
-							</p>
-						</label>
-					))}
-				</div>
-				<div>
-					<button
-						onClick={() => setShowClearConfirm(true)}
-						className="p-2 rounded-lg"
-					>
-						<Trash
-							size={20}
-							color="#6EFFBF"
-						/>
-					</button>
+							</button>
+						))}
+					</div>
+					<div>
+						<button
+							onClick={() => setShowClearConfirm(true)}
+							className="p-2 rounded-lg bg-white h-[33px] flex justify-center items-center border border-black "
+						>
+							<Trash
+								size={16}
+								color="#aaaaaa"
+							/>
+						</button>
+					</div>
 				</div>
 			</div>
 
-			<div className="bg-white rounded-lg flex flex-col justify-center items-center w-[320px] h-[280px] pl-4 pr-4 pt-4 ">
-				{renderActiveComponent()}
+			{isPanelOpen && (
+				<div
+					className="fixed inset-0 pointer-events-none"
+					onClick={handlePanelClose}
+				>
+					<div
+						className="absolute inset-0 pointer-events-auto"
+						style={{ bottom: "300px" }}
+					/>
+				</div>
+			)}
+			<div
+				className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg  duration-300 ease-in-out ${
+					isPanelOpen ? "translate-y-0" : "translate-y-full"
+				}`}
+				style={{
+					width: "100%",
+					maxWidth: "480px",
+					height: "320px",
+					boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
+					zIndex: 40,
+				}}
+			>
+				<div
+					className="relative w-full h-full flex justify-center items-center"
+					onClick={(e) => e.stopPropagation()}
+				>
+					<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
+					<button
+						className="absolute top-4 right-4 text-gray-500"
+						onClick={handlePanelClose}
+					>
+						✕
+					</button>
+					<div className=" px-4 flex flex-col justify-center items-center w-full ">
+						{renderActiveComponent()}
+					</div>
+				</div>
 			</div>
 
 			<div className="mt-6 w-full flex justify-center mb-8">
@@ -330,6 +485,37 @@ const CreateFront = () => {
 							font="regular"
 							shadow="green"
 							onClick={handleNext}
+						/>
+					</div>
+				</Modal>
+			)}
+
+			{showExitConfirm && (
+				<Modal>
+					<h3 className="text-lg font-nexonBold mb-4">페이지를 나가시겠습니까?</h3>
+					<p className="text-gray-600 mb-6 font-nexonRegular">
+						저장되지 않은 변경사항이 있습니다.
+						<br />
+						작업한 내용이 모두 사라집니다.
+					</p>
+					<div className="flex justify-end gap-2">
+						<Button
+							text="취소"
+							color="gray"
+							size="small"
+							font="regular"
+							shadow="gray"
+							onClick={() => {
+								setShowExitConfirm(false);
+							}}
+						/>
+						<Button
+							text="나가기"
+							color="red"
+							size="small"
+							font="regular"
+							shadow="red"
+							onClick={handleExitConfirm}
 						/>
 					</div>
 				</Modal>

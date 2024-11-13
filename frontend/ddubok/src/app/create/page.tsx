@@ -20,6 +20,8 @@ const Create = () => {
 
 	const { setSelectedImage, setUserName, setLetterContent } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const touchStartRef = useRef<number | null>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
@@ -27,13 +29,19 @@ const Create = () => {
 	const cardImages = useMemo(
 		() => [
 			{ image: "", effect: 0 },
-			{ image: "/assets/template/kkm-card.png", effect: 0 },
-			{ image: "/assets/template/psh-card.jpg", effect: 0 },
-			{ image: "/assets/template/kkm-card-2.png", effect: 0 },
-			{ image: "/assets/template/lbk-card.png", effect: 0 },
-			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
-			{ image: "/assets/template/kde-card.jpg", effect: 0 },
-			{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
+			// { image: "/assets/template/kkm-card.png", effect: 0 },
+			// { image: "/assets/template/psh-card.jpg", effect: 0 },
+			// { image: "/assets/template/kkm-card-2.png", effect: 0 },
+			// { image: "/assets/template/lbk-card.png", effect: 0 },
+			// { image: "/assets/template/kkm-card-3.png", effect: 0 },
+			// { image: "/assets/template/kde-card.jpg", effect: 0 },
+			// { image: "/assets/template/kde-card-2.jpg", effect: 0 },
+			{ image: "/assets/template/template (1).png", effect: 0 },
+			{ image: "/assets/template/template (2).png", effect: 0 },
+			{ image: "/assets/template/template (3).png", effect: 0 },
+			{ image: "/assets/template/template (4).png", effect: 0 },
+			{ image: "/assets/template/template (5).png", effect: 0 },
+			{ image: "/assets/template/template (6).png", effect: 0 },
 		],
 		[],
 	);
@@ -53,15 +61,36 @@ const Create = () => {
 		});
 	}, [cardImages]);
 
+	// 슬라이더 변경 시 input 포커스 해제
 	const handleSlideChange = (current: number) => {
 		setCurrentSlide(current);
+		if (inputRef.current) {
+			inputRef.current.blur();
+		}
+	};
+
+	const sanitizeInput = (input: string): string => {
+		const sanitized = input
+			.replace(/[<>]/g, "")
+			.replace(/[&'"]/g, "")
+			.replace(/javascript:/gi, "")
+			.replace(/on\w+=/gi, "")
+			.replace(/data:/gi, "");
+
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+	};
+
+	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const sanitizedValue = sanitizeInput(e.target.value);
+		setLocalUserName(sanitizedValue);
 	};
 
 	const handleSelectButton = () => {
 		const selectedImage = cardImages[currentSlide].image;
 		setSelectedImage(selectedImage);
 
-		const finalUserName = userName.trim() === "" ? "익명" : userName;
+		const sanitizedName = sanitizeInput(userName);
+		const finalUserName = sanitizedName.trim() === "" ? "익명" : sanitizedName;
 		setUserName(finalUserName);
 
 		setLetterContent("");
@@ -89,7 +118,43 @@ const Create = () => {
 			} else {
 				sliderRef.current.slickGoTo(index);
 			}
+
+			if (currentIndex === index) {
+				setTimeout(() => {
+					if (inputRef.current) {
+						inputRef.current.focus();
+						inputRef.current.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+						});
+					}
+				}, 100);
+			}
 		}
+	};
+
+	// 터치 이벤트 핸들러 추가
+	const handleTouchStart = (e: React.TouchEvent) => {
+		touchStartRef.current = e.touches[0].clientX;
+		if (inputRef.current) {
+			inputRef.current.blur();
+		}
+	};
+
+	const handleTouchEnd = (e: React.TouchEvent) => {
+		if (touchStartRef.current === null) return;
+
+		const touchEnd = e.changedTouches[0].clientX;
+		const diff = touchEnd - touchStartRef.current;
+
+		// 터치 이동이 있었을 경우에만 포커스 해제
+		if (Math.abs(diff) > 5) {
+			if (inputRef.current) {
+				inputRef.current.blur();
+			}
+		}
+
+		touchStartRef.current = null;
 	};
 
 	const settings = {
@@ -104,6 +169,7 @@ const Create = () => {
 		className: "w-full",
 		adaptiveHeight: true,
 		afterChange: handleSlideChange,
+		swipe: true,
 	};
 
 	return (
@@ -118,7 +184,11 @@ const Create = () => {
 						{type === "request" ? "요청 카드 선택하기" : "행운 카드 선택하기"}
 					</div>
 
-					<div className="w-full flex items-center justify-center mt-8">
+					<div
+						className="w-full flex items-center justify-center mt-8"
+						onTouchStart={handleTouchStart}
+						onTouchEnd={handleTouchEnd}
+					>
 						<div className="w-full max-w-[480px]">
 							<Slider
 								ref={sliderRef}
@@ -146,10 +216,11 @@ const Create = () => {
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
 						<input
+							ref={inputRef}
 							type="text"
 							placeholder="익명 (최대 11글자)"
 							value={userName}
-							onChange={(e) => setLocalUserName(e.target.value)}
+							onChange={handleNameChange}
 							maxLength={11}
 							className="border-b border-white bg-transparent font-nexonRegular text-white text-center outline-none"
 						/>

@@ -174,7 +174,9 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/api/v1/auth/check-refresh-token", "/api/v1/auth/reissue").permitAll()
-                .requestMatchers("/api/v1/members").hasRole("USER")
+                .requestMatchers("/api/v1/main").permitAll()
+                .requestMatchers("/api/v1/members").hasAnyRole("USER","ADMIN")
+                .requestMatchers("/api/v1/fine-tune").hasRole("ADMIN")
                 .requestMatchers("/api/v1/admins/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/attendances").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/api/v1/cards").permitAll()

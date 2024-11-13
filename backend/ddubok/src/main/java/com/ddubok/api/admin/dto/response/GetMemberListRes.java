@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class GetMemberListRes {
 
     private Long memberId;
-    private String nickName;
+    private String nickname;
     private String state;
 }

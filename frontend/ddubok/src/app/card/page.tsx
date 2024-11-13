@@ -31,39 +31,24 @@ const SharedCard = () => {
 	const [cardData, setCardData] = useState<CardData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
+	const [isTallScreen, setIsTallScreen] = useState(false);
 
-	// const handleDownloadImage = () => {
-	// 	if (!cardData?.path) return;
+	useEffect(() => {
+		const checkScreenHeight = () => {
+			setIsTallScreen(window.innerHeight >= 740);
+		};
 
-	// 	if (cardData?.path.startsWith("data:image")) {
-	// 		const link = document.createElement("a");
-	// 		link.href = cardData?.path;
-	// 		link.download = "fortune-card.png";
-	// 		document.body.appendChild(link);
-	// 		link.click();
-	// 		document.body.removeChild(link);
-	// 		toast.success("이미지 다운에 성공하였습니다.");
-	// 	} else {
-	// 		fetch(cardData?.path)
-	// 			.then((response) => response.blob())
-	// 			.then((blob) => {
-	// 				const url = window.URL.createObjectURL(blob);
-	// 				const link = document.createElement("a");
-	// 				link.href = url;
-	// 				link.download = "fortune-card.png";
-	// 				document.body.appendChild(link);
-	// 				link.click();
-	// 				window.URL.revokeObjectURL(url);
-	// 				document.body.removeChild(link);
-	// 				toast.success("이미지 다운에 성공하였습니다.");
-	// 			})
+		checkScreenHeight();
 
-	// 			.catch((error) => {
-	// 				console.error("이미지 다운로드 중 오류 발생:", error);
-	// 				toast.error("이미지 다운로드에 실패했습니다");
-	// 			});
-	// 	}
-	// };
+		window.addEventListener("resize", checkScreenHeight);
+
+		return () => window.removeEventListener("resize", checkScreenHeight);
+	}, []);
+
+	const cardSize = {
+		width: isTallScreen ? 280 : 255,
+		height: isTallScreen ? 495 : 451,
+	};
 
 	const handleSaveCard = async () => {
 		if (!cardId) {
@@ -101,7 +86,6 @@ const SharedCard = () => {
 			if (!cardId) {
 				console.log(cardId);
 				router.replace("/error");
-
 				return;
 			}
 
@@ -138,28 +122,22 @@ const SharedCard = () => {
 
 	return (
 		<div className="flex flex-col items-center w-full">
-			<div className="text-white font-nexonBold text-2xl mt-10 text-center">
+			<div className="text-white font-nexonBold text-xl mt-2 text-center">
 				{cardData?.writerName}님이
 				<br /> 보낸 행운카드
 			</div>
-			<div className="mt-8">
+			<div className="mt-2">
 				<Card
-					width={280}
-					height={495}
+					width={cardSize.width}
+					height={cardSize.height}
 					path={cardData?.path || ""}
 					content={cardData?.content || ""}
 					effect={0}
 					flip={true}
 				/>
 			</div>
-			{/* <button
-				onClick={handleDownloadImage}
-				className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
-			>
-				이미지 저장
-			</button> */}
 
-			<div className="mt-10 mb-8 flex flex-row gap-4 w-full justify-center">
+			<div className="mt-6 mb-6 flex flex-row gap-4 w-full justify-center">
 				<Button
 					text="행운카드<br/>보관하기"
 					color="purple"

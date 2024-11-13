@@ -24,6 +24,7 @@ public enum ResponseCode {
     // 500 - season
     SEASON_NOT_FOUND("500", "시즌을 찾을 수 없음"),
     INVALID_DATE_ORDER("501", "시즌의 날짜 선정이 잘못 되었습니다."),
+    INVALID_CARD_DATE("502", "시즌이 종료됨"),
 
     // 600 - card
     CARD_NOT_FOUND("600", "카드를 찾을 수 없음"),

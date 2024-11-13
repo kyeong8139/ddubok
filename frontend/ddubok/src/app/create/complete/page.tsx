@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -26,6 +26,7 @@ const CardDetail = () => {
 	const { isModalOpen, openModal } = useContext(ModalContext);
 	const shareLink = process.env.NEXT_PUBLIC_SHARE_URL;
 	const [showLoginModal, setShowLoginModal] = useState(false);
+	const [isTallScreen, setIsTallScreen] = useState(false);
 
 	const titleText =
 		type === "normal"
@@ -108,6 +109,21 @@ const CardDetail = () => {
 			console.error("카카오톡 공유 중 오류 발생:", error);
 			toast.error("카카오톡 공유에 실패했습니다");
 		}
+	};
+
+	useEffect(() => {
+		const checkScreenHeight = () => {
+			setIsTallScreen(window.innerHeight >= 740);
+		};
+
+		checkScreenHeight();
+		window.addEventListener("resize", checkScreenHeight);
+		return () => window.removeEventListener("resize", checkScreenHeight);
+	}, []);
+
+	const cardSize = {
+		width: isTallScreen ? 270 : 224,
+		height: isTallScreen ? 478 : 396,
 	};
 
 	// const handleShareInstagram = () => {
@@ -250,16 +266,16 @@ const CardDetail = () => {
 	return (
 		<div>
 			<div className="flex flex-col items-center w-full">
-				<div className="text-white font-nexonBold text-xl mt-6">{titleText}</div>
+				<div className="text-white font-nexonBold text-xl mt-2">{titleText}</div>
 				{type === "require" && (
 					<p className="text-white font-nexonLight text-sm mt-2 text-center">
-						발송된 카드의 뒷면은 <br /> 11월 13일 오후 8시에 오픈됩니다!
+						발송된 카드의 편지는 <br /> 발송 시점으로 부터 하루 뒤 오픈됩니다!
 					</p>
 				)}
-				<div className="mt-6">
+				<div className="mt-2">
 					<Card
-						width={270}
-						height={478}
+						width={cardSize.width}
+						height={cardSize.height}
 						path={cardImage}
 						content={letterContent}
 						effect={0}
@@ -273,7 +289,7 @@ const CardDetail = () => {
 					이미지 저장
 				</button> */}
 
-				<div className="mt-6 flex flex-row gap-4 w-full justify-center mb-8">
+				<div className="mt-6 flex flex-row gap-4 w-full justify-center mb-6">
 					{type === "normal" ? (
 						<>
 							<Button

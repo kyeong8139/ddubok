@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateSeasonReq {
 
-    private String seasonName;
+    private String name;
     private String seasonDescription;
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;

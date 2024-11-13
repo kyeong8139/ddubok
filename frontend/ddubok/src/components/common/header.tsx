@@ -21,6 +21,27 @@ const Header = () => {
 	}, [pathname, closeMenu]);
 
 	const renderHeaderContent = () => {
+		if (pathname.startsWith("/admin/setting/")) {
+			return (
+				<div className="flex justify-between items-center h-full">
+					<CaretLeft
+						size={24}
+						color="white"
+						onClick={() => router.back()}
+					/>
+					<Link href="/">
+						<Image
+							src="/assets/ddubok.png"
+							alt="ddubok"
+							width={72}
+							height={72}
+						/>
+					</Link>
+					<Hamburger />
+				</div>
+			);
+		}
+
 		switch (pathname) {
 			case "/":
 				return (
