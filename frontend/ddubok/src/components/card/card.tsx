@@ -91,7 +91,7 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 							/>
 						) : (
 							<div className="font-nexonRegular flex justify-center items-center h-full text-center">
-								11월 13일 오후 8시부터
+								하루 뒤
 								<br />
 								편지를 확인할 수 있습니다.
 							</div>

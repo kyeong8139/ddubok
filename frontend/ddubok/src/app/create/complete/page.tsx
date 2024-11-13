@@ -269,7 +269,7 @@ const CardDetail = () => {
 				<div className="text-white font-nexonBold text-xl mt-2">{titleText}</div>
 				{type === "require" && (
 					<p className="text-white font-nexonLight text-sm mt-2 text-center">
-						발송된 카드의 뒷면은 <br /> 11월 13일 오후 8시에 오픈됩니다!
+						발송된 카드의 편지는 <br /> 발송 시점으로 부터 하루 뒤 오픈됩니다!
 					</p>
 				)}
 				<div className="mt-2">
