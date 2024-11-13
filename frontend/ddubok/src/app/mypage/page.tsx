@@ -10,10 +10,13 @@ import { IUserDto } from "@interface/components/user";
 import { selectUser, updateUser } from "@lib/api/user-api";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import useAuthToken from "@lib/utils/tokenUtils";
+import { removeToken, insertToken } from "@lib/api/notification-api";
 
 import { PencilCircle } from "@phosphor-icons/react";
 import { deleteUser, logout } from "@lib/api/login-api";
-import Link from "next/link";
+import Toggle from "@components/common/toggle";
+import { getMessaging, getToken, deleteToken } from "@firebase/messaging";
+import { requestPermission } from "@lib/utils/firebase";
 
 const Mypage = () => {
 	const route = useRouter();
@@ -28,6 +31,7 @@ const Mypage = () => {
 					memberId: decodedToken.memberId,
 					nickname: "",
 					role: decodedToken.role,
+					notificationConsent: "",
 			  }
 			: null,
 	);
@@ -41,6 +45,7 @@ const Mypage = () => {
 						memberId: decodedToken.memberId,
 						nickname: response.data.data.nickname,
 						role: decodedToken.role,
+						notificationConsent: response.data.data.notificationConsent,
 					});
 				} catch (error) {
 					console.error(error);
@@ -64,6 +69,29 @@ const Mypage = () => {
 			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
 			setIsEditing(false);
 			window.location.reload();
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const modifyNotificationConsent = async (consent: boolean) => {
+		try {
+			const updatedConsent = consent ? "ENABLED" : "DISABLED";
+
+			if (updatedConsent === "ENABLED") {
+				await requestPermission();
+				const messaging = getMessaging();
+				const firebaseToken = await getToken(messaging, {
+					vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+				});
+				await insertToken(firebaseToken);
+			} else if (updatedConsent === "DISABLED") {
+				const messaging = getMessaging();
+				await deleteToken(messaging);
+				await removeToken();
+			}
+
+			setUser((prevUser) => (prevUser ? { ...prevUser, notificationConsent: updatedConsent } : null));
 		} catch (error) {
 			console.error(error);
 		}
@@ -122,7 +150,7 @@ const Mypage = () => {
 							닉네임은 최대 11글자까지 가능합니다.
 						</p>
 						<button
-							className="flex justify-end items-center gap-1 w-[calc(100%-64px)] mx-auto mt-4"
+							className="flex justify-end items-center gap-1 w-[calc(100%-64px)] mx-auto mt-4 mb-12"
 							onClick={modifyNickname}
 						>
 							<PencilCircle
@@ -154,6 +182,20 @@ const Mypage = () => {
 						</div>
 					</>
 				)}
+			</div>
+			<div className="text-white font-nexonRegular text-lg">
+				<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto">
+					<label
+						className="font-nexonBold"
+						htmlFor="alarm"
+					>
+						서비스 알림 수신 설정
+					</label>
+					<Toggle
+						isChecked={user?.notificationConsent === "ENABLED" ? true : false}
+						onChange={modifyNotificationConsent}
+					/>
+				</div>
 			</div>
 			<div className="flex justify-center gap-12 pt-12 pb-16 absolute left-1/2 bottom-0 -translate-x-1/2">
 				<p
