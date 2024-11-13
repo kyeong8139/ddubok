@@ -7,6 +7,7 @@ import com.ddubok.api.admin.dto.response.DefaultSeasonRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
+import com.ddubok.common.template.response.ResponseCode;
 import java.util.List;
 
 /**
@@ -43,6 +44,11 @@ public interface SeasonService {
      * @return 수정된 시즌의 번호를 반환한다.
      */
     UpdateSeasonRes updateSeason(Long seasonId, UpdateSeasonReqDto updateSeasonReqDto);
+
+    /**
+     * 관리자가 기본 메인을 조회한다.
+     */
+    DefaultSeasonRes getDefaultSeason();
 
     /**
      * 관리자가 기본 메인을 설정한다.
