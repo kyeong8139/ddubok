@@ -3,9 +3,10 @@ import localFont from "next/font/local";
 import Script from "next/script";
 
 import Header from "@components/common/header";
+import Notification from "@components/common/notification";
+import Toaster from "@components/common/toaster";
 import { MenuProvider } from "@context/menu-context";
 import { ModalProvider } from "@context/modal-context";
-import Toaster from "@components/common/toaster";
 
 import "./globals.css";
 
@@ -109,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<ModalProvider>
 							<Header />
 							<Toaster />
+							<Notification />
 							<div className="mt-14">{children}</div>
 						</ModalProvider>
 					</MenuProvider>
