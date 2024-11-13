@@ -248,7 +248,7 @@ public class AdminController {
      * @param images           배너에 활용될 이미지 리스트
      * @param defaultSeasonReq 기본 메인 정보를 갖고 있는 객체
      */
-    @PutMapping("/seasons/default")
+    @PostMapping("/seasons/default")
     public BaseResponse<?> updateDefaultSeason(
         @RequestPart(name = "image") List<MultipartFile> images,
         @RequestPart DefaultSeasonReq defaultSeasonReq

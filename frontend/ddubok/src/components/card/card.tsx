@@ -13,7 +13,6 @@ import { PlusCircle } from "@phosphor-icons/react";
 const Card = ({ width, height, path, content, state, effect, flip }: IDetailCardDto) => {
 	const [isFlipped, setIsFlipped] = useState(false);
 
-	// HTML 이스케이프 처리 함수
 	const escapeHTML = (str: string = "") => {
 		return str
 			.replace(/&/g, "&amp;")
@@ -21,7 +20,7 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 			.replace(/>/g, "&gt;")
 			.replace(/"/g, "&quot;")
 			.replace(/'/g, "&#039;")
-			.replace(/\n/g, "<br>"); // 줄바꿈 유지
+			.replace(/\n/g, "<br>");
 	};
 
 	const effectClasses = () => {
@@ -55,7 +54,6 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 				className={`relative preserve-3d transition-transform duration-700 ${isFlipped ? "rotate-y-180" : ""}`}
 				style={{ width: `${width}px`, height: `${height}px` }}
 			>
-				{/* 카드 앞면 */}
 				<div
 					className={`absolute w-full h-full backface-hidden rounded-lg shadow-lg overflow-hidden ${effectClasses()}`}
 				>
@@ -78,7 +76,6 @@ const Card = ({ width, height, path, content, state, effect, flip }: IDetailCard
 					)}
 				</div>
 
-				{/* 카드 뒷면 */}
 				<div
 					className="absolute w-full h-full backface-hidden rotate-y-180 flex items-center justify-center rounded-lg shadow-lg overflow-hidden text-justify"
 					style={{ backgroundColor: "#f0f0f0" }}

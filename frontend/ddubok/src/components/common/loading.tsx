@@ -125,7 +125,7 @@ const Loading = () => {
 					xmlns="http://www.w3.org/2000/svg"
 					id="Capa_1"
 					version="1.1"
-					fill="#000000"
+					fill="#484554"
 					className="lampPost"
 				>
 					<path

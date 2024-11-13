@@ -36,6 +36,17 @@ const Mypage = () => {
 			: null,
 	);
 
+	const sanitizeInput = (input: string): string => {
+		const sanitized = input
+			.replace(/[<>]/g, "")
+			.replace(/[&'"]/g, "")
+			.replace(/javascript:/gi, "")
+			.replace(/on\w+=/gi, "")
+			.replace(/data:/gi, "");
+
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+	};
+
 	useEffect(() => {
 		const getUser = async () => {
 			if (decodedToken && isTokenReady) {
@@ -63,10 +74,16 @@ const Mypage = () => {
 		}
 	};
 
+	const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const sanitizedValue = sanitizeInput(e.target.value);
+		setNewNickname(sanitizedValue);
+	};
+
 	const modifyNickname = async () => {
 		try {
-			await updateUser(newNickname);
-			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: newNickname } : prevUser));
+			const sanitizedNickname = sanitizeInput(newNickname);
+			await updateUser(sanitizedNickname);
+			setUser((prevUser) => (prevUser ? { ...prevUser, nickname: sanitizedNickname } : prevUser));
 			setIsEditing(false);
 			window.location.reload();
 		} catch (error) {
@@ -140,7 +157,7 @@ const Mypage = () => {
 								type="text"
 								placeholder="최대 11글자"
 								value={newNickname}
-								onChange={(e) => setNewNickname(e.target.value)}
+								onChange={handleNicknameChange}
 								maxLength={11}
 								className="px-2 py-2 w-48 text-sm rounded-lg text-black mb-1"
 							/>
