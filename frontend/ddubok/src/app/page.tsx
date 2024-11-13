@@ -229,9 +229,13 @@ const Home = () => {
 							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p> */}
-							<p className="font-nexonLight text-xs text-center">
+							<p className="font-nexonLight text-xs text-center mb-2">
 								행운카드 뒷면의 메세지는 <br />
 								수신 후 24시간이 지나면 확인 가능합니다.
+							</p>
+							<p className="font-nexonRegular text-xs text-center underline">
+								📚수능 시즌에 작성한 카드는 <br />
+								11월 13일 오후 8시부터 확인할 수 있어요💌
 							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
