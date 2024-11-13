@@ -46,13 +46,19 @@ const Home = () => {
 
 	const cardImages = useMemo(
 		() => [
-			{ image: "/assets/template/kkm-card.png", effect: 0 },
-			{ image: "/assets/template/psh-card.jpg", effect: 0 },
-			{ image: "/assets/template/kkm-card-2.png", effect: 0 },
-			{ image: "/assets/template/lbk-card.png", effect: 0 },
-			{ image: "/assets/template/kkm-card-3.png", effect: 0 },
-			{ image: "/assets/template/kde-card.jpg", effect: 0 },
-			{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
+			// { image: "/assets/template/kkm-card.png", effect: 0 },
+			// { image: "/assets/template/psh-card.jpg", effect: 0 },
+			// { image: "/assets/template/kkm-card-2.png", effect: 0 },
+			// { image: "/assets/template/lbk-card.png", effect: 0 },
+			// { image: "/assets/template/kkm-card-3.png", effect: 0 },
+			// { image: "/assets/template/kde-card.jpg", effect: 0 },
+			// { image: "/assets/template/kde-card-2.jpg", effect: 0 },
+			{ image: "/assets/template/template (1).png", effect: 0 },
+			{ image: "/assets/template/template (2).png", effect: 0 },
+			{ image: "/assets/template/template (3).png", effect: 0 },
+			{ image: "/assets/template/template (4).png", effect: 0 },
+			{ image: "/assets/template/template (5).png", effect: 0 },
+			{ image: "/assets/template/template (6).png", effect: 0 },
 		],
 		[],
 	);
@@ -210,7 +216,7 @@ const Home = () => {
 						<div className="flex flex-col items-center pt-8">
 							<div className="absolute">
 								<p>
-									<span className="font-nexonBold">친구</span>를 위한 행운 배달부🍀
+									<span className="font-nexonBold">당신</span>을 위한 행운 배달부🍀
 								</p>
 							</div>
 							<NextImage
@@ -220,12 +226,12 @@ const Home = () => {
 								height={136}
 								className="pt-2"
 							/>
-							<p className="font-nexonLight text-sm mb-2">
+							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
-							</p>
+							</p> */}
 							<p className="font-nexonLight text-xs text-center">
 								행운카드 뒷면의 메세지는 <br />
-								수능 전날(13일) 20시에 일괄 확인 가능합니다.
+								수신 후 24시간이 지나면 확인 가능합니다.
 							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
@@ -275,13 +281,13 @@ const Home = () => {
 							/>
 							<span className="absolute top-21 text-xs font-nexonBold">STEP 1</span>
 						</div>
-						<h1 className="font-pyeongchang text-[2rem] text-black text-center leading-tight mb-6">
-							수험생 친구들을 위한
+						<h1 className="font-pyeongchang text-2xl text-black text-center leading-tight mb-6">
+							응원이 필요한 친구들에게
 							<br />
 							행운카드 제작하기
 						</h1>
-						<p className="text-black text-center mb-12">
-							수능으로 지친 친구들을 위해
+						<p className="text-black text-center mb-12 text-sm">
+							삶에 지친 친구들을 위해
 							<br />
 							<span className="font-nexonBold">행운카드</span>를 만들어 보내주세요!
 							<br />
@@ -310,20 +316,20 @@ const Home = () => {
 							/>
 							<span className="absolute top-21 text-xs font-nexonBold">STEP 2</span>
 						</div>
-						<h1 className="font-pyeongchang text-[2rem] text-black text-center leading-tight mb-6">
-							수험생인 나를 위한
+						<h1 className="font-pyeongchang text-2xl text-black text-center leading-tight mb-6">
+							응원이 필요한 나를 위해
 							<br />
 							행운카드 조르기
 						</h1>
-						<p className="text-black text-center mb-12">
-							수능으로 지친 나를 위해
+						<p className="text-black text-center mb-12 text-sm">
+							삶에 지친 나를 위해
 							<br />
 							친구들에게 <span className="font-nexonBold">행운카드</span>를 요청하세요!
 						</p>
 						<div className="flex justify-center pb-20">
 							<div className="relative w-[calc(100%-64px)] h-64 overflow-hidden rounded-lg">
 								<NextImage
-									src="/assets/image-step2.png"
+									src="/assets/image-step2-ver2.png"
 									alt="행운카드 공유하는 모습"
 									fill
 									style={{ objectFit: "cover" }}

@@ -202,12 +202,15 @@ const Mypage = () => {
 			</div>
 			<div className="text-white font-nexonRegular text-lg">
 				<div className="w-[calc(100%-64px)] flex items-center justify-between mx-auto">
-					<label
-						className="font-nexonBold"
-						htmlFor="alarm"
-					>
-						서비스 알림 수신 설정
-					</label>
+					<div>
+						<label
+							className="font-nexonBold"
+							htmlFor="alarm"
+						>
+							서비스 알림 수신 설정
+						</label>
+						<p className="text-xs">일부 기기에서 설정이 불가할 수 있습니다.</p>
+					</div>
 					<Toggle
 						isChecked={user?.notificationConsent === "ENABLED" ? true : false}
 						onChange={modifyNotificationConsent}
