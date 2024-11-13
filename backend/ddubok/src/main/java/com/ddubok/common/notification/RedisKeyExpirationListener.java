@@ -1,5 +1,6 @@
 package com.ddubok.common.notification;
 
+import com.ddubok.api.card.repository.custom.CardRepositoryCustom;
 import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class RedisKeyExpirationListener implements MessageListener {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final CardRepositoryCustom cardRepositoryCustom;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -29,6 +31,7 @@ public class RedisKeyExpirationListener implements MessageListener {
     }
 
     private void sendCardNotification(Long key) {
+        cardRepositoryCustom.updateCardStates();
         NotificationMessageDto message = NotificationMessageDto.builder()
             .id(key)
             .title("🍀행운카드가 열렸어요!🍀")
