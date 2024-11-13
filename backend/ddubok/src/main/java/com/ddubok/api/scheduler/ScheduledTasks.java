@@ -21,7 +21,7 @@ public class ScheduledTasks {
     private final FineTuneExecutor fineTuneExecutor;
 
     @Transactional
-    @Scheduled(cron = "0 0 20 * * *")
+    @Scheduled(cron = "0 25 18 * * *")
     void cardOpen() {
         Long result = cardRepositoryCustom.updateCardStates();
     }
