@@ -3,6 +3,7 @@ package com.ddubok.api.admin.service;
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
 import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
+import com.ddubok.api.admin.dto.response.DefaultSeasonRes;
 import com.ddubok.api.admin.dto.response.GetSeasonDetailRes;
 import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
@@ -105,6 +106,12 @@ public class SeasonServiceImpl implements SeasonService {
         return UpdateSeasonRes.builder()
             .id(updateSeason.getId())
             .build();
+    }
+
+    @Override
+    public void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes) {
+        String key = "main:default";
+        redisTemplate.opsForValue().set(key, defaultSeasonRes);
     }
 
     /**
