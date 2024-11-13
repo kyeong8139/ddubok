@@ -78,17 +78,14 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 				const src = background.getSrc();
 				if (src) {
 					try {
-						// Data URL인 경우 custom 업로드로 처리
 						if (src.startsWith("data:")) {
 							setSelectedBackground("custom");
 							return;
 						}
 
-						// 상대 경로를 절대 경로로 변환
 						const fullUrl = new URL(src, window.location.origin).href;
 						const pathname = new URL(fullUrl).pathname;
 
-						// backgroundImages 배열에서 매칭되는 이미지 찾기
 						const matchingBackground = backgroundImages.find((bg) =>
 							pathname.endsWith(bg.split("/").pop()!),
 						);
@@ -199,7 +196,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 
 				canvas.insertAt(img, 0, false);
 				canvas.renderAll();
-				setSelectedBackground(imageUrl); // 이미지 URL을 직접 저장
+				setSelectedBackground(imageUrl);
 			});
 		}
 	};

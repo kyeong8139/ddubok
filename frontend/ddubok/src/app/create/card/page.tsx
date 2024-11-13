@@ -335,7 +335,6 @@ const CreateFront = () => {
 				className="rounded-lg"
 			/>
 
-			{/* Control buttons */}
 			<div
 				ref={controlsRef}
 				className={`w-full max-w-[480px]  mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
@@ -377,8 +376,6 @@ const CreateFront = () => {
 				</div>
 			</div>
 
-			{/* Slide Up Panel */}
-			{/* Slide Up Panel */}
 			{isPanelOpen && (
 				<div
 					className="fixed inset-0 pointer-events-none"
@@ -419,7 +416,6 @@ const CreateFront = () => {
 				</div>
 			</div>
 
-			{/* Next button */}
 			<div className="mt-6 w-full flex justify-center mb-8">
 				<Button
 					text="다음으로"

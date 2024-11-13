@@ -38,13 +38,10 @@ const SharedCard = () => {
 			setIsTallScreen(window.innerHeight >= 740);
 		};
 
-		// 초기 체크
 		checkScreenHeight();
 
-		// 리사이즈 이벤트 리스너
 		window.addEventListener("resize", checkScreenHeight);
 
-		// 클린업
 		return () => window.removeEventListener("resize", checkScreenHeight);
 	}, []);
 
