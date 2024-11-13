@@ -110,10 +110,10 @@ const Setting = () => {
 							</tbody>
 						</table>
 					</div>
-					<div className="absolute bottom-8 left-4 right-4 flex justify-center text-center space-x-4">
+					<div className="absolute bottom-8 left-1 right-1 flex justify-center text-center mx-8 space-x-4">
 						<Button
 							text="기본 시즌 수정하기"
-							color="gradient"
+							color="purple"
 							size="long"
 							font="bold"
 							shadow="gradient"
@@ -121,7 +121,7 @@ const Setting = () => {
 						/>
 						<Button
 							text="시즌 정보 추가하기"
-							color="gradient"
+							color="green"
 							size="long"
 							font="bold"
 							shadow="gradient"
