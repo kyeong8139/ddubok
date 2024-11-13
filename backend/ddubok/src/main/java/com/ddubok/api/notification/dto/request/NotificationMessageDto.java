@@ -16,8 +16,6 @@ public class NotificationMessageDto {
     private Long id;
     private String title;
     private String body;
-    private Map<String, String> data;
-    private LocalDateTime timestamp;
 
 }
 

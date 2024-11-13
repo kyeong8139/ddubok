@@ -31,10 +31,8 @@ public class RedisKeyExpirationListener implements MessageListener {
     private void sendCardNotification(Long key) {
         NotificationMessageDto message = NotificationMessageDto.builder()
             .id(key)
-            .title("행운카드가 열렸어요!")
+            .title("🍀행운카드가 열렸어요!🍀")
             .body("뚜복에 접속해 행운카드 속 메세지를 확인해보세요!")
-            .data(Map.of())
-            .timestamp(LocalDateTime.now())
             .build();
 
         redisTemplate.convertAndSend("open-card", message);
@@ -43,10 +41,8 @@ public class RedisKeyExpirationListener implements MessageListener {
     private void sendSeasonNotification(Long key) {
         NotificationMessageDto message = NotificationMessageDto.builder()
             .id(key)
-            .title("시즌이 종료되었어요!")
+            .title("☘시즌이 종료되었어요!☘")
             .body("뚜복에 접속해 행운카드 속 메세지를 확인해보세요!")
-            .data(Map.of())
-            .timestamp(LocalDateTime.now())
             .build();
 
         redisTemplate.convertAndSend("end-season", message);
