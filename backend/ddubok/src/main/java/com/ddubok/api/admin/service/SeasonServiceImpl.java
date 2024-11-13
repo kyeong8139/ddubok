@@ -118,9 +118,8 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public DefaultSeasonRes getDefaultSeason() {
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(DEFAULT_SEASON_KEY))) {
-            MainSeasonRes mainSeasonRes = (MainSeasonRes) redisTemplate.opsForValue()
-                .get(DEFAULT_SEASON_KEY);
+        MainSeasonRes mainSeasonRes = getRedisValue(DEFAULT_SEASON_KEY, MainSeasonRes.class).orElse(null);
+        if (mainSeasonRes != null) {
             return DefaultSeasonRes.builder()
                 .seasonDescription(mainSeasonRes.getSeasonDescription())
                 .path(mainSeasonRes.getPath())
@@ -132,6 +131,7 @@ public class SeasonServiceImpl implements SeasonService {
             .path(new ArrayList<>())
             .build();
     }
+
 
     @Override
     public void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes) {
