@@ -14,6 +14,7 @@ import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,6 +38,7 @@ public class SeasonServiceImpl implements SeasonService {
     private final String SEASON_START_DATE_KEY = "main:next:date";
     private final String ACTIVE_SEASON_KEY = "main:active";
     private final String DEFAULT_SEASON_KEY = "main:default";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     /**
      * {@inheritDoc}
@@ -163,6 +165,11 @@ public class SeasonServiceImpl implements SeasonService {
     }
 
     private <T> Optional<T> getRedisValue(String key, Class<T> type) {
+        Object value = redisTemplate.opsForValue().get(key);
+        if (type == LocalDateTime.class && value instanceof String) {
+            return Optional.of(type.cast(LocalDateTime.parse((String) value, FORMATTER)));
+        }
+
         return Boolean.TRUE.equals(redisTemplate.hasKey(key))
             ? Optional.ofNullable(type.cast(redisTemplate.opsForValue().get(key)))
             : Optional.empty();

@@ -14,7 +14,5 @@ import lombok.NoArgsConstructor;
 public class MainSeasonRes {
     private Long seasonId;
     private String seasonDescription;
-    private LocalDateTime startedAt;
-    private LocalDateTime endedAt;
     private List<String> path;
 }
