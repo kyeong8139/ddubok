@@ -13,6 +13,7 @@ import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,7 +118,7 @@ public class SeasonServiceImpl implements SeasonService {
 
         return DefaultSeasonRes.builder()
             .seasonDescription("현재 기본 시즌이 설정되지 않았습니다.")
-            .path(null)
+            .path(new ArrayList<>())
             .build();
     }
 
