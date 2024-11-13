@@ -41,10 +41,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
-                .setFcmOptions(WebpushFcmOptions.builder()
-                    .setLink(path)
-                    .build())
                 .build())
+            .putData("link", path)
             .build();
 
         try {
@@ -74,10 +72,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
-                .setFcmOptions(WebpushFcmOptions.builder()
-                    .setLink(path)
-                    .build())
                 .build())
+            .putData("link", path)
             .build();
 
         try {
@@ -102,15 +98,14 @@ public class FCMService {
 
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
+            .addAllTokens(tokens)
             .setWebpushConfig(WebpushConfig.builder()
                 .setNotification(WebpushNotification.builder()
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
-                .setFcmOptions(WebpushFcmOptions.builder()
-                    .setLink(path)
-                    .build())
                 .build())
+            .putData("link", path)
             .build();
 
         try {
@@ -140,10 +135,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
-                .setFcmOptions(WebpushFcmOptions.builder()
-                    .setLink(path)
-                    .build())
                 .build())
+            .putData("link", path)
             .build();
 
         try {
