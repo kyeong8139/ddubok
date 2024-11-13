@@ -6,17 +6,17 @@ import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "@context/modal-context";
 import Button from "@components/button/button";
 import Modal from "@components/common/modal";
+import Toggle from "@components/common/toggle";
 import { IUserDto } from "@interface/components/user";
 import { selectUser, updateUser } from "@lib/api/user-api";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import useAuthToken from "@lib/utils/tokenUtils";
 import { removeToken, insertToken } from "@lib/api/notification-api";
+import { requestPermission } from "@lib/utils/firebase";
+import { deleteUser, logout } from "@lib/api/login-api";
+import { getMessaging, getToken, deleteToken } from "@firebase/messaging";
 
 import { PencilCircle } from "@phosphor-icons/react";
-import { deleteUser, logout } from "@lib/api/login-api";
-import Toggle from "@components/common/toggle";
-import { getMessaging, getToken, deleteToken } from "@firebase/messaging";
-import { requestPermission } from "@lib/utils/firebase";
 
 const Mypage = () => {
 	const route = useRouter();
