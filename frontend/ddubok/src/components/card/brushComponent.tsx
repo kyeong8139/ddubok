@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IBrushComponentProps, IPathCreatedEvent } from "@interface/components/brush";
 import { fabric } from "fabric";
 import { Eraser } from "@phosphor-icons/react";
 
-// fabric.js Path 타입 확장
 declare module "fabric" {
 	namespace fabric {
 		interface Path {
@@ -21,9 +20,27 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
 	);
 	const [isEraser, setIsEraser] = useState(false);
+	const colorSliderRef = useRef<HTMLDivElement>(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [startX, setStartX] = useState(0);
+	const [scrollLeft, setScrollLeft] = useState(0);
 
-	const colors = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ff9900"];
-
+	const colors = [
+		"#000000",
+		"#DFE6E9",
+		"#FF7675",
+		"#FAB1A0",
+		"#FD79A8",
+		"#A855F7",
+		"#8B5CF6",
+		"#0984E3",
+		"#74B9FF",
+		"#55EFC4",
+		"#00B894",
+		"#FFEAA7",
+		"#E17055",
+		"#D63031",
+	];
 	useEffect(() => {
 		if (canvas) {
 			const baseControls = fabric.Object.prototype.controls;
@@ -66,7 +83,6 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 			canvas.on("path:created", function (e: IPathCreatedEvent) {
 				const path = e.path;
 
-				// Set custom property
 				if (path instanceof fabric.Path) {
 					path.isBrushPath = true;
 				}
@@ -126,7 +142,6 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 		}
 	}, [canvas]);
 
-	// 지우개 모드 이벤트 핸들러
 	useEffect(() => {
 		if (!canvas) return;
 
@@ -145,7 +160,7 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 				) {
 					canvas.remove(obj);
 					canvas.requestRenderAll();
-					break; // 가장 위에 있는 객체만 지우기
+					break;
 				}
 			}
 		};
@@ -173,6 +188,26 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 			canvas.freeDrawingBrush.width = brushSize;
 		}
 	}, [canvas, brushColor, brushSize]);
+
+	const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>) => {
+		setIsDragging(true);
+		if (ref.current) {
+			setStartX(e.pageX - ref.current.offsetLeft);
+			setScrollLeft(ref.current.scrollLeft);
+		}
+	};
+
+	const handleMouseUp = () => {
+		setIsDragging(false);
+	};
+
+	const handleMouseMove = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>) => {
+		if (!isDragging || !ref.current) return;
+		e.preventDefault();
+		const x = e.pageX - ref.current.offsetLeft;
+		const walk = (x - startX) * 2;
+		ref.current.scrollLeft = scrollLeft - walk;
+	};
 
 	const handleColorChange = (color: string) => {
 		if (isEraser) {
@@ -227,18 +262,18 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 						<Eraser />
 					</button>
 				</div>
-				<div className="grid grid-cols-5 gap-2 ">
-					{colors.map((color) => (
-						<button
-							key={color}
-							className={`w-10 h-10 rounded-lg border-2 ${
-								brushColor === color && !isEraser ? "border-ddubokPurple" : "border-gray-200"
-							}`}
-							style={{ backgroundColor: color }}
-							onClick={() => handleColorChange(color)}
-						/>
-					))}
-					<div className="relative w-10 h-10">
+				<div
+					ref={colorSliderRef}
+					className="flex overflow-x-auto space-x-1 whitespace-nowrap scrollbar-hide select-none cursor-grab active:cursor-grabbing pb-2"
+					onMouseDown={(e) => handleMouseDown(e, colorSliderRef)}
+					onMouseUp={handleMouseUp}
+					onMouseLeave={handleMouseUp}
+					onMouseMove={(e) => handleMouseMove(e, colorSliderRef)}
+				>
+					<div
+						className="relative w-10 h-10 flex-shrink-0"
+						onDragStart={(e) => e.preventDefault()}
+					>
 						<input
 							type="color"
 							value={customColor}
@@ -246,12 +281,25 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
 						/>
 						<button
-							className={`w-full h-full rounded-lg border-2 ${
+							className={`w-full h-full rounded-lg border-2 transition-all duration-200  ${
 								brushColor === customColor && !isEraser ? "border-ddubokPurple" : "border-gray-200"
 							}`}
 							style={{ background: customColor }}
+							onDragStart={(e) => e.preventDefault()}
 						/>
 					</div>
+					{colors.map((color) => (
+						<button
+							key={color}
+							className={`w-10 h-10 rounded-lg border-2 flex-shrink-0 transition-all duration-200  ${
+								brushColor === color && !isEraser ? "border-ddubokPurple" : "border-gray-200"
+							}`}
+							style={{ backgroundColor: color }}
+							onClick={() => handleColorChange(color)}
+							onDragStart={(e) => e.preventDefault()}
+							draggable={false}
+						/>
+					))}
 				</div>
 			</div>
 

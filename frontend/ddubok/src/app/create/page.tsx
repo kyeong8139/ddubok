@@ -20,6 +20,7 @@ const Create = () => {
 
 	const { setSelectedImage, setUserName, setLetterContent } = useCardStore();
 	const sliderRef = useRef<Slider | null>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +58,28 @@ const Create = () => {
 		setCurrentSlide(current);
 	};
 
+	const sanitizeInput = (input: string): string => {
+		const sanitized = input
+			.replace(/[<>]/g, "")
+			.replace(/[&'"]/g, "")
+			.replace(/javascript:/gi, "")
+			.replace(/on\w+=/gi, "")
+			.replace(/data:/gi, "");
+
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+	};
+
+	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const sanitizedValue = sanitizeInput(e.target.value);
+		setLocalUserName(sanitizedValue);
+	};
+
 	const handleSelectButton = () => {
 		const selectedImage = cardImages[currentSlide].image;
 		setSelectedImage(selectedImage);
 
-		const finalUserName = userName.trim() === "" ? "익명" : userName;
+		const sanitizedName = sanitizeInput(userName);
+		const finalUserName = sanitizedName.trim() === "" ? "익명" : sanitizedName;
 		setUserName(finalUserName);
 
 		setLetterContent("");
@@ -88,6 +106,18 @@ const Create = () => {
 				}
 			} else {
 				sliderRef.current.slickGoTo(index);
+			}
+
+			if (currentIndex === index) {
+				setTimeout(() => {
+					if (inputRef.current) {
+						inputRef.current.focus();
+						inputRef.current.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+						});
+					}
+				}, 100);
 			}
 		}
 	};
@@ -146,10 +176,11 @@ const Create = () => {
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
 						<input
+							ref={inputRef}
 							type="text"
 							placeholder="익명 (최대 11글자)"
 							value={userName}
-							onChange={(e) => setLocalUserName(e.target.value)}
+							onChange={handleNameChange}
 							maxLength={11}
 							className="border-b border-white bg-transparent font-nexonRegular text-white text-center outline-none"
 						/>

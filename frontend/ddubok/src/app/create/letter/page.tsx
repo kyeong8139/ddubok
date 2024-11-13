@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -26,7 +26,20 @@ const CreateBack = () => {
 	const memberId = id ? decryptCardId(id) : null;
 
 	const [isLoading, setIsLoading] = useState(false);
+	const [isSmallScreen, setIsSmallScreen] = useState(false);
 	const { selectedImage, userName, letterContent, setLetterContent, setCardId } = useCardStore();
+
+	useEffect(() => {
+		const checkScreenHeight = () => {
+			setIsSmallScreen(window.innerHeight < 720);
+		};
+
+		checkScreenHeight();
+
+		window.addEventListener("resize", checkScreenHeight);
+
+		return () => window.removeEventListener("resize", checkScreenHeight);
+	}, []);
 
 	const handleSendCard = async () => {
 		if (isLoading) return;
@@ -45,7 +58,13 @@ const CreateBack = () => {
 
 		try {
 			setIsLoading(true);
-			const response = (await sendCard(letterContent, userName, 1, selectedImage, memberId)) as SendCardResponse;
+			const response = (await sendCard(
+				letterContent,
+				userName,
+				null, // V2.1 수정
+				selectedImage,
+				memberId,
+			)) as SendCardResponse;
 
 			if (response.code === "200") {
 				setCardId(response.data.cardId);
@@ -59,11 +78,21 @@ const CreateBack = () => {
 		}
 	};
 
+	const cardSize = isSmallScreen
+		? {
+				wrapper: "w-[255px] h-[451px]",
+				textarea: "w-[188px] h-[363px]",
+		  }
+		: {
+				wrapper: "w-[280px] h-[495px]",
+				textarea: "w-[206px] h-[398px]",
+		  };
+
 	return (
-		<div className="flex flex-col items-center w-full">
-			<div className="text-white font-nexonBold text-2xl mt-10">편지 쓰기</div>
+		<div className="flex flex-col items-center w-full ">
+			<div className="text-white font-nexonBold text-xl mt-2">편지 작성</div>
 			<div className="relative mt-4 flex justify-center">
-				<div className="relative w-[280px] h-[495px]">
+				<div className={`relative ${cardSize.wrapper}`}>
 					<Image
 						src="/assets/fortune-reverse.png"
 						alt="운세 카드"
@@ -72,12 +101,12 @@ const CreateBack = () => {
 					<textarea
 						value={letterContent}
 						onChange={(e) => setLetterContent(e.target.value)}
-						className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                            w-[206px] h-[398px] bg-transparent text-black 
+						className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                            ${cardSize.textarea} bg-transparent text-black 
                             resize-none font-nexonRegular text-base
                             focus:outline-none scrollbar-hide
-                            overflow-y-auto [&::-webkit-scrollbar]:hidden"
-						placeholder="여기에 편지를 작성해주세요..."
+                            overflow-y-auto [&::-webkit-scrollbar]:hidden`}
+						placeholder="편지를 작성해주세요..."
 						maxLength={500}
 					/>
 				</div>
@@ -86,7 +115,7 @@ const CreateBack = () => {
 				<div className="text-white font-nexonLight text-sm">{letterContent.length}/500자</div>
 			</div>
 
-			<div className="w-full mt-10 flex justify-center mb-8">
+			<div className="w-full mt-2 flex justify-center mb-8">
 				<Button
 					text={isLoading ? "전송 중..." : type === "normal" ? "완성하기" : "전송하기"}
 					color="green"

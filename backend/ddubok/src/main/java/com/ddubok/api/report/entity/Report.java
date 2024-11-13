@@ -91,8 +91,7 @@ public class Report {
     private Card card;
 
     /**
-     * 신고 엔티티를 생성하는 빌더.
-     * 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며, 신고 상태는 기본값으로 UNPROCESSED로 설정됩니다.
+     * 신고 엔티티를 생성하는 빌더. 신고 내용, 신고자, 카드 ID를 포함하여 신고 객체를 생성하며, 신고 상태는 기본값으로 UNPROCESSED로 설정됩니다.
      *
      * @param title   신고 제목
      * @param content 신고 내용 또는 사유
@@ -117,41 +116,5 @@ public class Report {
     public void updateReportState(State state) {
         this.state = state;
         this.processedAt = LocalDateTime.now();
-    }
-
-    /**
-     * @param reports 학습데이터가 될 수락 혹은 반려의 데이터
-     * @return tempFile 학습데이터
-     * @throws IOException
-     */
-    public static File createTrainingDataFile(List<Report> reports) throws IOException {
-        File tempFile = Files.createTempFile("training_data", ".jsonl").toFile();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            for (Report report : reports) {
-                ObjectNode chatFormat = objectMapper.createObjectNode();
-                ArrayNode messages = objectMapper.createArrayNode();
-
-                ObjectNode userMessage = objectMapper.createObjectNode();
-                userMessage.put("role", "user");
-                userMessage.put("content",
-                    String.format("이 메시지는 적절한가요? 메시지: '%s'", report.getContent()));
-
-                ObjectNode assistantMessage = objectMapper.createObjectNode();
-                assistantMessage.put("role", "assistant");
-                assistantMessage.put("content",
-                    report.getState().equals("ACCEPT") ? "ACCEPT" : "DENIED");
-
-                messages.add(userMessage);
-                messages.add(assistantMessage);
-
-                chatFormat.set("messages", messages);
-
-                writer.write(chatFormat.toString());
-                writer.write("\n");
-            }
-        }
-        return tempFile;
     }
 }

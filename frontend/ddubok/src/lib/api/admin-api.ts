@@ -106,7 +106,7 @@ export const updateSeasonDefault = (images: File[], seasonData: ISeasonDefaultPr
 		formData.append("image", image);
 	});
 
-	formData.append("DefaultSeasonReq", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
+	formData.append("defaultSeasonReq", new Blob([JSON.stringify(seasonData)], { type: "application/json" }));
 
 	return axiosInstance.post(`${baseURL}/admins/seasons/default`, formData, {
 		withCredentials: true,

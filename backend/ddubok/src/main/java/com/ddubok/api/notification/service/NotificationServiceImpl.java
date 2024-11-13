@@ -10,10 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
@@ -87,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
 
                     NotificationMessageDto notification = objectMapper.treeToValue(actualData,
                         NotificationMessageDto.class);
-                    fcmService.sendNotification(notification, CARDBOOK_URL);
+                    fcmService.sendCardOpenedNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
                     log.error("open card notification error", e);
                 }
@@ -106,7 +104,7 @@ public class NotificationServiceImpl implements NotificationService {
 
                     NotificationMessageDto notification = objectMapper.treeToValue(actualData,
                         NotificationMessageDto.class);
-                    fcmService.sendNotification(notification, CARDBOOK_URL);
+                    fcmService.sendSeasonEndedNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
                     log.error("season end notification error", e);
                 }
@@ -125,7 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
 
                     NotificationMessageDto notification = objectMapper.treeToValue(actualData,
                         NotificationMessageDto.class);
-                    fcmService.sendNotification(notification, ATTENDANCE_URL);
+                    fcmService.sendAttendanceNotification(notification, ATTENDANCE_URL);
                 } catch (Exception e) {
                     log.error("attendance check notification error", e);
                 }
