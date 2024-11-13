@@ -75,7 +75,7 @@ const Setting = () => {
 												<span
 														className={
 															season.isActiveSeason
-																? "text-green-500 font-bold"
+																? "text-green-400 font-nexonBold"
 																: ""
 														}
 													>
