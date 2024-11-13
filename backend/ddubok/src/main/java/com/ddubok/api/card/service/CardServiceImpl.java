@@ -65,10 +65,8 @@ public class CardServiceImpl implements CardService {
         if (dto.getMemberId() != null) {
             NotificationMessageDto message = NotificationMessageDto.builder()
                 .id(dto.getMemberId())
-                .title("새로운 행운카드가 배송되었어요!")
+                .title("✨새로운 행운카드가 배송되었어요!✨")
                 .body("뚜복에 접속해 행운카드를 확인해보세요!")
-                .data(Map.of())
-                .timestamp(LocalDateTime.now())
                 .build();
 
             redisTemplate.convertAndSend("create-card", message);

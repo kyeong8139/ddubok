@@ -6,8 +6,10 @@ import com.ddubok.api.member.repository.MemberRepository;
 import com.ddubok.api.notification.dto.request.NotificationMessageDto;
 import com.ddubok.api.notification.entity.NotificationToken;
 import com.ddubok.api.notification.repository.NotificationTokenRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,10 +60,14 @@ public class NotificationServiceImpl implements NotificationService {
         redisMessageListener.addMessageListener(
             (message, pattern) -> {
                 try {
-                    NotificationMessageDto notification = objectMapper.readValue(
-                        message.getBody(),
-                        NotificationMessageDto.class
-                    );
+                    String receivedMessage = new String((byte[]) message.getBody(),
+                        StandardCharsets.UTF_8);
+
+                    JsonNode jsonNode = objectMapper.readTree(receivedMessage);
+                    JsonNode actualData = jsonNode.get(1);
+
+                    NotificationMessageDto notification = objectMapper.treeToValue(actualData,
+                        NotificationMessageDto.class);
                     fcmService.sendNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
                     log.error("create card notification error", e);
@@ -73,11 +79,15 @@ public class NotificationServiceImpl implements NotificationService {
         redisMessageListener.addMessageListener(
             (message, pattern) -> {
                 try {
-                    NotificationMessageDto notification = objectMapper.readValue(
-                        message.getBody(),
-                        NotificationMessageDto.class
-                    );
-                    fcmService.sendCardOpenedNotification(notification, CARDBOOK_URL);
+                    String receivedMessage = new String((byte[]) message.getBody(),
+                        StandardCharsets.UTF_8);
+
+                    JsonNode jsonNode = objectMapper.readTree(receivedMessage);
+                    JsonNode actualData = jsonNode.get(1);
+
+                    NotificationMessageDto notification = objectMapper.treeToValue(actualData,
+                        NotificationMessageDto.class);
+                    fcmService.sendNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
                     log.error("open card notification error", e);
                 }
@@ -88,13 +98,17 @@ public class NotificationServiceImpl implements NotificationService {
         redisMessageListener.addMessageListener(
             (message, pattern) -> {
                 try {
-                    NotificationMessageDto notification = objectMapper.readValue(
-                        message.getBody(),
-                        NotificationMessageDto.class
-                    );
-                    fcmService.sendSeasonEndedNotification(notification, CARDBOOK_URL);
+                    String receivedMessage = new String((byte[]) message.getBody(),
+                        StandardCharsets.UTF_8);
+
+                    JsonNode jsonNode = objectMapper.readTree(receivedMessage);
+                    JsonNode actualData = jsonNode.get(1);
+
+                    NotificationMessageDto notification = objectMapper.treeToValue(actualData,
+                        NotificationMessageDto.class);
+                    fcmService.sendNotification(notification, CARDBOOK_URL);
                 } catch (Exception e) {
-                    log.error("open card notification error", e);
+                    log.error("season end notification error", e);
                 }
             },
             new ChannelTopic("end-season")
@@ -103,11 +117,15 @@ public class NotificationServiceImpl implements NotificationService {
         redisMessageListener.addMessageListener(
             (message, pattern) -> {
                 try {
-                    NotificationMessageDto notification = objectMapper.readValue(
-                        message.getBody(),
-                        NotificationMessageDto.class
-                    );
-                    fcmService.sendAttendanceNotification(notification, ATTENDANCE_URL);
+                    String receivedMessage = new String((byte[]) message.getBody(),
+                        StandardCharsets.UTF_8);
+
+                    JsonNode jsonNode = objectMapper.readTree(receivedMessage);
+                    JsonNode actualData = jsonNode.get(1);
+
+                    NotificationMessageDto notification = objectMapper.treeToValue(actualData,
+                        NotificationMessageDto.class);
+                    fcmService.sendNotification(notification, ATTENDANCE_URL);
                 } catch (Exception e) {
                     log.error("attendance check notification error", e);
                 }
