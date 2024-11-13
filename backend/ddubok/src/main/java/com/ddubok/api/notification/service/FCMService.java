@@ -10,6 +10,7 @@ import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.google.firebase.messaging.WebpushNotification;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
+                .putAllData(Map.of("link", path))
                 .build())
-            .putData("link", path)
             .build();
 
         try {
@@ -72,8 +73,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
+                .putAllData(Map.of("link", path))
                 .build())
-            .putData("link", path)
             .build();
 
         try {
@@ -98,14 +99,13 @@ public class FCMService {
 
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
-            .addAllTokens(tokens)
             .setWebpushConfig(WebpushConfig.builder()
                 .setNotification(WebpushNotification.builder()
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
+                .putAllData(Map.of("link", path))
                 .build())
-            .putData("link", path)
             .build();
 
         try {
@@ -135,8 +135,8 @@ public class FCMService {
                     .setTitle(messageDto.getTitle())
                     .setBody(messageDto.getBody())
                     .build())
+                .putAllData(Map.of("link", path))
                 .build())
-            .putData("link", path)
             .build();
 
         try {
