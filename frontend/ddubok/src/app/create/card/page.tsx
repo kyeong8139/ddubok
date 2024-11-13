@@ -338,11 +338,9 @@ const CreateFront = () => {
 			{/* Control buttons */}
 			<div
 				ref={controlsRef}
-				className={`w-full max-w-[480px]  mt-2 mx-auto ${
-					isPanelOpen ? "transition-transform duration-300 ease-in-out" : ""
-				} ${
+				className={`w-full max-w-[480px]  mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
 					shouldFixButtons && isPanelOpen
-						? "fixed bottom-0 left-0 right-0 translate-y-[-300px] z-50"
+						? "fixed bottom-0 left-0 right-0 translate-y-[-320px] z-50"
 						: "translate-y-0"
 				}`}
 			>
@@ -380,6 +378,7 @@ const CreateFront = () => {
 			</div>
 
 			{/* Slide Up Panel */}
+			{/* Slide Up Panel */}
 			{isPanelOpen && (
 				<div
 					className="fixed inset-0 pointer-events-none"
@@ -392,41 +391,30 @@ const CreateFront = () => {
 				</div>
 			)}
 			<div
-				className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg transition-transform duration-300 ease-in-out ${
+				className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg  duration-300 ease-in-out ${
 					isPanelOpen ? "translate-y-0" : "translate-y-full"
 				}`}
 				style={{
 					width: "100%",
 					maxWidth: "480px",
-					height: "300px",
+					height: "320px",
 					boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
 					zIndex: 40,
 				}}
 			>
 				<div
-					className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg transition-transform duration-300 ease-in-out ${
-						isPanelOpen ? "translate-y-0" : "translate-y-full"
-					}`}
-					style={{
-						width: "100%",
-						maxWidth: "480px",
-						height: "300px",
-						boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
-						zIndex: 40,
-					}}
+					className="relative w-full h-full flex justify-center items-center"
+					onClick={(e) => e.stopPropagation()}
 				>
-					<div
-						className="relative w-full h-full"
-						onClick={(e) => e.stopPropagation()}
+					<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
+					<button
+						className="absolute top-4 right-4 text-gray-500"
+						onClick={() => setIsPanelOpen(false)}
 					>
-						<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
-						<button
-							className="absolute top-4 right-4 text-gray-500"
-							onClick={() => setIsPanelOpen(false)}
-						>
-							✕
-						</button>
-						<div className="pt-8 px-4 h-full overflow-y-auto">{renderActiveComponent()}</div>
+						✕
+					</button>
+					<div className=" px-4 flex flex-col justify-center items-center w-full ">
+						{renderActiveComponent()}
 					</div>
 				</div>
 			</div>

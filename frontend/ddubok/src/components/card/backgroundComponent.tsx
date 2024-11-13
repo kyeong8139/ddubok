@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { chunk } from "lodash";
 import { IBackgroundComponentProps } from "@interface/components/background";
+import { createPortal } from "react-dom";
+import dynamic from "next/dynamic";
 
 import "cropperjs/dist/cropper.css";
 import { fabric } from "fabric";
@@ -26,13 +28,32 @@ type BackgroundItem = BackgroundUploadItem | BackgroundWhiteItem | BackgroundIma
 const backgroundImages = Array.from({ length: 14 }, (_, index) => `/assets/background/background (${index + 1}).JPG`);
 
 function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
+	const [mounted, setMounted] = useState(false);
 	const [selectedBackground, setSelectedBackground] = useState<string | null>("white");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [image, setImage] = useState<string>("");
 	const cropperRef = useRef<any>(null);
 	const [currentPage, setCurrentPage] = useState(0);
 
-	const itemsPerPage = 8;
+	const [isWideScreen, setIsWideScreen] = useState(false);
+
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsWideScreen(window.innerWidth >= 420);
+		};
+
+		checkScreenSize();
+		window.addEventListener("resize", checkScreenSize);
+
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	const itemsPerPage = isWideScreen ? 10 : 8;
+
 	const defaultItems: BackgroundItem[] = [
 		{ type: "upload" },
 		{ type: "white" },
@@ -188,7 +209,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 			return (
 				<label
 					key="upload"
-					className="relative cursor-pointer"
+					className="relative cursor-pointer flex justify-center"
 				>
 					<input
 						type="file"
@@ -198,7 +219,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 					/>
 					<div
 						className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all bg-white flex items-center justify-center
-              ${selectedBackground === "custom" ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+             ${selectedBackground === "custom" ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 					>
 						<div className="absolute flex flex-col items-center justify-center">
 							<ImageSquare
@@ -217,7 +238,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 			return (
 				<label
 					key="white"
-					className="relative cursor-pointer"
+					className="relative cursor-pointer flex justify-center"
 				>
 					<input
 						type="radio"
@@ -227,7 +248,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 					/>
 					<div
 						className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all bg-white
-              ${selectedBackground === "white" ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+             ${selectedBackground === "white" ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 					>
 						<div className="absolute flex items-center justify-center"></div>
 					</div>
@@ -239,7 +260,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 			return (
 				<label
 					key={index}
-					className="relative cursor-pointer"
+					className="relative cursor-pointer flex justify-center"
 				>
 					<input
 						type="radio"
@@ -249,7 +270,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 					/>
 					<div
 						className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-            ${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
+           ${selectedBackground === item.url ? "border-ddubokPurple" : "border-gray-200 hover:border-ddubokPurple"}`}
 					>
 						<div className="relative w-full h-full">
 							<Image
@@ -272,7 +293,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 	return (
 		<div className="w-full">
 			<div className="relative">
-				<div className="grid grid-cols-4 gap-4">
+				<div className={`grid ${isWideScreen ? "grid-cols-5" : "grid-cols-4"} gap-4`}>
 					{pages[currentPage]?.map((item, index) => renderItem(item, index))}
 				</div>
 
@@ -281,7 +302,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 						onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
 						disabled={currentPage === 0}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-              ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
+             ${currentPage === 0 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretLeft
 							size={24}
@@ -305,7 +326,7 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 						onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
 						disabled={currentPage === totalPages - 1}
 						className={`p-2 rounded-full hover:bg-gray-100 transition-colors
-              ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
+             ${currentPage === totalPages - 1 ? "text-gray-300" : "text-gray-600"}`}
 					>
 						<CaretRight
 							size={24}
@@ -316,60 +337,65 @@ function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 				</div>
 			</div>
 
-			{isModalOpen && (
-				<div className="fixed inset-0 flex items-center justify-center z-50">
-					<div
-						className="fixed inset-0 bg-black bg-opacity-50"
-						onClick={() => setIsModalOpen(false)}
-					/>
-					<div className="relative bg-white rounded-lg p-6 max-w-[416px] w-full mx-4">
-						<div className="flex justify-between items-center mb-4">
-							<h3 className="text-lg font-semibold">이미지 자르기</h3>
-							<button onClick={() => setIsModalOpen(false)}>
-								<X
-									size={24}
-									color="#6b7280"
-									weight="regular"
-								/>
-							</button>
+			{mounted &&
+				isModalOpen &&
+				createPortal(
+					<div className="fixed inset-0 flex items-center justify-center z-[9999]">
+						<div
+							className="fixed inset-0 bg-black bg-opacity-50"
+							onClick={() => setIsModalOpen(false)}
+						/>
+						<div className="relative bg-white rounded-lg p-6 max-w-[416px] w-full mx-4">
+							<div className="flex justify-between items-center mb-4">
+								<h3 className="text-lg font-semibold">이미지 자르기</h3>
+								<button onClick={() => setIsModalOpen(false)}>
+									<X
+										size={24}
+										color="#6b7280"
+										weight="regular"
+									/>
+								</button>
+							</div>
+							<div className="mt-4">
+								{image && (
+									<Cropper
+										ref={cropperRef}
+										src={image}
+										style={{ height: 400, width: "100%" }}
+										aspectRatio={280 / 495}
+										guides={true}
+										viewMode={1}
+										minCropBoxHeight={10}
+										minCropBoxWidth={10}
+										background={false}
+										responsive={true}
+										autoCropArea={1}
+										checkOrientation={false}
+									/>
+								)}
+							</div>
+							<div className="mt-4 flex justify-end gap-2">
+								<button
+									className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+									onClick={() => setIsModalOpen(false)}
+								>
+									취소
+								</button>
+								<button
+									className="px-4 py-2 bg-ddubokPurple text-white rounded-lg hover:bg-opacity-90"
+									onClick={handleCrop}
+								>
+									적용하기
+								</button>
+							</div>
 						</div>
-						<div className="mt-4">
-							{image && (
-								<Cropper
-									ref={cropperRef}
-									src={image}
-									style={{ height: 400, width: "100%" }}
-									aspectRatio={280 / 495}
-									guides={true}
-									viewMode={1}
-									minCropBoxHeight={10}
-									minCropBoxWidth={10}
-									background={false}
-									responsive={true}
-									autoCropArea={1}
-									checkOrientation={false}
-								/>
-							)}
-						</div>
-						<div className="mt-4 flex justify-end gap-2">
-							<button
-								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-								onClick={() => setIsModalOpen(false)}
-							>
-								취소
-							</button>
-							<button
-								className="px-4 py-2 bg-ddubokPurple text-white rounded-lg hover:bg-opacity-90"
-								onClick={handleCrop}
-							>
-								적용하기
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+					</div>,
+					document.body,
+				)}
 		</div>
 	);
 }
 
-export default BackgroundComponent;
+export default dynamic(() => Promise.resolve(BackgroundComponent), {
+	ssr: false,
+});

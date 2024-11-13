@@ -14,10 +14,22 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [isProcessing, setIsProcessing] = useState(false);
 
-	const itemsPerPage = 8;
+	const [isWideScreen, setIsWideScreen] = useState(false);
+
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsWideScreen(window.innerWidth >= 420);
+		};
+
+		checkScreenSize();
+		window.addEventListener("resize", checkScreenSize);
+
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
+
+	const itemsPerPage = isWideScreen ? 10 : 8;
 	const pages = chunk([null, ...borderImages], itemsPerPage);
 	const totalPages = Math.ceil((borderImages.length + 1) / itemsPerPage);
-
 	useEffect(() => {
 		if (!canvas) return;
 
@@ -102,8 +114,8 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 	return (
 		<div className="w-full">
 			<div className="relative">
-				<div className="grid grid-cols-4 gap-4">
-					<label className="relative cursor-pointer">
+				<div className={`grid ${isWideScreen ? "grid-cols-5" : "grid-cols-4"} gap-4`}>
+					<label className="relative cursor-pointer flex justify-center">
 						<input
 							type="radio"
 							className="absolute opacity-0"
@@ -129,7 +141,7 @@ function BorderComponent({ canvas }: IBorderComponentProps) {
 						.map((imageUrl, index) => (
 							<label
 								key={index}
-								className="relative cursor-pointer"
+								className="relative cursor-pointer flex justify-center"
 							>
 								<input
 									type="radio"
