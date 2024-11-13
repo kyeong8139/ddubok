@@ -22,7 +22,7 @@ const CreateFront = () => {
 	const type = searchParams?.get("type");
 	const id = searchParams?.get("id");
 
-	const [activeComponent, setActiveComponent] = useState<string>("background");
+	const [activeComponent, setActiveComponent] = useState<string | null>(null);
 	const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
@@ -35,6 +35,11 @@ const CreateFront = () => {
 
 	const [shouldFixButtons, setShouldFixButtons] = useState(false);
 	const controlsRef = useRef<HTMLDivElement>(null);
+
+	const handlePanelClose = () => {
+		setIsPanelOpen(false);
+		setActiveComponent(null);
+	};
 
 	useEffect(() => {
 		if (!isPanelOpen) {
@@ -350,7 +355,7 @@ const CreateFront = () => {
 								key={value}
 								onClick={() => handleComponentClick(value)}
 								className={`px-[6px] py-2 mr-[1px] rounded-lg font-nexonBold text-xs border border-black ${
-									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
+									activeComponent && activeComponent === value ? "bg-ddubokPurple" : "bg-white"
 								}`}
 							>
 								{value === "background" && "배경"}
@@ -379,7 +384,7 @@ const CreateFront = () => {
 			{isPanelOpen && (
 				<div
 					className="fixed inset-0 pointer-events-none"
-					onClick={() => setIsPanelOpen(false)}
+					onClick={handlePanelClose}
 				>
 					<div
 						className="absolute inset-0 pointer-events-auto"
@@ -406,7 +411,7 @@ const CreateFront = () => {
 					<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
 					<button
 						className="absolute top-4 right-4 text-gray-500"
-						onClick={() => setIsPanelOpen(false)}
+						onClick={handlePanelClose}
 					>
 						✕
 					</button>
