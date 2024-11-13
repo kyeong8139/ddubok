@@ -69,15 +69,18 @@ public class Season {
     /**
      * 시즌을 생성하는 생성자
      *
-     * @param name 시즌의 이름
+     * @param id          시즌의 이이디
+     * @param name        시즌의 이름
      * @param description 시즌의 설명
-     * @param path 배너의 이미지 경로
-     * @param startedAt 시즌 시작날짜
-     * @param endedAt 시즌 종료날짜
-     * @param openedAt 카드 오픈날짜
+     * @param path        배너의 이미지 경로
+     * @param startedAt   시즌 시작날짜
+     * @param endedAt     시즌 종료날짜
+     * @param openedAt    카드 오픈날짜
      */
     @Builder
-    public Season(String name, String description, List<String> path, LocalDateTime startedAt, LocalDateTime endedAt, LocalDateTime openedAt) {
+    public Season(Long id, String name, String description, List<String> path,
+        LocalDateTime startedAt, LocalDateTime endedAt, LocalDateTime openedAt) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.path = path;
@@ -85,4 +88,6 @@ public class Season {
         this.endedAt = endedAt;
         this.openedAt = openedAt;
     }
+
+
 }

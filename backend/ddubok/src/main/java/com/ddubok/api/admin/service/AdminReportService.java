@@ -1,6 +1,7 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.GetReportListReq;
+import com.ddubok.api.admin.dto.request.HandleReportReq;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
 import java.util.List;
@@ -30,8 +31,8 @@ public interface AdminReportService {
      * 신고번호에 해당하는 신고의 상태를 변경한다.
      *
      * @param reportId 변경할 신고번호
-     * @param getReportListReq 수락,반려, 미처리등을 결정
+     * @param handleReportReq 수락,반려, 미처리등을 결정
      * @return 로직을 마치고 해당 신고의 신고번호, 신고제목, 상태를 반환한다.
      */
-    GetReportListRes handleReport(Long reportId, GetReportListReq getReportListReq);
+    GetReportListRes handleReport(Long reportId, HandleReportReq handleReportReq);
 }

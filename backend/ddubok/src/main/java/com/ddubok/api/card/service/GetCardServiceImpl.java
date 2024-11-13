@@ -55,7 +55,7 @@ public class GetCardServiceImpl implements GetCardService {
         }
         return GetCardDetailRes.builder()
             .id(album.getCard().getId())
-            .content(album.getCard().getContent())
+            .content(getCardContentBasedOnState(album.getCard()))
             .openedAt(album.getCard().getOpenedAt())
             .path(album.getCard().getPath())
             .state(album.getCard().getState())
@@ -77,6 +77,7 @@ public class GetCardServiceImpl implements GetCardService {
             .orElseThrow(() -> new MemberNotFoundException());
         Page<Album> albums = albumRepository.findAllBySeason(findmember, findSeason, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .total(albums.getTotalElements())
             .build();
     }
 
@@ -91,22 +92,8 @@ public class GetCardServiceImpl implements GetCardService {
             .orElseThrow(() -> new MemberNotFoundException());
         Page<Album> albums = albumRepository.findAll(findmember, pageable);
         return GetCardListRes.builder().cards(getGetCardDetailRes(albums)).hasNext(!albums.isLast())
+            .total(albums.getTotalElements())
             .build();
-    }
-
-    private List<GetCardDetailRes> getGetCardDetailRes(Page<Album> albums) {
-        return albums.stream()
-            .filter(album -> !album.getIsDeleted())
-            .map(album -> GetCardDetailRes.builder()
-                .id(album.getCard().getId())
-                .content(album.getCard().getContent())
-                .openedAt(album.getCard().getOpenedAt())
-                .path(album.getCard().getPath())
-                .state(album.getCard().getState())
-                .writerName(album.getCard().getWriterName())
-                .isRead(album.getIsRead())
-                .build())
-            .collect(Collectors.toList());
     }
 
     /**
@@ -138,4 +125,37 @@ public class GetCardServiceImpl implements GetCardService {
             .writerName(card.getWriterName()).state(card.getState()).openedAt(card.getOpenedAt())
             .path(card.getPath()).build();
     }
+
+    /**
+     * album 리스트를 Dto로 변환하여 반환하는 private 메서드
+     *
+     * @param albums album 리스트 객체
+     * @return 변환된 객체 리스트
+     */
+    private List<GetCardDetailRes> getGetCardDetailRes(Page<Album> albums) {
+        return albums.stream()
+            .filter(album -> !album.getIsDeleted())
+            .map(album -> GetCardDetailRes.builder()
+                .id(album.getCard().getId())
+                .content(getCardContentBasedOnState(album.getCard()))
+                .openedAt(album.getCard().getOpenedAt())
+                .path(album.getCard().getPath())
+                .state(album.getCard().getState())
+                .writerName(album.getCard().getWriterName())
+                .isRead(album.getIsRead())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * card 오픈일자가 되지 않았을때 내용이 노출되지 않게 하기 위한 private 메서드
+     *
+     * @param card 확인할 card 객체
+     * @return state 상태에 따른 content
+     */
+    private String getCardContentBasedOnState(Card card) {
+        return (card.getState() == State.READY || card.getState() == State.FILTERED) ? ""
+            : card.getContent();
+    }
+
 }

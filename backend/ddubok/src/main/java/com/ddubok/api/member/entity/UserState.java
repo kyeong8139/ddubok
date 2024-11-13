@@ -10,7 +10,7 @@ public enum UserState {
 
     ACTIVATED("활성"),
     INACTIVATED("비활성"),
-    BANNED("정지");
+    BANNED("차단");
 
     private final String userStateName;
 

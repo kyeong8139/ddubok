@@ -9,6 +9,8 @@ import Card from "@components/card/card";
 import Loading from "@components/common/loading";
 import Modal from "@components/common/modal";
 import useAuthToken from "@lib/utils/tokenUtils";
+import { getTokenInfo } from "@lib/utils/authUtils";
+import { selectUser } from "@lib/api/user-api";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -16,8 +18,6 @@ import "slick-carousel/slick/slick-theme.css";
 import { ModalContext } from "@context/modal-context";
 import { LinkSimple } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
-import { getTokenInfo } from "@lib/utils/authUtils";
-import { selectUser } from "@lib/api/user-api";
 import useKakaoInit from "src/hooks/useKakaoInit";
 
 const Home = () => {
