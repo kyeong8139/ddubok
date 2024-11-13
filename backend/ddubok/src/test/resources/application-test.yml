@@ -59,4 +59,4 @@ openai:
   api:
     key: test-openai-key
     url: https://api.openai.test.com
-  model: test-model
+  finetuning: test-model
