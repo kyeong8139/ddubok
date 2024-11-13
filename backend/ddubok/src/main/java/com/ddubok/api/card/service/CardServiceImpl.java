@@ -56,12 +56,11 @@ public class CardServiceImpl implements CardService {
     public Long createCard(CreateCardReqDto dto) {
         Season season = seasonRepository.findById(dto.getSeasonId()).orElseThrow(
             () -> new SeasonNotFoundException("season not found: " + dto.getSeasonId()));
-        Card card = cardRepository.save(Card.builderForSeasonCard()
-            .content(dto.getContent())
-            .writerName(dto.getWriterName())
-            .season(season)
-            .path(dto.getPath())
-            .build());
+        Card card = cardRepository.save(Card.createSeasonCard(
+            dto.getContent(),
+            dto.getPath(),
+            dto.getWriterName(),
+            season));
         if (dto.getMemberId() != null) {
             NotificationMessageDto message = NotificationMessageDto.builder()
                 .id(dto.getMemberId())
@@ -110,12 +109,11 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Long createNormalCard(CreateCardReqDto dto) {
-        Card card = cardRepository.save(Card.builderForNormalCard()
-            .content(dto.getContent())
-            .writerName(dto.getWriterName())
-            .openedAt(LocalDateTime.now().plusHours(24))
-            .path(dto.getPath())
-            .build());
+        Card card = cardRepository.save(Card.createNormalCard(
+            dto.getContent(),
+            dto.getPath(),
+            dto.getWriterName()
+        ));
         if (dto.getMemberId() != null) {
             saveAlbum(card.getId(), dto.getMemberId());
         }
