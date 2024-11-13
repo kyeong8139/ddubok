@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DefaultSeasonReq {
-    private String description;
+    private String seasonDescription;
 }

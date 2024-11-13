@@ -250,7 +250,7 @@ public class AdminController {
             .collect(Collectors.toList());
 
         DefaultSeasonRes defaultSeasonRes = DefaultSeasonRes.builder()
-            .seasonDescription(defaultSeasonReq.getDescription())
+            .seasonDescription(defaultSeasonReq.getSeasonDescription())
             .path(paths)
             .build();
 
