@@ -119,7 +119,8 @@ public class SeasonServiceImpl implements SeasonService {
     @Override
     public DefaultSeasonRes getDefaultSeason() {
         if (Boolean.TRUE.equals(redisTemplate.hasKey(DEFAULT_SEASON_KEY))) {
-            MainSeasonRes mainSeasonRes = (MainSeasonRes) redisTemplate.opsForValue().get(DEFAULT_SEASON_KEY);
+            MainSeasonRes mainSeasonRes = (MainSeasonRes) redisTemplate.opsForValue()
+                .get(DEFAULT_SEASON_KEY);
             return DefaultSeasonRes.builder()
                 .seasonDescription(mainSeasonRes.getSeasonDescription())
                 .path(mainSeasonRes.getPath())
@@ -144,7 +145,8 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public MainSeasonRes getActiveSeason() {
-        Optional<LocalDateTime> SeasonStartDate = getRedisValue(SEASON_START_DATE_KEY, LocalDateTime.class);
+        Optional<LocalDateTime> SeasonStartDate = getRedisValue(SEASON_START_DATE_KEY,
+            LocalDateTime.class);
         if (SeasonStartDate.isEmpty()) {
             updateNextSeasonDate();
         }
@@ -192,12 +194,14 @@ public class SeasonServiceImpl implements SeasonService {
 
     private void updateNextSeasonDate() {
         List<Season> seasonList = seasonRepository.findAll();
-        LocalDateTime seasonStartDate = getRedisValue(SEASON_START_DATE_KEY, LocalDateTime.class).orElse(LocalDateTime.MAX);
+        LocalDateTime seasonStartDate = getRedisValue(SEASON_START_DATE_KEY,
+            LocalDateTime.class).orElse(LocalDateTime.MAX);
         LocalDateTime now = LocalDateTime.now();
 
         Season nextSeason = null;
         for (Season season : seasonList) {
-            if (season.getEndedAt().isAfter(now) && seasonStartDate.isAfter(season.getStartedAt())) {
+            if (season.getEndedAt().isAfter(now) && seasonStartDate.isAfter(
+                season.getStartedAt())) {
                 nextSeason = season;
             }
         }
