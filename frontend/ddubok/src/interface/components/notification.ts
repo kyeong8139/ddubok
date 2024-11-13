@@ -1,8 +1,4 @@
-export interface IFirebaseConfig {
-	apiKey: string | undefined;
-	authDomain: string | undefined;
-	projectId: string | undefined;
-	storageBucket: string | undefined;
-	messagingSenderId: string | undefined;
-	appId: string | undefined;
+export interface IToggleProps {
+	isChecked: boolean;
+	onChange: (checked: boolean) => void;
 }
