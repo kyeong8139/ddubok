@@ -33,7 +33,7 @@ public class NormalCardController {
         @RequestPart(name = "req") CreateCardReq req) {
         Long cardId = cardService.createNormalCard(
             CreateCardReqDto.builder().content(req.getContent())
-                .path(uploadCardImg(image, req.getSeasonId())).isCustom(true)
+                .path(uploadCardImg(image, req.getWriterName())).isCustom(true)
                 .writerName(req.getWriterName()).memberId(req.getMemberId()).build());
         return BaseResponse.ofSuccess(CardIdRes.builder().cardId(cardId).build());
     }
@@ -42,11 +42,10 @@ public class NormalCardController {
      * 카드 이미지를 업로드합니다.
      *
      * @param cardImg  업로드할 카드 이미지 파일입니다.
-     * @param seasonId 시즌 id입니다.
      * @return 업로드된 이미지의 URL을 반환합니다.
      */
-    private String uploadCardImg(MultipartFile cardImg, Long seasonId) {
-        FileMetaInfo fileMetaInfo = s3ImageService.uploadCardImg(cardImg, seasonId);
+    private String uploadCardImg(MultipartFile cardImg, String writerName) {
+        FileMetaInfo fileMetaInfo = s3ImageService.uploadNormalCardImg(cardImg, writerName);
         return fileMetaInfo.getUrl();
     }
 }
