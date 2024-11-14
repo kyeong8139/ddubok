@@ -152,7 +152,7 @@ const User = () => {
 					/>
 				</div>
 				<div>
-					<table className="text-white  font-nexonRegular w-[calc(100%-64px)] mx-auto">
+					<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
 						<thead>
 							<tr className="text-xs border-b-2 border-solid border-white">
 								<th className="px-2 py-[10px]">번호</th>
