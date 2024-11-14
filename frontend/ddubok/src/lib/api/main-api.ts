@@ -1,7 +1,10 @@
 "use client";
 
-import axiosInstance from "@lib/api/axiosInstance";
+import axios from "axios";
 
 export const selectMainInfo = () => {
-	return axiosInstance.get(`/main`);
+	return axios.get(`/main`, {
+		headers: { "Content-Type": "application/json" },
+		withCredentials: true,
+	});
 };
