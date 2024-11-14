@@ -9,4 +9,5 @@ export interface IUserDto {
 	memberId: number;
 	nickname?: string;
 	role: string;
+	notificationConsent?: string;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { chunk } from "lodash";
 import Image from "next/image";
 import { IStickerComponentProps } from "@interface/components/sticker";
@@ -12,10 +12,22 @@ const stickerImages = Array.from({ length: 24 }, (_, index) => `/assets/characte
 
 function StickerComponent({ canvas }: IStickerComponentProps) {
 	const [currentPage, setCurrentPage] = useState(0);
-	const itemsPerPage = 8;
+	const [isWideScreen, setIsWideScreen] = useState(false);
+
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsWideScreen(window.innerWidth >= 420);
+		};
+
+		checkScreenSize();
+		window.addEventListener("resize", checkScreenSize);
+
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
+
+	const itemsPerPage = isWideScreen ? 10 : 8;
 	const pages = chunk(stickerImages, itemsPerPage);
 	const totalPages = Math.ceil(stickerImages.length / itemsPerPage);
-
 	const addSticker = (imageUrl: string) => {
 		if (!canvas) return;
 
@@ -114,11 +126,11 @@ function StickerComponent({ canvas }: IStickerComponentProps) {
 	return (
 		<div className="w-full">
 			<div className="relative">
-				<div className="grid grid-cols-4 gap-4">
+				<div className={`grid ${isWideScreen ? "grid-cols-5" : "grid-cols-4"} gap-4`}>
 					{pages[currentPage]?.map((imageUrl, index) => (
 						<div
 							key={index}
-							className="cursor-pointer"
+							className="cursor-pointer flex justify-center"
 							onClick={() => addSticker(imageUrl)}
 						>
 							<div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-ddubokPurple transition-all">

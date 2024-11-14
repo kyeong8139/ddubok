@@ -63,10 +63,10 @@ const Share = () => {
 		return imageArray.length >= 3
 			? imageArray.map((image) => ({ image, effect: 0 }))
 			: [
-					{ image: "/assets/template/kde-card-2.jpg", effect: 0 },
-					{ image: "/assets/template/kkm-card.png", effect: 0 },
-					{ image: "/assets/template/kde-card.jpg", effect: 0 },
-					{ image: "/assets/template/psh-card.jpg", effect: 0 },
+					{ image: "/assets/template/template (1).png", effect: 0 },
+					{ image: "/assets/template/template (2).png", effect: 0 },
+					{ image: "/assets/template/template (5).png", effect: 0 },
+					{ image: "/assets/template/template (6).png", effect: 0 },
 			  ];
 	}, [imageArray]);
 

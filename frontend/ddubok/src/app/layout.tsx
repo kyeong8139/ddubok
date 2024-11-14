@@ -3,11 +3,14 @@ import localFont from "next/font/local";
 import Script from "next/script";
 
 import Header from "@components/common/header";
+import Toaster from "@components/common/toaster";
 import { MenuProvider } from "@context/menu-context";
 import { ModalProvider } from "@context/modal-context";
-import Toaster from "@components/common/toaster";
 
 import "./globals.css";
+import dynamic from "next/dynamic";
+
+const Notification = dynamic(() => import("@components/common/notification"), { ssr: false });
 
 const pyeongChangPeaceBold = localFont({
 	src: "./fonts/PyeongChangPeace-Bold.ttf",
@@ -109,6 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<ModalProvider>
 							<Header />
 							<Toaster />
+							<Notification />
 							<div className="mt-14">{children}</div>
 						</ModalProvider>
 					</MenuProvider>

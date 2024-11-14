@@ -17,10 +17,19 @@ public interface S3ImageService {
     /**
      * 배너 이미지 업로드
      *
-     * @param file     이미지 파일
+     * @param file 이미지 파일
      * @return 저장된 이미지 파일에 대한 정보
      */
     FileMetaInfo uploadBannerImg(MultipartFile file);
+
+    /**
+     * 일반 카드 이미지 업로드
+     *
+     * @param file       이미지 파일
+     * @param writerName 카드 작성자 닉네임
+     * @return 저장된 이미지 파일에 대한 정보
+     */
+    FileMetaInfo uploadNormalCardImg(MultipartFile file, String writerName);
 
     /**
      * 파일 확장자 추출

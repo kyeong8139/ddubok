@@ -1,6 +1,7 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.GetReportListReq;
+import com.ddubok.api.admin.dto.request.HandleReportReq;
 import com.ddubok.api.admin.dto.response.GetReportDetailRes;
 import com.ddubok.api.admin.dto.response.GetReportListRes;
 import com.ddubok.api.report.entity.Report;
@@ -63,10 +64,16 @@ public class AdminReportServiceImpl implements AdminReportService {
             () -> new ReportNotFoundException("report not found: " + reportId)
         );
         return GetReportDetailRes.builder()
+            .id(report.getId())
             .title(report.getTitle())
-            .reportType(report.getReportType().toTypeName())
-            .cardId(report.getCard().getId())
+            .state(report.getState().toName())
             .content(report.getContent())
+            .reportType(report.getReportType().toTypeName())
+            .reportMemberId(report.getMember().getId())
+            .reportMemberNickname(report.getMember().getNickname())
+            .cardId(report.getCard().getId())
+            .cardContent(report.getCard().getContent())
+            .cardPath(report.getCard().getPath())
             .build();
     }
 
@@ -74,11 +81,11 @@ public class AdminReportServiceImpl implements AdminReportService {
      * @inheritDoc
      */
     @Override
-    public GetReportListRes handleReport(Long reportId, GetReportListReq getReportListReq) {
+    public GetReportListRes handleReport(Long reportId, HandleReportReq handleReportReq) {
         Report report = reportRepository.findById(reportId).orElseThrow(
             () -> new ReportNotFoundException("report not found: " + reportId)
         );
-        report.updateReportState(State.fromName(getReportListReq.getState()));
+        report.updateReportState(State.fromName(handleReportReq.getState()));
         return GetReportListRes.builder()
             .id(reportId)
             .title(report.getTitle())

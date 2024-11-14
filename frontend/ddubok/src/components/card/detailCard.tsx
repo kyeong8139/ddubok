@@ -7,7 +7,7 @@ import { ModalContext } from "@context/modal-context";
 import { IDetailCardDto } from "@interface/components/card";
 import { deleteCard } from "@lib/api/card-load-api";
 
-import { DotsThreeCircleVertical, Siren, Star } from "@phosphor-icons/react";
+import { DotsThreeCircleVertical, Star } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
 const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
@@ -18,7 +18,10 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 
 	useEffect(() => {
 		if (id !== undefined && state !== undefined) {
-			setTempState({ [id]: state });
+			setTempState((prevState) => ({
+				...prevState,
+				[id]: state,
+			}));
 		}
 	}, [id, state]);
 
@@ -36,7 +39,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 	const clickUnlockContent = (cardId: number) => {
 		setTempState((prevState) => ({
 			...prevState,
-			[cardId]: prevState[cardId] === "FILTERED" ? "OPEN" : "FILTERED",
+			[cardId]: prevState[cardId] === "FILTERED_OPEN" ? "OPEN" : "FILTERED_OPEN",
 		}));
 	};
 
@@ -69,16 +72,20 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 				<div className="font-nexonBold text-white flex items-center justify-between mb-4">
 					<p>From. {writerName}</p>
 					<div className="flex gap-x-1">
-						{/* <span
-							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
-							onClick={() => (id ? clickUnlockContent(id) : undefined)}
-						>
-							<Star
-								size={14}
-								color="#d5b207"
-								weight="fill"
-							/>
-						</span> */}
+						{state === "FILTERED_OPEN" ? (
+							<span
+								className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E]"
+								onClick={() => (id ? clickUnlockContent(id) : undefined)}
+							>
+								<Star
+									size={14}
+									color="#d5b207"
+									weight="fill"
+								/>
+							</span>
+						) : (
+							<span></span>
+						)}
 						<span
 							className="bg-white rounded-full p-1 shadow-[0px_3px_0px_0px_#9E9E9E] mr-1"
 							onClick={() => setShowOption(!showOption)}
