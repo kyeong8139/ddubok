@@ -48,7 +48,7 @@ const User = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenReady) getMemberList();
+		if (isTokenReady && !isLoading && hasMore) getMemberList();
 	}, [isTokenReady, selected, page, searchName]);
 
 	useEffect(() => {
