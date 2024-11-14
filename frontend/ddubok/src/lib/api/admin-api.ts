@@ -25,9 +25,11 @@ export const updateReport = (reportId: number, state: string) => {
 };
 
 // 사용자 목록 조회
-export const selectMemberList = (state: string | null, page: number, searchName: string) => {
+export const selectMemberList = (state: string | null, page: number, size: number, searchName: string) => {
 	return axiosInstance.post(`admins/members`, {
 		state,
+		page,
+		size,
 		searchName,
 	});
 };
