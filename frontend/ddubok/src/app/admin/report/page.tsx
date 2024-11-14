@@ -45,7 +45,7 @@ const Report = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenReady) getReportList();
+		if (isTokenReady && !isLoading && hasMore) getReportList();
 	}, [isTokenReady, selected, page]);
 
 	useEffect(() => {
