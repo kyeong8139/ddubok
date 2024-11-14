@@ -25,17 +25,11 @@ const Create = () => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
+	const [isFocused, setIsFocused] = useState(false);
 
 	const cardImages = useMemo(
 		() => [
 			{ image: "", effect: 0 },
-			// { image: "/assets/template/kkm-card.png", effect: 0 },
-			// { image: "/assets/template/psh-card.jpg", effect: 0 },
-			// { image: "/assets/template/kkm-card-2.png", effect: 0 },
-			// { image: "/assets/template/lbk-card.png", effect: 0 },
-			// { image: "/assets/template/kkm-card-3.png", effect: 0 },
-			// { image: "/assets/template/kde-card.jpg", effect: 0 },
-			// { image: "/assets/template/kde-card-2.jpg", effect: 0 },
 			{ image: "/assets/template/template (1).png", effect: 0 },
 			{ image: "/assets/template/template (2).png", effect: 0 },
 			{ image: "/assets/template/template (3).png", effect: 0 },
@@ -123,6 +117,7 @@ const Create = () => {
 				setTimeout(() => {
 					if (inputRef.current) {
 						inputRef.current.focus();
+						setIsFocused(true);
 						inputRef.current.scrollIntoView({
 							behavior: "smooth",
 							block: "center",
@@ -156,6 +151,9 @@ const Create = () => {
 
 		touchStartRef.current = null;
 	};
+
+	const handleFocus = () => setIsFocused(true);
+	const handleBlur = () => setIsFocused(false);
 
 	const settings = {
 		dots: false,
@@ -221,8 +219,12 @@ const Create = () => {
 							placeholder="익명 (최대 11글자)"
 							value={userName}
 							onChange={handleNameChange}
+							onFocus={handleFocus}
+							onBlur={handleBlur}
 							maxLength={11}
-							className="border-b border-white bg-transparent font-nexonRegular text-white text-center outline-none"
+							className={`bg-transparent font-nexonRegular text-white text-center outline-none px-4 py-2 
+    border-b border-white origin-center transition-all
+    ${isFocused ? "animate-[focusEffect_0.6s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]" : ""}`}
 						/>
 					</div>
 					<div className="mt-10 mb-10 w-full flex justify-center">
