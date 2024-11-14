@@ -32,7 +32,7 @@ const User = () => {
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
-			const response = await selectMemberList(state, page, searchName);
+			const response = await selectMemberList(state, page, 5, searchName);
 			let users = response.data.data;
 
 			if (users.length === 0) {

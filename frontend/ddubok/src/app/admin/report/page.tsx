@@ -20,7 +20,7 @@ const Report = () => {
 	const [reportList, setReportList] = useState<IReportListProps[]>([]);
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const getReportList = async () => {
@@ -45,7 +45,7 @@ const Report = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenReady && !isLoading && hasMore) getReportList();
+		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
 	useEffect(() => {
@@ -56,8 +56,6 @@ const Report = () => {
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
 				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
 			}
-
-			console.log(page);
 		};
 
 		window.addEventListener("scroll", handleScroll);
