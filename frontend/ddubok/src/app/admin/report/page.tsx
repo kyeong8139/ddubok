@@ -56,6 +56,8 @@ const Report = () => {
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
 				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
 			}
+
+			console.log(page);
 		};
 
 		window.addEventListener("scroll", handleScroll);
