@@ -53,8 +53,8 @@ const Home = () => {
 		const getMainInfo = async () => {
 			try {
 				const response = await selectMainInfo();
-				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
 				console.log(response.data.data);
+				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
 
 				if (seasonId) {
 					setSeasonDescription(seasonDescription);
