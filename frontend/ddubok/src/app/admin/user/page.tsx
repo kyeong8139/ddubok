@@ -20,18 +20,26 @@ const User = () => {
 	const [userList, setUserList] = useState<IUserProps[]>([]);
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
 	const [searchName, setSearchName] = useState("");
+	const [page, setPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const isPageReady = isLoading || !isTokenReady;
 
 	const getMemberList = async () => {
+		if (isLoading || !hasMore) return;
+
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
-			const response = await selectMemberList(state, searchName);
-			console.log(response.data.data);
+			const response = await selectMemberList(state, page, searchName);
 			let users = response.data.data;
-			setUserList(users);
+
+			if (users.length === 0) {
+				setHasMore(false);
+			} else {
+				setUserList((prevUsers) => [...prevUsers, ...users]);
+			}
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -41,7 +49,21 @@ const User = () => {
 
 	useEffect(() => {
 		if (isTokenReady) getMemberList();
-	}, [isTokenReady, selected, searchName]);
+	}, [isTokenReady, selected, page, searchName]);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (isLoading || !hasMore) return;
+
+			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+			if (scrollTop + clientHeight >= scrollHeight - 5) {
+				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [isLoading, hasMore]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
