@@ -48,10 +48,6 @@ const Report = () => {
 		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
-	const handleClick = (index: number) => {
-		setSelected(index);
-	};
-
 	useEffect(() => {
 		const handleScroll = () => {
 			if (isLoading || !hasMore) return;
@@ -66,10 +62,16 @@ const Report = () => {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, [isLoading, hasMore]);
 
+	const handleClick = (index: number) => {
+		setSelected(index);
+		setPage(0);
+		setReportList([]);
+		setHasMore(true);
+	};
+
 	const handleDetailClick = async (reportId: number) => {
 		try {
 			const response = await selectReport(reportId);
-			console.log(response.data.data);
 			setSelectedReport(response.data.data);
 			openModal();
 		} catch (error) {
@@ -81,6 +83,9 @@ const Report = () => {
 		try {
 			await updateReport(reportId, action);
 			toast.success(`신고가 ${action}되었습니다`);
+			setPage(0);
+			setReportList([]);
+			setHasMore(true);
 			getReportList();
 			closeModal();
 		} catch (error) {

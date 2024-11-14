@@ -67,12 +67,14 @@ const User = () => {
 
 	const handleClick = (index: number) => {
 		setSelected(index);
+		setPage(0);
+		setUserList([]);
+		setHasMore(true);
 	};
 
 	const handleDetailClick = async (memberId: number) => {
 		try {
 			const response = await selectMember(memberId);
-			console.log(response.data.data);
 			setSelectedUser(response.data.data);
 			openModal();
 		} catch (error) {
@@ -85,6 +87,9 @@ const User = () => {
 		try {
 			await updateMemberState(selectedUser.memberId);
 			toast.success("회원 상태가 변경되었습니다.");
+			setPage(0);
+			setUserList([]);
+			setHasMore(true);
 			getMemberList();
 			closeModal();
 		} catch (error) {
@@ -99,6 +104,9 @@ const User = () => {
 		try {
 			await updateMemberRole(selectedUser.memberId);
 			toast.success("회원 등급이 변경되었습니다.");
+			setPage(0);
+			setUserList([]);
+			setHasMore(true);
 			getMemberList();
 			closeModal();
 		} catch (error) {
