@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
@@ -21,16 +21,22 @@ const Report = () => {
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
-	const observerRef = useRef<HTMLDivElement | null>(null);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const getReportList = async () => {
+		if (isLoading || !hasMore) return;
+
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
 			const response = await selectReportList(state, page, 50);
-			console.log(response.data.data);
 			let reports = response.data.data;
-			setReportList(reports);
+
+			if (reports.length === 0) {
+				setHasMore(false);
+			} else {
+				setReportList((prevReports) => [...prevReports, ...reports]);
+			}
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -42,26 +48,23 @@ const Report = () => {
 		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0].isIntersecting && !isLoading) {
-					setPage((prevPage) => prevPage + 1);
-				}
-			},
-			{ threshold: 1.0 },
-		);
-		if (observerRef.current) {
-			observer.observe(observerRef.current);
-		}
-		return () => {
-			if (observerRef.current) observer.unobserve(observerRef.current);
-		};
-	}, [isLoading]);
-
 	const handleClick = (index: number) => {
 		setSelected(index);
 	};
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (isLoading || !hasMore) return;
+
+			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+			if (scrollTop + clientHeight >= scrollHeight - 5) {
+				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [isLoading, hasMore]);
 
 	const handleDetailClick = async (reportId: number) => {
 		try {
@@ -155,10 +158,6 @@ const Report = () => {
 								)}
 							</tbody>
 						</table>
-						<div
-							ref={observerRef}
-							className="h-1"
-						/>
 					</div>
 				</div>
 			)}
