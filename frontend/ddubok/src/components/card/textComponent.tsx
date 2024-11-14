@@ -5,7 +5,7 @@ import { ITextComponentProps } from "@interface/components/text";
 import { fabric } from "fabric";
 import { TextAlignCenter, TextAlignLeft, TextAlignRight } from "@phosphor-icons/react";
 
-function TextComponent({ canvas }: ITextComponentProps) {
+function TextComponent({ canvas, onPanelClose }: ITextComponentProps) {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
 	const [textAlign, setTextAlign] = useState("center");
@@ -81,6 +81,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		} else {
 			addText(newFont, label);
 		}
+		onPanelClose(); // 추가: 패널 닫기
 	};
 
 	const handleColorChange = (newColor: string) => {

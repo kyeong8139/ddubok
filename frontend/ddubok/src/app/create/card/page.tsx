@@ -345,7 +345,12 @@ const CreateFront = () => {
 			case "sticker":
 				return <StickerComponent canvas={canvas} />;
 			case "text":
-				return <TextComponent canvas={canvas} />;
+				return (
+					<TextComponent
+						canvas={canvas}
+						onPanelClose={handlePanelClose} // 추가
+					/>
+				);
 			case "brush":
 				return (
 					<BrushComponent
