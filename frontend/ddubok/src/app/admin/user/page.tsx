@@ -21,7 +21,7 @@ const User = () => {
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
 	const [searchName, setSearchName] = useState("");
 	const [page, setPage] = useState(0);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const isPageReady = isLoading || !isTokenReady;

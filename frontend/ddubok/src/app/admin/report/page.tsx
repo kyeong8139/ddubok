@@ -20,7 +20,7 @@ const Report = () => {
 	const [reportList, setReportList] = useState<IReportListProps[]>([]);
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const getReportList = async () => {
