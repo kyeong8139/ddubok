@@ -119,9 +119,7 @@ const User = () => {
 	return (
 		<div id="admin-user">
 			{isPageReady ? (
-				<div className="flex w-full h-screen items-center justify-center">
-					<Loading />
-				</div>
+				<div className="flex w-full h-screen items-center justify-center">{/* <Loading /> */}</div>
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">
