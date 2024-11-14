@@ -55,11 +55,15 @@ const Create = () => {
 		});
 	}, [cardImages]);
 
-	// 슬라이더 변경 시 input 포커스 해제
 	const handleSlideChange = (current: number) => {
 		setCurrentSlide(current);
 		if (inputRef.current) {
-			inputRef.current.blur();
+			setTimeout(() => {
+				if (inputRef.current) {
+					inputRef.current.blur();
+					setIsFocused(false);
+				}
+			}, 600);
 		}
 	};
 
@@ -128,7 +132,6 @@ const Create = () => {
 		}
 	};
 
-	// 터치 이벤트 핸들러 추가
 	const handleTouchStart = (e: React.TouchEvent) => {
 		touchStartRef.current = e.touches[0].clientX;
 		if (inputRef.current) {
@@ -142,7 +145,6 @@ const Create = () => {
 		const touchEnd = e.changedTouches[0].clientX;
 		const diff = touchEnd - touchStartRef.current;
 
-		// 터치 이동이 있었을 경우에만 포커스 해제
 		if (Math.abs(diff) > 5) {
 			if (inputRef.current) {
 				inputRef.current.blur();
@@ -213,19 +215,22 @@ const Create = () => {
 
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
-						<input
-							ref={inputRef}
-							type="text"
-							placeholder="익명 (최대 11글자)"
-							value={userName}
-							onChange={handleNameChange}
-							onFocus={handleFocus}
-							onBlur={handleBlur}
-							maxLength={11}
-							className={`bg-transparent font-nexonRegular text-white text-center outline-none px-4 py-2 
-    border-b border-white origin-center transition-all
-    ${isFocused ? "animate-[focusEffect_0.6s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]" : ""}`}
-						/>
+						<div className="h-12 flex items-center">
+							<input
+								ref={inputRef}
+								type="text"
+								placeholder="익명 (최대 11글자)"
+								value={userName}
+								onChange={handleNameChange}
+								onFocus={handleFocus}
+								onBlur={handleBlur}
+								maxLength={11}
+								className={`bg-transparent font-nexonRegular text-white text-center outline-none px-4 py-2 
+        border-b border-white transform-gpu
+        ${isFocused ? "animate-[focusEffect_0.8s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]" : ""}`}
+								style={{ transformOrigin: "center bottom" }}
+							/>
+						</div>
 					</div>
 					<div className="mt-10 mb-10 w-full flex justify-center">
 						<Button
