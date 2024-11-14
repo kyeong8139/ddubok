@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
@@ -20,7 +20,9 @@ const User = () => {
 	const [userList, setUserList] = useState<IUserProps[]>([]);
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
 	const [searchName, setSearchName] = useState("");
+	const [page, setPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const observerRef = useRef<HTMLDivElement | null>(null);
 
 	const isPageReady = isLoading || !isTokenReady;
 
@@ -28,7 +30,7 @@ const User = () => {
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
-			const response = await selectMemberList(state, searchName);
+			const response = await selectMemberList(state, page, searchName);
 			console.log(response.data.data);
 			let users = response.data.data;
 			setUserList(users);
@@ -41,7 +43,24 @@ const User = () => {
 
 	useEffect(() => {
 		if (isTokenReady) getMemberList();
-	}, [isTokenReady, selected, searchName]);
+	}, [isTokenReady, selected, page, searchName]);
+
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && !isLoading) {
+					setPage((prevPage) => prevPage + 1);
+				}
+			},
+			{ threshold: 1.0 },
+		);
+		if (observerRef.current) {
+			observer.observe(observerRef.current);
+		}
+		return () => {
+			if (observerRef.current) observer.unobserve(observerRef.current);
+		};
+	}, [isLoading]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
@@ -169,6 +188,10 @@ const User = () => {
 								)}
 							</tbody>
 						</table>
+						<div
+							ref={observerRef}
+							className="h-1"
+						/>
 					</div>
 				</div>
 			)}

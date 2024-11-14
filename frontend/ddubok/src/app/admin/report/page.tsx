@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
-import Loading from "@components/common/loading"; // 로딩 컴포넌트 추가
+import Loading from "@components/common/loading";
 import { ModalContext } from "@context/modal-context";
 import { IReportListProps, IReportProps } from "@interface/components/report";
 import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
@@ -21,6 +21,7 @@ const Report = () => {
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const observerRef = useRef<HTMLDivElement | null>(null);
 
 	const getReportList = async () => {
 		setIsLoading(true);
@@ -41,9 +42,25 @@ const Report = () => {
 		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && !isLoading) {
+					setPage((prevPage) => prevPage + 1);
+				}
+			},
+			{ threshold: 1.0 },
+		);
+		if (observerRef.current) {
+			observer.observe(observerRef.current);
+		}
+		return () => {
+			if (observerRef.current) observer.unobserve(observerRef.current);
+		};
+	}, [isLoading]);
+
 	const handleClick = (index: number) => {
 		setSelected(index);
-		setPage(0);
 	};
 
 	const handleDetailClick = async (reportId: number) => {
@@ -138,6 +155,10 @@ const Report = () => {
 								)}
 							</tbody>
 						</table>
+						<div
+							ref={observerRef}
+							className="h-1"
+						/>
 					</div>
 				</div>
 			)}
