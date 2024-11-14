@@ -32,6 +32,7 @@ const Report = () => {
 			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
 			const response = await selectReportList(state, page, 50);
 			let reports = response.data.data;
+			console.log(reports);
 
 			if (reports.length === 0) {
 				setHasMore(false);
