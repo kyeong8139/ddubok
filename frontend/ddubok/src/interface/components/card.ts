@@ -35,3 +35,8 @@ export interface IPreviewCardDto {
 	nickname: string;
 	cardUrl: string[];
 }
+
+export interface ICardImageProps {
+	image: string;
+	effect: number;
+}
