@@ -1,12 +1,14 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
+
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
 import { ModalContext } from "@context/modal-context";
 import { IUserProps } from "@interface/components/user";
 import { selectMember, selectMemberList, updateMemberRole, updateMemberState } from "@lib/api/admin-api";
 import useAuthToken from "@lib/utils/tokenUtils";
+
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
@@ -18,11 +20,13 @@ const User = () => {
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
 	const [searchName, setSearchName] = useState("");
 	const [page, setPage] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const getMemberList = async () => {
-		if (!hasMore) return;
+		if (isLoading || !hasMore) return;
 
+		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
 			const response = await selectMemberList(state, page, 5, searchName);
@@ -35,16 +39,18 @@ const User = () => {
 			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
-		if (isTokenReady && hasMore) getMemberList();
+		if (isTokenReady && !isLoading && hasMore) getMemberList();
 	}, [isTokenReady, selected, page, searchName]);
 
 	useEffect(() => {
 		const handleScroll = () => {
-			if (!hasMore) return;
+			if (isLoading || !hasMore) return;
 
 			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
@@ -54,7 +60,7 @@ const User = () => {
 
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, [hasMore]);
+	}, [isLoading, hasMore]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
