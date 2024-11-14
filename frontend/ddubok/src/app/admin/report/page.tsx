@@ -95,70 +95,74 @@ const Report = () => {
 
 	return (
 		<div id="admin-report">
-			<div className="py-6">
-				<div className="text-white flex flex-col items-center">
-					<h1 className="font-nexonBold text-xl mb-2">신고 관리</h1>
-					<p className="font-nexonRegular text-sm">신고된 게시물 정보를 확인할 수 있어요</p>
-				</div>
-				<div className="flex justify-center pt-4 pb-6">
-					<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
-						{["전체", "미처리", "수락", "반려"].map((item, index) => (
-							<li
-								key={index}
-								onClick={() => handleClick(index)}
-								className={`p-[6px] rounded-md cursor-pointer ${
-									selected === index ? "bg-ddubokPurple text-white font-nexonBold" : "bg-gray-200"
-								}`}
-							>
-								{item}
-							</li>
-						))}
-					</ul>
-				</div>
-				<div>
-					<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
-						<thead>
-							<tr className="text-xs border-y-2 border-solid border-white">
-								<th className="px-1 py-[10px]">글번호</th>
-								<th className="px-2 py-[10px]">제목</th>
-								<th className="px-2 py-[10px]">상태</th>
-								<th className="px-1 py-[10px]">상세</th>
-							</tr>
-						</thead>
-						<tbody>
-							{reportList.length > 0 ? (
-								reportList.map((report) => (
-									<tr
-										key={report.id}
-										className="text-center text-xs border-b-[1px] border-solid border-white"
-									>
-										<td className="px-1 py-[10px]">{report.id}</td>
-										<td className="px-2 py-[10px]">{report.title}</td>
-										<td className="px-2 py-[10px]">{report.state}</td>
-										<td className="px-1 py-[10px]">
-											<button
-												className="underline"
-												onClick={() => handleDetailClick(report.id)}
-											>
-												상세보기
-											</button>
+			{isLoading ? (
+				<div className="flex w-full h-screen items-center justify-center">{/* <Loading /> */}</div>
+			) : (
+				<div className="py-6">
+					<div className="text-white flex flex-col items-center">
+						<h1 className="font-nexonBold text-xl mb-2">신고 관리</h1>
+						<p className="font-nexonRegular text-sm">신고된 게시물 정보를 확인할 수 있어요</p>
+					</div>
+					<div className="flex justify-center pt-4 pb-6">
+						<ul className="bg-white font-nexonRegular inline-flex justify-center gap-1 text-xs rounded-lg p-1">
+							{["전체", "미처리", "수락", "반려"].map((item, index) => (
+								<li
+									key={index}
+									onClick={() => handleClick(index)}
+									className={`p-[6px] rounded-md cursor-pointer ${
+										selected === index ? "bg-ddubokPurple text-white font-nexonBold" : "bg-gray-200"
+									}`}
+								>
+									{item}
+								</li>
+							))}
+						</ul>
+					</div>
+					<div>
+						<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
+							<thead>
+								<tr className="text-xs border-y-2 border-solid border-white">
+									<th className="px-1 py-[10px]">글번호</th>
+									<th className="px-2 py-[10px]">제목</th>
+									<th className="px-2 py-[10px]">상태</th>
+									<th className="px-1 py-[10px]">상세</th>
+								</tr>
+							</thead>
+							<tbody>
+								{reportList.length > 0 ? (
+									reportList.map((report) => (
+										<tr
+											key={report.id}
+											className="text-center text-xs border-b-[1px] border-solid border-white"
+										>
+											<td className="px-1 py-[10px]">{report.id}</td>
+											<td className="px-2 py-[10px]">{report.title}</td>
+											<td className="px-2 py-[10px]">{report.state}</td>
+											<td className="px-1 py-[10px]">
+												<button
+													className="underline"
+													onClick={() => handleDetailClick(report.id)}
+												>
+													상세보기
+												</button>
+											</td>
+										</tr>
+									))
+								) : (
+									<tr>
+										<td
+											colSpan={4}
+											className="text-center py-[10px]"
+										>
+											데이터가 없습니다.
 										</td>
 									</tr>
-								))
-							) : (
-								<tr>
-									<td
-										colSpan={4}
-										className="text-center py-[10px]"
-									>
-										데이터가 없습니다.
-									</td>
-								</tr>
-							)}
-						</tbody>
-					</table>
+								)}
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
+			)}
 			<div
 				className={`transition-opacity duration-300 ${
 					isModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
