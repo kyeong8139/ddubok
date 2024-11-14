@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
-import Loading from "@components/common/loading"; // 로딩 컴포넌트 추가
+import Loading from "@components/common/loading";
 import { ModalContext } from "@context/modal-context";
 import { IReportListProps, IReportProps } from "@interface/components/report";
 import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
@@ -21,15 +21,22 @@ const Report = () => {
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const getReportList = async () => {
+		if (isLoading || !hasMore) return;
+
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "미처리" : selected === 2 ? "수락" : selected === 3 ? "반려" : null;
 			const response = await selectReportList(state, page, 50);
-			console.log(response.data.data);
 			let reports = response.data.data;
-			setReportList(reports);
+
+			if (reports.length === 0) {
+				setHasMore(false);
+			} else {
+				setReportList((prevReports) => [...prevReports, ...reports]);
+			}
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -41,15 +48,30 @@ const Report = () => {
 		if (isTokenReady) getReportList();
 	}, [isTokenReady, selected, page]);
 
+	useEffect(() => {
+		const handleScroll = () => {
+			if (isLoading || !hasMore) return;
+
+			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+			if (scrollTop + clientHeight >= scrollHeight - 5) {
+				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [isLoading, hasMore]);
+
 	const handleClick = (index: number) => {
 		setSelected(index);
 		setPage(0);
+		setReportList([]);
+		setHasMore(true);
 	};
 
 	const handleDetailClick = async (reportId: number) => {
 		try {
 			const response = await selectReport(reportId);
-			console.log(response.data.data);
 			setSelectedReport(response.data.data);
 			openModal();
 		} catch (error) {
@@ -61,6 +83,9 @@ const Report = () => {
 		try {
 			await updateReport(reportId, action);
 			toast.success(`신고가 ${action}되었습니다`);
+			setPage(0);
+			setReportList([]);
+			setHasMore(true);
 			getReportList();
 			closeModal();
 		} catch (error) {
