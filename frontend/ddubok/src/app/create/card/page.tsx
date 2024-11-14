@@ -38,7 +38,6 @@ const CreateFront = () => {
 
 	const [isEraser, setIsEraser] = useState(false);
 
-	// handlePanelClose 수정
 	const handlePanelClose = () => {
 		setIsPanelOpen(false);
 	};
@@ -51,9 +50,6 @@ const CreateFront = () => {
 				}
 			};
 
-			// canvas.selection = true;  // selection은 그대로 유지
-
-			// 모든 모드에서 mouse:down 이벤트 리스너 추가
 			canvas.on("mouse:down", handleCanvasClick);
 			canvas.on("mouse:down:before", handleCanvasClick);
 
@@ -348,7 +344,7 @@ const CreateFront = () => {
 				return (
 					<TextComponent
 						canvas={canvas}
-						onPanelClose={handlePanelClose} // 추가
+						onPanelClose={handlePanelClose}
 					/>
 				);
 			case "brush":

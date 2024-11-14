@@ -244,11 +244,9 @@ function BrushComponent({ canvas, isEraser, setIsEraser }: IBrushComponentProps)
 		setIsEraser(newEraserState);
 		if (canvas) {
 			if (newEraserState) {
-				// 지우개 모드로 전환
 				canvas.isDrawingMode = false;
 				canvas.defaultCursor = "crosshair";
 			} else {
-				// 지우개 모드 해제
 				canvas.isDrawingMode = true;
 				canvas.defaultCursor = "default";
 			}
