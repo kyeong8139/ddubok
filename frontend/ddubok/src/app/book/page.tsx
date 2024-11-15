@@ -202,6 +202,7 @@ const Book = () => {
 							writerName={card.writerName}
 							path={card.path}
 							content={card.content}
+							openedAt={card.openedAt}
 							effect={0}
 						/>
 					</div>
