@@ -35,7 +35,7 @@ export const requestPermission = async () => {
 export const onMessageListener = () =>
 	new Promise((resolve) => {
 		onMessage(messaging, (payload) => {
-			if (document.visibilityState === "visible") resolve(payload);
+			resolve(payload);
 		});
 	});
 
