@@ -56,7 +56,7 @@ public interface SeasonService {
     void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes);
 
     /**
-     * 메인 정보를 return 한다.
+     * 메인 시즌 정보를 return 한다.
      * @return 메인 정보가 담긴 객체
      */
     MainSeasonRes getActiveSeason();

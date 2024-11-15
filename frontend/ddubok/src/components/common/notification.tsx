@@ -10,7 +10,7 @@ const Notification = () => {
 		if (typeof window !== "undefined" && "Notification" in window) {
 			(async () => {
 				try {
-					await onMessageListener().then((payload) => {
+					onMessageListener().then((payload) => {
 						const message = payload as MessagePayload;
 
 						const notificationTitle = message.notification?.title ?? "알림";

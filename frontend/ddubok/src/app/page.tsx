@@ -53,6 +53,7 @@ const Home = () => {
 		const getMainInfo = async () => {
 			try {
 				const response = await selectMainInfo();
+				console.log(response);
 				console.log(response.data.data);
 				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
 
