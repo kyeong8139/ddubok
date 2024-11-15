@@ -109,12 +109,12 @@ const Card = ({ width, height, path, content, state, effect, flip, flag, openedA
 		) : (
 			<div className="font-nexonRegular flex justify-center items-center h-full flex-col text-center">
 				<p className="mb-2">편지를 확인하기까지</p>
-				<div className="font-bold text-2xl mb-2">
-					<span className="bg-gray-100 px-3 py-1 rounded">{timeLeft.split(":")[0]}</span>
+				<div className="font-bold text-2xl mb-2 flex gap-1 justify-center items-center">
+					<span className=" py-1 rounded w-[40px] text-center inline-block">{timeLeft.split(":")[0]}</span>
 					<span className="mx-1">:</span>
-					<span className="bg-gray-100 px-3 py-1 rounded">{timeLeft.split(":")[1]}</span>
+					<span className=" py-1 rounded w-[40px]  text-center inline-block">{timeLeft.split(":")[1]}</span>
 					<span className="mx-1">:</span>
-					<span className="bg-gray-100 px-3 py-1 rounded">{timeLeft.split(":")[2]}</span>
+					<span className=" py-1 rounded w-[40px] text-center inline-block">{timeLeft.split(":")[2]}</span>
 				</div>
 				<p>남았습니다</p>
 			</div>
