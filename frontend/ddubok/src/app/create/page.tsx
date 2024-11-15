@@ -44,7 +44,11 @@ const Create = () => {
 			try {
 				const response = await selectMainInfo();
 				const path = response.data.data.path;
-				setCardImages(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
+				const updatedCardImages = [
+					{ image: "", effect: 0 },
+					...path.map((imagePath: string) => ({ image: imagePath, effect: 0 })),
+				];
+				setCardImages(updatedCardImages);
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
