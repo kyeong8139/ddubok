@@ -170,6 +170,6 @@ public class CardServiceImpl implements CardService {
      */
     private void setExpirationForNotification(Card card) {
         String redisKey = "card:expiration:" + card.getId();
-        redisTemplate.opsForValue().set(redisKey, card.getWriterName(), Duration.ofHours(24));
+        redisTemplate.opsForValue().set(redisKey, card.getWriterName(), Duration.ofMinutes(3));
     }
 }

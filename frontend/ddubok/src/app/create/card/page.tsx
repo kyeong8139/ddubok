@@ -38,7 +38,9 @@ const CreateFront = () => {
 
 	const handlePanelClose = () => {
 		setIsPanelOpen(false);
-		setActiveComponent(null);
+		if (canvas && activeComponent !== "brush") {
+			canvas.isDrawingMode = false;
+		}
 	};
 
 	useEffect(() => {
@@ -264,7 +266,11 @@ const CreateFront = () => {
 
 	useEffect(() => {
 		if (canvas) {
-			canvas.isDrawingMode = activeComponent === "brush";
+			if (activeComponent === "brush") {
+				canvas.isDrawingMode = true;
+			} else {
+				canvas.isDrawingMode = false;
+			}
 			canvas.selection = true;
 			canvas.off("mouse:down");
 		}
@@ -310,8 +316,12 @@ const CreateFront = () => {
 	};
 
 	const handleComponentClick = (value: string) => {
-		setActiveComponent(value);
-		setIsPanelOpen(true);
+		if (value === activeComponent) {
+			setIsPanelOpen(!isPanelOpen);
+		} else {
+			setActiveComponent(value);
+			setIsPanelOpen(true);
+		}
 	};
 
 	const renderActiveComponent = () => {
@@ -342,7 +352,7 @@ const CreateFront = () => {
 
 			<div
 				ref={controlsRef}
-				className={`w-full max-w-[480px]  mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
+				className={`w-full max-w-[480px] mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
 					shouldFixButtons && isPanelOpen
 						? "fixed bottom-0 left-0 right-0 translate-y-[-320px] z-50"
 						: "translate-y-0"
@@ -355,7 +365,7 @@ const CreateFront = () => {
 								key={value}
 								onClick={() => handleComponentClick(value)}
 								className={`px-[6px] py-2 mr-[1px] rounded-lg font-nexonBold text-xs border border-black ${
-									activeComponent && activeComponent === value ? "bg-ddubokPurple" : "bg-white"
+									activeComponent === value ? "bg-ddubokPurple" : "bg-white"
 								}`}
 							>
 								{value === "background" && "배경"}
@@ -408,7 +418,7 @@ const CreateFront = () => {
 					className="relative w-full h-full flex justify-center items-center"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
+					{/* <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" /> */}
 					<button
 						className="absolute top-4 right-4 text-gray-500"
 						onClick={handlePanelClose}

@@ -119,13 +119,13 @@ public class AttendanceServiceImpl implements AttendanceService {
             score = (int) (Math.random() * 11) + 60;
         } else if (randomValue < 0.4) {
             score = (int) (Math.random() * 11) + 90;
-        } else {  // 71 ~ 89 (70% 확률)
+        } else {
             score = (int) (Math.random() * 19) + 71;
         }
 
         return FortuneRes.builder()
             .sentence(sentence)
-            .score(score)
+            .score(100)
             .build();
     }
 }
