@@ -33,6 +33,25 @@ const Home = () => {
 	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
 	const [description, setDescription] = useState<string | null>(null);
 	const [cardImages, setCardImages] = useState<ICardImageProps[]>([]);
+	const [cloverClickCount, setCloverClickCount] = useState(0);
+	const [lastClickTime, setLastClickTime] = useState(0);
+
+	const handleCloverClick = () => {
+		const currentTime = Date.now();
+
+		if (currentTime - lastClickTime > 1000) {
+			setCloverClickCount(1);
+		} else {
+			setCloverClickCount((prev) => prev + 1);
+		}
+
+		setLastClickTime(currentTime);
+
+		if (cloverClickCount === 2) {
+			router.push("/EaStErEgG");
+			setCloverClickCount(0);
+		}
+	};
 
 	const isPageReady = isLoading || !isTokenReady;
 
@@ -233,7 +252,14 @@ const Home = () => {
 						<div className="flex flex-col items-center pt-8">
 							<div className="absolute">
 								<p>
-									<span className="font-nexonBold">당신</span>을 위한 행운 배달부🍀
+									<span className="font-nexonBold">당신</span>을 위한 행운 배달부
+									<span
+										onClick={handleCloverClick}
+										className="cursor-pointer select-none"
+										style={{ userSelect: "none" }}
+									>
+										🍀
+									</span>
 								</p>
 							</div>
 							<NextImage
