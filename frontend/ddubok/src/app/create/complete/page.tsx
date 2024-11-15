@@ -280,6 +280,7 @@ const CardDetail = () => {
 						content={letterContent}
 						effect={0}
 						flip={true}
+						flag={true}
 					/>
 				</div>
 				{/* <button

@@ -12,15 +12,7 @@ import Loading from "@components/common/loading";
 import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
 import useAuthToken from "@lib/utils/tokenUtils";
-
-interface CardData {
-	id: number;
-	content: string;
-	openedAt: string;
-	path: string;
-	state: string;
-	writerName: string;
-}
+import { ICardDto } from "@interface/components/card";
 
 const SharedCard = () => {
 	const router = useRouter();
@@ -28,7 +20,7 @@ const SharedCard = () => {
 	const encryptedId = searchParams?.get("id");
 	const cardId = encryptedId ? decryptCardId(encryptedId) : null;
 	const { accessToken } = useAuthToken();
-	const [cardData, setCardData] = useState<CardData | null>(null);
+	const [cardData, setCardData] = useState<ICardDto | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [isTallScreen, setIsTallScreen] = useState(false);
@@ -132,6 +124,8 @@ const SharedCard = () => {
 					height={cardSize.height}
 					path={cardData?.path || ""}
 					content={cardData?.content || ""}
+					state={cardData?.state}
+					openedAt={cardData?.openedAt}
 					effect={0}
 					flip={true}
 				/>
