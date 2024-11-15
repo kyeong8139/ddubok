@@ -4,6 +4,7 @@ import NextImage from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
 
+import { ModalContext } from "@context/modal-context";
 import Button from "@components/button/button";
 import Card from "@components/card/card";
 import Loading from "@components/common/loading";
@@ -11,11 +12,13 @@ import Modal from "@components/common/modal";
 import useAuthToken from "@lib/utils/tokenUtils";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import { selectUser } from "@lib/api/user-api";
+import { selectMainInfo } from "@lib/api/main-api";
+import { ISeasonInfoProps } from "@interface/components/season";
+import { ICardImageProps } from "@interface/components/card";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { ModalContext } from "@context/modal-context";
 import { LinkSimple } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 import useKakaoInit from "src/hooks/useKakaoInit";
@@ -28,6 +31,8 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
+	const [seasonDescription, setSeasonDescription] = useState<string | null>(null);
+	const [cardImages, setCardImages] = useState<ICardImageProps[]>([]);
 
 	const isPageReady = isLoading || !isTokenReady;
 
@@ -44,24 +49,39 @@ const Home = () => {
 		adaptiveHeight: true,
 	};
 
-	const cardImages = useMemo(
-		() => [
-			// { image: "/assets/template/kkm-card.png", effect: 0 },
-			// { image: "/assets/template/psh-card.jpg", effect: 0 },
-			// { image: "/assets/template/kkm-card-2.png", effect: 0 },
-			// { image: "/assets/template/lbk-card.png", effect: 0 },
-			// { image: "/assets/template/kkm-card-3.png", effect: 0 },
-			// { image: "/assets/template/kde-card.jpg", effect: 0 },
-			// { image: "/assets/template/kde-card-2.jpg", effect: 0 },
-			{ image: "/assets/template/template (1).png", effect: 0 },
-			{ image: "/assets/template/template (2).png", effect: 0 },
-			{ image: "/assets/template/template (3).png", effect: 0 },
-			{ image: "/assets/template/template (4).png", effect: 0 },
-			{ image: "/assets/template/template (5).png", effect: 0 },
-			{ image: "/assets/template/template (6).png", effect: 0 },
-		],
-		[],
-	);
+	useEffect(() => {
+		const getMainInfo = async () => {
+			try {
+				const response = await selectMainInfo();
+				console.log(response.data.data);
+				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
+
+				if (seasonId) {
+					setSeasonDescription(seasonDescription);
+					setCardImages(path.map((imagePath) => ({ image: imagePath, effect: 0 })));
+				}
+
+				setIsLoading(false);
+			} catch (error) {
+				console.error(error);
+				setIsLoading(false);
+			}
+		};
+
+		getMainInfo();
+	}, []);
+
+	// const cardImages = useMemo(
+	// 	() => [
+	// 		{ image: "/assets/template/template (1).png", effect: 0 },
+	// 		{ image: "/assets/template/template (2).png", effect: 0 },
+	// 		{ image: "/assets/template/template (3).png", effect: 0 },
+	// 		{ image: "/assets/template/template (4).png", effect: 0 },
+	// 		{ image: "/assets/template/template (5).png", effect: 0 },
+	// 		{ image: "/assets/template/template (6).png", effect: 0 },
+	// 	],
+	// 	[],
+	// );
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -148,23 +168,6 @@ const Home = () => {
 		}
 	};
 
-	// const handleShareInstagram = () => {
-	// 	const shareText = "${user?.nickname}님이 행운카드를 요청했어요! 응원을 담은 카드를 만들어주세요🍀";
-	// 	const shareUrl = getShareUrl();
-
-	// 	const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
-	// 	if (isIOS) {
-	// 		window.location.href = `instagram://stories?text=${encodeURIComponent(
-	// 			shareText,
-	// 		)}&content_url=${encodeURIComponent(shareUrl)}`;
-	// 	} else {
-	// 		window.location.href = `intent://instagram.com/stories?text=${encodeURIComponent(
-	// 			shareText,
-	// 		)}&content_url=${encodeURIComponent(shareUrl)}#Intent;package=com.instagram.android;scheme=https;end`;
-	// 	}
-	// };
-
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
 		const text = `${user?.nickname}님이 행운카드를 요청했어요! 응원이 담긴 카드를 만들어주세요🍀`;
@@ -229,14 +232,7 @@ const Home = () => {
 							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p> */}
-							<p className="font-nexonLight text-xs text-center mb-2">
-								행운카드 뒷면의 메세지는 <br />
-								수신 후 24시간이 지나면 확인 가능합니다.
-							</p>
-							<p className="font-nexonRegular text-xs text-center underline">
-								📚수능 시즌에 작성한 카드는 <br />
-								11월 13일 오후 8시부터 확인할 수 있어요💌
-							</p>
+							<p className="font-nexonLight text-xs text-center mb-2">{seasonDescription}</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
 							<Slider {...settings}>

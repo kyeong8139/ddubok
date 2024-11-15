@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
-import Loading from "@components/common/loading";
 import { ModalContext } from "@context/modal-context";
 import { IReportListProps, IReportProps } from "@interface/components/report";
 import { selectReport, selectReportList, updateReport } from "@lib/api/admin-api";
@@ -20,8 +19,10 @@ const Report = () => {
 	const [reportList, setReportList] = useState<IReportListProps[]>([]);
 	const [selectedReport, setSelectedReport] = useState<IReportProps | null>(null);
 	const [page, setPage] = useState(0);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState<boolean>(true);
+
+	const isPageReady = isLoading || !isTokenReady;
 
 	const getReportList = async () => {
 		if (isLoading || !hasMore) return;
@@ -45,7 +46,7 @@ const Report = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenReady) getReportList();
+		if (isTokenReady && !isLoading && hasMore) getReportList();
 	}, [isTokenReady, selected, page]);
 
 	useEffect(() => {
@@ -91,15 +92,14 @@ const Report = () => {
 		} catch (error) {
 			console.error(error);
 			toast.error("신고 처리 중에 오류가 발생했습니다.");
+			closeModal();
 		}
 	};
 
 	return (
 		<div id="admin-report">
-			{isLoading ? (
-				<div className="flex w-full h-screen items-center justify-center">
-					<Loading />
-				</div>
+			{isPageReady ? (
+				<div className="flex w-full h-screen items-center justify-center">{/* <Loading /> */}</div>
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">

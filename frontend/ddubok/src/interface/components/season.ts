@@ -25,3 +25,9 @@ export interface ISeasonListProps {
 export interface ISeasonDefaultProps {
 	seasonDescription: string;
 }
+
+export interface ISeasonInfoProps {
+	seasonId: number;
+	seasonDescription: string;
+	path: string[];
+}
