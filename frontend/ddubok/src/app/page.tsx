@@ -13,7 +13,6 @@ import useAuthToken from "@lib/utils/tokenUtils";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import { selectUser } from "@lib/api/user-api";
 import { selectMainInfo } from "@lib/api/main-api";
-import { ISeasonInfoProps } from "@interface/components/season";
 import { ICardImageProps } from "@interface/components/card";
 
 import Slider from "react-slick";
@@ -31,8 +30,17 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
-	const [description, setDescription] = useState<string | null>(null);
-	const [cardImages, setCardImages] = useState<ICardImageProps[]>([]);
+	const [description, setDescription] = useState<string>(
+		"행운카드 뒷면의 메세지는\n수신 후 24시간이 지나야 확인할 수 있어요💌",
+	);
+	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
+		{ image: "/assets/template/template (1).png", effect: 0 },
+		{ image: "/assets/template/template (2).png", effect: 0 },
+		{ image: "/assets/template/template (3).png", effect: 0 },
+		{ image: "/assets/template/template (4).png", effect: 0 },
+		{ image: "/assets/template/template (5).png", effect: 0 },
+		{ image: "/assets/template/template (6).png", effect: 0 },
+	]);
 
 	const isPageReady = isLoading || !isTokenReady;
 
@@ -55,22 +63,11 @@ const Home = () => {
 				const response = await selectMainInfo();
 				console.log(response);
 				console.log(response.data.data);
-				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
+				const seasonDescription = response.data.data.seasonDescription;
+				const path = response.data.data.path;
 
-				if (seasonId) {
-					setDescription(seasonDescription);
-					setCardImages(path.map((imagePath) => ({ image: imagePath, effect: 0 })));
-				} else {
-					setDescription("행운카드 뒷면의 메세지는\n수신 후 24시간이 지나야 확인할 수 있어요💌");
-					setCardImages([
-						{ image: "/assets/template/template (1).png", effect: 0 },
-						{ image: "/assets/template/template (2).png", effect: 0 },
-						{ image: "/assets/template/template (3).png", effect: 0 },
-						{ image: "/assets/template/template (4).png", effect: 0 },
-						{ image: "/assets/template/template (5).png", effect: 0 },
-						{ image: "/assets/template/template (6).png", effect: 0 },
-					]);
-				}
+				setDescription(seasonDescription);
+				setCardImages(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
 
 				console.log(description);
 				console.log(cardImages);
