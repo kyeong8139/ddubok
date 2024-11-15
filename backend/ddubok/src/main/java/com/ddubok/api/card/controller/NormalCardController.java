@@ -31,7 +31,7 @@ public class NormalCardController {
         @RequestPart(name = "req") CreateCardReq req) {
         Long cardId = cardService.createNormalCard(
             CreateCardReqDto.builder().content(req.getContent())
-                .path(uploadCardImg(image, req.getWriterName())).isCustom(true)
+                .path(image == null ? req.getImageUrl() : uploadCardImg(image, req.getWriterName()))
                 .writerName(req.getWriterName()).memberId(req.getMemberId()).build());
         return BaseResponse.ofSuccess(CardIdRes.builder().cardId(cardId).build());
     }
