@@ -31,7 +31,7 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
-	const [seasonDescription, setSeasonDescription] = useState<string | null>(null);
+	const [description, setDescription] = useState<string | null>(null);
 	const [cardImages, setCardImages] = useState<ICardImageProps[]>([]);
 
 	const isPageReady = isLoading || !isTokenReady;
@@ -58,9 +58,22 @@ const Home = () => {
 				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
 
 				if (seasonId) {
-					setSeasonDescription(seasonDescription);
+					setDescription(seasonDescription);
 					setCardImages(path.map((imagePath) => ({ image: imagePath, effect: 0 })));
+				} else {
+					setDescription("행운카드 뒷면의 메세지는\n수신 후 24시간이 지나면 확인 가능합니다.");
+					setCardImages([
+						{ image: "/assets/template/template (1).png", effect: 0 },
+						{ image: "/assets/template/template (2).png", effect: 0 },
+						{ image: "/assets/template/template (3).png", effect: 0 },
+						{ image: "/assets/template/template (4).png", effect: 0 },
+						{ image: "/assets/template/template (5).png", effect: 0 },
+						{ image: "/assets/template/template (6).png", effect: 0 },
+					]);
 				}
+
+				console.log(seasonDescription);
+				console.log(cardImages);
 
 				setIsLoading(false);
 			} catch (error) {
@@ -233,7 +246,7 @@ const Home = () => {
 							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p> */}
-							<p className="font-nexonLight text-xs text-center mb-2">{seasonDescription}</p>
+							<p className="font-nexonLight text-xs text-center mb-2">{description}</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
 							<Slider {...settings}>
