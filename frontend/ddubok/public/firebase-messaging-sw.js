@@ -24,20 +24,3 @@ messaging.onBackgroundMessage((payload) => {
 
 	self.registration.showNotification(notificationTitle, notificationOptions);
 });
-
-self.addEventListener("notificationClick", (event) => {
-	event.notification.close();
-
-	const link = event.notification.data.link;
-	if (link) {
-		event.waitUntil(
-			clients.matchAll({ type: "window" }).then((windowClients) => {
-				for (let client of windowClients) {
-					if (client.url === link && "focus" in client) return client.focus();
-				}
-
-				if (clients.openWindow) return clients.openWindow(link);
-			}),
-		);
-	}
-});
