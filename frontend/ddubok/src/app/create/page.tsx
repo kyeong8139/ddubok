@@ -57,14 +57,6 @@ const Create = () => {
 
 	const handleSlideChange = (current: number) => {
 		setCurrentSlide(current);
-		if (inputRef.current) {
-			setTimeout(() => {
-				if (inputRef.current) {
-					inputRef.current.blur();
-					setIsFocused(false);
-				}
-			}, 600);
-		}
 	};
 
 	const sanitizeInput = (input: string): string => {
@@ -101,6 +93,11 @@ const Create = () => {
 	};
 
 	const handleCardClick = (index: number) => {
+		if (inputRef.current) {
+			inputRef.current.blur();
+			setIsFocused(false);
+		}
+
 		const currentIndex = currentSlide;
 		const totalSlides = cardImages.length;
 
@@ -136,21 +133,12 @@ const Create = () => {
 		touchStartRef.current = e.touches[0].clientX;
 		if (inputRef.current) {
 			inputRef.current.blur();
+			setIsFocused(false);
 		}
 	};
 
 	const handleTouchEnd = (e: React.TouchEvent) => {
 		if (touchStartRef.current === null) return;
-
-		const touchEnd = e.changedTouches[0].clientX;
-		const diff = touchEnd - touchStartRef.current;
-
-		if (Math.abs(diff) > 5) {
-			if (inputRef.current) {
-				inputRef.current.blur();
-			}
-		}
-
 		touchStartRef.current = null;
 	};
 
