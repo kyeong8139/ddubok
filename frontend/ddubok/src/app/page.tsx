@@ -61,7 +61,7 @@ const Home = () => {
 					setDescription(seasonDescription);
 					setCardImages(path.map((imagePath) => ({ image: imagePath, effect: 0 })));
 				} else {
-					setDescription("행운카드 뒷면의 메세지는\n수신 후 24시간이 지나면 확인 가능합니다.");
+					setDescription("행운카드 뒷면의 메세지는\n수신 후 24시간이 지나야 확인할 수 있어요💌");
 					setCardImages([
 						{ image: "/assets/template/template (1).png", effect: 0 },
 						{ image: "/assets/template/template (2).png", effect: 0 },
@@ -72,7 +72,7 @@ const Home = () => {
 					]);
 				}
 
-				console.log(seasonDescription);
+				console.log(description);
 				console.log(cardImages);
 
 				setIsLoading(false);
@@ -246,7 +246,12 @@ const Home = () => {
 							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p> */}
-							<p className="font-nexonLight text-xs text-center mb-2">{description}</p>
+							<p
+								className="font-nexonLight text-xs text-center mb-2"
+								style={{ whiteSpace: "pre-line" }}
+							>
+								{description}
+							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
 							<Slider {...settings}>
