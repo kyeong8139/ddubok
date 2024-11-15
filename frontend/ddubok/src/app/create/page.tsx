@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCardStore } from "@store/card-store";
@@ -11,6 +11,8 @@ import Button from "@components/button/button";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { ICardImageProps } from "@interface/components/card";
+import { selectMainInfo } from "@lib/api/main-api";
 
 const Create = () => {
 	const router = useRouter();
@@ -27,33 +29,30 @@ const Create = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isFocused, setIsFocused] = useState(false);
 
-	const cardImages = useMemo(
-		() => [
-			{ image: "", effect: 0 },
-			{ image: "/assets/template/template (1).png", effect: 0 },
-			{ image: "/assets/template/template (2).png", effect: 0 },
-			{ image: "/assets/template/template (3).png", effect: 0 },
-			{ image: "/assets/template/template (4).png", effect: 0 },
-			{ image: "/assets/template/template (5).png", effect: 0 },
-			{ image: "/assets/template/template (6).png", effect: 0 },
-		],
-		[],
-	);
+	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
+		{ image: "/assets/template/template (1).png", effect: 0 },
+		{ image: "/assets/template/template (2).png", effect: 0 },
+		{ image: "/assets/template/template (3).png", effect: 0 },
+		{ image: "/assets/template/template (4).png", effect: 0 },
+		{ image: "/assets/template/template (5).png", effect: 0 },
+		{ image: "/assets/template/template (6).png", effect: 0 },
+	]);
 
 	useEffect(() => {
-		const imgElements = cardImages.map((card) => {
-			if (card.image) {
-				const img = new Image();
-				img.src = card.image;
-				return img;
+		const getMainInfo = async () => {
+			try {
+				const response = await selectMainInfo();
+				const path = response.data.data.path;
+				setCardImages(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
+				setIsLoading(false);
+			} catch (error) {
+				console.error(error);
+				setIsLoading(false);
 			}
-			return null;
-		});
+		};
 
-		Promise.all(imgElements.map((img) => img?.decode())).then(() => {
-			setIsLoading(false);
-		});
-	}, [cardImages]);
+		getMainInfo();
+	}, []);
 
 	const handleSlideChange = (current: number) => {
 		setCurrentSlide(current);
