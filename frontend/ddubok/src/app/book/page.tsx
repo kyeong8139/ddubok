@@ -23,7 +23,7 @@ const Book = () => {
 	const [card, setCard] = useState<ICardDto>({
 		id: 0,
 		content: "",
-		openedAt: "",
+		openedAt: undefined,
 		path: "",
 		state: "",
 		writerName: "",

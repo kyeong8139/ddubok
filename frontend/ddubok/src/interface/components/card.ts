@@ -10,7 +10,7 @@ export interface ICardProps {
 export interface ICardDto {
 	id?: number;
 	content?: string;
-	openedAt?: string;
+	openedAt?: Date;
 	path: string;
 	state?: string;
 	writerName?: string;
@@ -22,6 +22,7 @@ export interface IDetailCardDto extends ICardDto {
 	height?: number;
 	effect?: number;
 	flip?: boolean;
+	flag?: boolean;
 }
 
 export interface IReportProps {
