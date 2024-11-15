@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import Button from "@components/button/button";
 import Loading from "@components/common/loading";
@@ -10,11 +10,11 @@ import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
 import { selectPreviewList } from "@lib/api/card-load-api";
 import { decryptCardId } from "@lib/utils/crypto";
-
-import Slider from "react-slick";
 import useAuthToken from "@lib/utils/tokenUtils";
 import { selectMainInfo } from "@lib/api/main-api";
 import { ICardImageProps } from "@interface/components/card";
+
+import Slider from "react-slick";
 
 const Share = () => {
 	const router = useRouter();
@@ -24,14 +24,8 @@ const Share = () => {
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [isLoading, setIsLoading] = useState(true);
 	const [nickname, setNickname] = useState("");
-	const [imageArray, setImageArray] = useState<ICardImageProps[]>([
-		{ image: "/assets/template/template (1).png", effect: 0 },
-		{ image: "/assets/template/template (2).png", effect: 0 },
-		{ image: "/assets/template/template (3).png", effect: 0 },
-		{ image: "/assets/template/template (4).png", effect: 0 },
-		{ image: "/assets/template/template (5).png", effect: 0 },
-		{ image: "/assets/template/template (6).png", effect: 0 },
-	]);
+	const [imageArray, setImageArray] = useState<string[]>([]);
+	const [defaultArray, setDefaultArray] = useState<ICardImageProps[]>([]);
 
 	const settings = {
 		infinite: true,
@@ -74,7 +68,7 @@ const Share = () => {
 				const response = await selectMainInfo();
 				const path = response.data.data.path;
 
-				setImageArray(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
+				setDefaultArray(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -84,6 +78,10 @@ const Share = () => {
 
 		getMainInfo();
 	}, []);
+
+	const cardImages = useMemo(() => {
+		return imageArray.length >= 3 ? imageArray.map((image) => ({ image, effect: 0 })) : defaultArray;
+	}, [imageArray, defaultArray]);
 
 	return (
 		<div id="request">
@@ -105,7 +103,7 @@ const Share = () => {
 					</div>
 					<div className="w-full max-w-[480px] mx-auto mt-8">
 						<Slider {...settings}>
-							{imageArray.map((card, index) => (
+							{cardImages.map((card, index) => (
 								<Card
 									key={index}
 									width={250}
