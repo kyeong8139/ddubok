@@ -24,7 +24,7 @@ export default function NotFound() {
 					className="mb-4"
 				/>
 				<p className="text-xl font-nexonBold mb-1">현재 계정이 차단되었습니다.</p>
-				<p className="text-xs font-nexonLight mb-3">(궁금한 점이 있으시면 DM으로 문의해주세요.)</p>
+				<p className="text-xs font-nexonLight mb-3">(문의사항은 DM으로 보내주세요.)</p>
 				<ul>
 					<div className="flex flex-row gap-3 mb-2">
 						<li>
