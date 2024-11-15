@@ -11,15 +11,17 @@ const Notification = () => {
 			(async () => {
 				try {
 					await onMessageListener().then((payload) => {
-						const message = payload as MessagePayload;
+						if (document.visibilityState === "visible") {
+							const message = payload as MessagePayload;
 
-						const notificationTitle = message.notification?.title ?? "알림";
-						const notificationOptions = {
-							body: message.notification?.body ?? "새로운 알림이 있습니다.",
-							icon: "/assets/push.png",
-						};
+							const notificationTitle = message.notification?.title ?? "알림";
+							const notificationOptions = {
+								body: message.notification?.body ?? "새로운 알림이 있습니다.",
+								icon: "/assets/push.png",
+							};
 
-						new window.Notification(notificationTitle, notificationOptions);
+							new window.Notification(notificationTitle, notificationOptions);
+						}
 					});
 				} catch (error) {
 					console.error("Failed to receive message:", error);
