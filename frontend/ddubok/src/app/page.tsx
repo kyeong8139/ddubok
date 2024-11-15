@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ModalContext } from "@context/modal-context";
 import Button from "@components/button/button";
@@ -13,7 +13,6 @@ import useAuthToken from "@lib/utils/tokenUtils";
 import { getTokenInfo } from "@lib/utils/authUtils";
 import { selectUser } from "@lib/api/user-api";
 import { selectMainInfo } from "@lib/api/main-api";
-import { ISeasonInfoProps } from "@interface/components/season";
 import { ICardImageProps } from "@interface/components/card";
 
 import Slider from "react-slick";
@@ -31,8 +30,17 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const decodedToken = accessToken ? getTokenInfo(accessToken) : null;
 	const [user, setUser] = useState<{ memberId: number; nickname: string; role: string } | null>(null);
-	const [description, setDescription] = useState<string | null>(null);
-	const [cardImages, setCardImages] = useState<ICardImageProps[]>([]);
+	const [description, setDescription] = useState<string>(
+		"행운카드 뒷면의 메세지는\n수신 후 24시간이 지나야 확인할 수 있어요💌",
+	);
+	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
+		{ image: "/assets/template/template (1).png", effect: 0 },
+		{ image: "/assets/template/template (2).png", effect: 0 },
+		{ image: "/assets/template/template (3).png", effect: 0 },
+		{ image: "/assets/template/template (4).png", effect: 0 },
+		{ image: "/assets/template/template (5).png", effect: 0 },
+		{ image: "/assets/template/template (6).png", effect: 0 },
+	]);
 	const [cloverClickCount, setCloverClickCount] = useState(0);
 	const [lastClickTime, setLastClickTime] = useState(0);
 
@@ -72,28 +80,11 @@ const Home = () => {
 		const getMainInfo = async () => {
 			try {
 				const response = await selectMainInfo();
-				console.log(response);
-				console.log(response.data.data);
-				const { seasonId, seasonDescription, path } = response.data.data as ISeasonInfoProps;
+				const seasonDescription = response.data.data.seasonDescription;
+				const path = response.data.data.path;
 
-				if (seasonId) {
-					setDescription(seasonDescription);
-					setCardImages(path.map((imagePath) => ({ image: imagePath, effect: 0 })));
-				} else {
-					setDescription("행운카드 뒷면의 메세지는\n수신 후 24시간이 지나면 확인 가능합니다.");
-					setCardImages([
-						{ image: "/assets/template/template (1).png", effect: 0 },
-						{ image: "/assets/template/template (2).png", effect: 0 },
-						{ image: "/assets/template/template (3).png", effect: 0 },
-						{ image: "/assets/template/template (4).png", effect: 0 },
-						{ image: "/assets/template/template (5).png", effect: 0 },
-						{ image: "/assets/template/template (6).png", effect: 0 },
-					]);
-				}
-
-				console.log(seasonDescription);
-				console.log(cardImages);
-
+				setDescription(seasonDescription);
+				setCardImages(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -103,18 +94,6 @@ const Home = () => {
 
 		getMainInfo();
 	}, []);
-
-	// const cardImages = useMemo(
-	// 	() => [
-	// 		{ image: "/assets/template/template (1).png", effect: 0 },
-	// 		{ image: "/assets/template/template (2).png", effect: 0 },
-	// 		{ image: "/assets/template/template (3).png", effect: 0 },
-	// 		{ image: "/assets/template/template (4).png", effect: 0 },
-	// 		{ image: "/assets/template/template (5).png", effect: 0 },
-	// 		{ image: "/assets/template/template (6).png", effect: 0 },
-	// 	],
-	// 	[],
-	// );
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -272,7 +251,12 @@ const Home = () => {
 							{/* <p className="font-nexonLight text-sm mb-2">
 								수능 이벤트 기간: <span>11.06 - 11.13</span>
 							</p> */}
-							<p className="font-nexonLight text-xs text-center mb-2">{description}</p>
+							<p
+								className="font-nexonLight text-xs text-center mb-2"
+								style={{ whiteSpace: "pre-line" }}
+							>
+								{description}
+							</p>
 						</div>
 						<div className="w-full max-w-[480px] mx-auto mt-8">
 							<Slider {...settings}>
