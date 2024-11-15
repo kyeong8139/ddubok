@@ -1,6 +1,7 @@
 package com.ddubok.api.admin.service;
 
 import com.ddubok.api.admin.dto.request.CreateSeasonReqDto;
+import com.ddubok.api.admin.dto.request.SaveSeasonReq;
 import com.ddubok.api.admin.dto.request.UpdateSeasonReqDto;
 import com.ddubok.api.admin.dto.response.MainSeasonRes;
 import com.ddubok.api.admin.dto.response.CreateSeasonRes;
@@ -10,6 +11,7 @@ import com.ddubok.api.admin.dto.response.GetSeasonListRes;
 import com.ddubok.api.admin.dto.response.UpdateSeasonRes;
 import com.ddubok.api.admin.entity.Season;
 import com.ddubok.api.admin.exception.InvalidDateOrderException;
+import com.ddubok.api.admin.exception.SeasonInfoNotFoundException;
 import com.ddubok.api.admin.exception.SeasonNotFoundException;
 import com.ddubok.api.admin.repository.SeasonRepository;
 import java.time.Duration;
@@ -18,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -55,7 +56,7 @@ public class SeasonServiceImpl implements SeasonService {
             .openedAt(createSeasonReqDto.getOpenedAt())
             .build()
         );
-        updateNextSeasonDate();
+        updateNextSeasonDate(season.getStartedAt(), season.getEndedAt());
         setExpirationForNotification(season);
         return CreateSeasonRes.builder()
             .id(season.getId())
@@ -111,7 +112,7 @@ public class SeasonServiceImpl implements SeasonService {
             .endedAt(updateSeasonReqDto.getEndedAt())
             .openedAt(updateSeasonReqDto.getOpenedAt())
             .build());
-        updateNextSeasonDate();
+        updateNextSeasonDate(season.getStartedAt(), season.getEndedAt());
         setExpirationForNotification(updateSeason);
         return UpdateSeasonRes.builder()
             .id(updateSeason.getId())
@@ -120,59 +121,69 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public DefaultSeasonRes getDefaultSeason() {
-        MainSeasonRes mainSeasonRes = getRedisValue(DEFAULT_SEASON_KEY, MainSeasonRes.class).orElse(null);
-        if (mainSeasonRes != null) {
+        SaveSeasonReq saveSeasonReq = getRedisValue(DEFAULT_SEASON_KEY, SaveSeasonReq.class);
+        if (saveSeasonReq == null) {
             return DefaultSeasonRes.builder()
-                .seasonDescription(mainSeasonRes.getSeasonDescription())
-                .path(mainSeasonRes.getPath())
+                .seasonDescription("현재 기본 시즌이 설정되지 않았습니다.")
+                .path(new ArrayList<>())
                 .build();
         }
 
         return DefaultSeasonRes.builder()
-            .seasonDescription("현재 기본 시즌이 설정되지 않았습니다.")
-            .path(new ArrayList<>())
+            .seasonDescription(saveSeasonReq.getSeasonDescription())
+            .path(saveSeasonReq.getPath())
             .build();
     }
 
 
     @Override
     public void updateDefaultSeason(DefaultSeasonRes defaultSeasonRes) {
-        MainSeasonRes mainSeasonRes = MainSeasonRes.builder()
+        SaveSeasonReq saveSeasonReq = SaveSeasonReq.builder()
             .seasonId(null)
             .seasonDescription(defaultSeasonRes.getSeasonDescription())
             .path(defaultSeasonRes.getPath())
             .build();
-        redisTemplate.opsForValue().set(DEFAULT_SEASON_KEY, mainSeasonRes);
+        redisTemplate.opsForValue().set(DEFAULT_SEASON_KEY, saveSeasonReq);
     }
 
     @Override
     public MainSeasonRes getActiveSeason() {
-        Optional<LocalDateTime> SeasonStartDate = getRedisValue(SEASON_START_DATE_KEY,
-            LocalDateTime.class);
-        if (SeasonStartDate.isEmpty()) {
-            updateNextSeasonDate();
+        LocalDateTime seasonStartDate = getRedisValue(SEASON_START_DATE_KEY, LocalDateTime.class);
+        if (seasonStartDate == null) {
+            seasonStartDate = updateNextSeasonDate(null, null);
         }
 
-        if (SeasonStartDate.get().isBefore(LocalDateTime.now())) {
-            return getRedisValue(ACTIVE_SEASON_KEY, MainSeasonRes.class).get();
+        SaveSeasonReq saveSeasonReq = getRedisValue(DEFAULT_SEASON_KEY, SaveSeasonReq.class);
+        if (seasonStartDate.isBefore(LocalDateTime.now())) {
+            saveSeasonReq = getRedisValue(ACTIVE_SEASON_KEY, SaveSeasonReq.class);
         }
 
-        return getRedisValue(DEFAULT_SEASON_KEY, MainSeasonRes.class)
-            .orElse(MainSeasonRes.builder()
-                .seasonDescription("메인 화면이 설정되지 않았습니다")
-                .path(new ArrayList<>())
-                .build());
+        if (saveSeasonReq == null) {
+            throw new SeasonInfoNotFoundException();
+        }
+
+        return MainSeasonRes.builder()
+            .seasonId(saveSeasonReq.getSeasonId())
+            .seasonDescription(saveSeasonReq.getSeasonDescription())
+            .path(saveSeasonReq.getPath())
+            .build();
     }
 
-    private <T> Optional<T> getRedisValue(String key, Class<T> type) {
+    /**
+     * 레디스에서 데이터를 가져오는 메서드
+     *
+     * @param key 레디스에 저장된 키
+     * @param type 변환할 타입
+     *
+     * @return 레디스에 저장된 값
+     */
+    private <T> T getRedisValue(String key, Class<T> type) {
         Object value = redisTemplate.opsForValue().get(key);
-        if (type == LocalDateTime.class && value instanceof String) {
-            return Optional.of(type.cast(LocalDateTime.parse((String) value, FORMATTER)));
-        }
 
-        return Boolean.TRUE.equals(redisTemplate.hasKey(key))
-            ? Optional.ofNullable(type.cast(redisTemplate.opsForValue().get(key)))
-            : Optional.empty();
+        if (type == LocalDateTime.class && value instanceof String) {
+            return type.cast(LocalDateTime.parse((String) value, FORMATTER));
+        }
+        return type.cast(value);
     }
 
     /**
@@ -199,11 +210,20 @@ public class SeasonServiceImpl implements SeasonService {
         redisTemplate.opsForValue().set(redisKey, season.getName(), expirationDuration);
     }
 
-    private void updateNextSeasonDate() {
+    /**
+     * 다음에 시작될 시즌 정보를 갱신하는 메서드
+     *
+     * @param seasonStartDate 업데이트된 시즌의 시작 일자 (nullable)
+     * @param seasonEndDate 업데이트된 시즌의 종료 일자 (nullable)
+     *
+     * @return 다음에 시작될 시즌의 시작 일자
+     */
+    private LocalDateTime updateNextSeasonDate(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate) {
         List<Season> seasonList = seasonRepository.findAll();
-        LocalDateTime seasonStartDate = getRedisValue(SEASON_START_DATE_KEY,
-            LocalDateTime.class).orElse(LocalDateTime.MAX);
         LocalDateTime now = LocalDateTime.now();
+        if (seasonStartDate == null || (seasonEndDate != null && seasonEndDate.isBefore(now))) {
+            seasonStartDate = LocalDateTime.MAX;
+        }
 
         Season nextSeason = null;
         for (Season season : seasonList) {
@@ -216,16 +236,17 @@ public class SeasonServiceImpl implements SeasonService {
 
         if (nextSeason == null) {
             redisTemplate.opsForValue().set(SEASON_START_DATE_KEY, seasonStartDate);
-            return;
+            return seasonStartDate;
         }
 
         Duration ttl = Duration.between(now, nextSeason.getEndedAt());
-        MainSeasonRes mainSeasonRes = MainSeasonRes.builder()
+        SaveSeasonReq saveSeasonReq = SaveSeasonReq.builder()
             .seasonId(nextSeason.getId())
             .seasonDescription(nextSeason.getDescription())
             .path(nextSeason.getPath())
             .build();
         redisTemplate.opsForValue().set(SEASON_START_DATE_KEY, seasonStartDate, ttl);
-        redisTemplate.opsForValue().set(ACTIVE_SEASON_KEY, mainSeasonRes, ttl);
+        redisTemplate.opsForValue().set(ACTIVE_SEASON_KEY, saveSeasonReq, ttl);
+        return seasonStartDate;
     }
 }
