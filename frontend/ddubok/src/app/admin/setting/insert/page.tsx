@@ -40,7 +40,7 @@ const SettingDetail = () => {
 		setPreviewImages(files.map((file) => URL.createObjectURL(file)));
 	};
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
 		setSeasonData((prev) => ({
 			...prev,
@@ -67,13 +67,13 @@ const SettingDetail = () => {
 				<div className="mb-4">
 					<h2 className="font-nexonBold text-white mb-2">시즌 안내문 설정</h2>
 					<div className="flex flex-col gap-2">
-						<input
-							type="text"
+						<textarea
 							name="seasonDescription"
 							placeholder="시즌 안내문을 입력하세요"
 							className="font-nexonRegular text-sm p-2 rounded-lg"
 							value={seasonData.seasonDescription}
 							onChange={handleInputChange}
+							rows={3}
 						/>
 					</div>
 				</div>
