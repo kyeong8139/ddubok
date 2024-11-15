@@ -81,7 +81,7 @@ function TextComponent({ canvas, onPanelClose }: ITextComponentProps) {
 		} else {
 			addText(newFont, label);
 		}
-		onPanelClose(); // 추가: 패널 닫기
+		onPanelClose();
 	};
 
 	const handleColorChange = (newColor: string) => {

@@ -28,19 +28,41 @@ const CreateFront = () => {
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
 	const [showExitConfirm, setShowExitConfirm] = useState(false);
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
+	const [shouldFixControls, setShouldFixControls] = useState(false);
 	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
 	const hasUnsavedChanges = useRef(false);
 
 	const navigationType = useRef<"back" | "header" | null>(null);
-
-	const [shouldFixButtons, setShouldFixButtons] = useState(false);
 	const controlsRef = useRef<HTMLDivElement>(null);
-
 	const [isEraser, setIsEraser] = useState(false);
 
 	const handlePanelClose = () => {
 		setIsPanelOpen(false);
 	};
+
+	useEffect(() => {
+		if (!isPanelOpen) {
+			setShouldFixControls(false);
+			return;
+		}
+
+		const checkPosition = () => {
+			if (controlsRef.current) {
+				const controlsRect = controlsRef.current.getBoundingClientRect();
+				const windowHeight = window.innerHeight;
+				const panelHeight = 320;
+
+				setShouldFixControls(controlsRect.bottom > windowHeight - panelHeight);
+			}
+		};
+
+		checkPosition();
+		window.addEventListener("resize", checkPosition);
+
+		return () => {
+			window.removeEventListener("resize", checkPosition);
+		};
+	}, [isPanelOpen]);
 
 	useEffect(() => {
 		if (canvas) {
@@ -59,33 +81,6 @@ const CreateFront = () => {
 			};
 		}
 	}, [canvas, isPanelOpen]);
-
-	useEffect(() => {
-		if (!isPanelOpen) {
-			setShouldFixButtons(false);
-		}
-	}, [isPanelOpen]);
-
-	useEffect(() => {
-		if (!isPanelOpen) return;
-
-		const handleScroll = () => {
-			if (controlsRef.current) {
-				const controlsBottom = controlsRef.current.getBoundingClientRect().bottom;
-				const windowHeight = window.innerHeight;
-				const panelHeight = 300;
-
-				setShouldFixButtons(controlsBottom > windowHeight - panelHeight);
-			}
-		};
-
-		window.addEventListener("scroll", handleScroll);
-		handleScroll();
-
-		return () => {
-			window.removeEventListener("scroll", handleScroll);
-		};
-	}, [isPanelOpen]);
 
 	useEffect(() => {
 		const handleHeaderNavigation = (e: MouseEvent) => {
@@ -373,10 +368,8 @@ const CreateFront = () => {
 
 			<div
 				ref={controlsRef}
-				className={`w-full max-w-[480px] mt-2 mx-auto z-30 ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
-					shouldFixButtons && isPanelOpen
-						? "fixed bottom-0 left-0 right-0 translate-y-[-320px] z-50"
-						: "translate-y-0"
+				className={`w-full max-w-[480px] mt-2 mx-auto z-30 bg-transparent ${
+					shouldFixControls && isPanelOpen ? "fixed bottom-[320px] left-1/2 -translate-x-1/2" : ""
 				}`}
 			>
 				<div className="mx-auto flex w-[320px] place-content-between items-center">
@@ -415,7 +408,7 @@ const CreateFront = () => {
 			{isPanelOpen && (
 				<div
 					className="fixed inset-0"
-					style={{ bottom: "300px", zIndex: 10 }}
+					style={{ bottom: "320px", zIndex: 10 }}
 					onClick={(e) => {
 						const target = e.target as HTMLElement;
 						const canvas = document.getElementById("canvas");
