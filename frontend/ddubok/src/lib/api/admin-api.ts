@@ -25,9 +25,11 @@ export const updateReport = (reportId: number, state: string) => {
 };
 
 // 사용자 목록 조회
-export const selectMemberList = (state: string | null, searchName: string) => {
+export const selectMemberList = (state: string | null, page: number, size: number, searchName: string) => {
 	return axiosInstance.post(`admins/members`, {
 		state,
+		page,
+		size,
 		searchName,
 	});
 };
@@ -96,7 +98,7 @@ export const updateSeason = (seasonId: number, images: File[], seasonData: ISeas
 // 기본 시즌 조회
 export const selectSeasonDefault = () => {
 	return axiosInstance.get(`/admins/seasons/default`);
-}
+};
 
 // 기본 시즌 설정
 export const updateSeasonDefault = (images: File[], seasonData: ISeasonDefaultProps) => {

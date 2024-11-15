@@ -28,47 +28,59 @@ const CreateFront = () => {
 	const [showNextConfirm, setShowNextConfirm] = useState(false);
 	const [showExitConfirm, setShowExitConfirm] = useState(false);
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
+	const [shouldFixControls, setShouldFixControls] = useState(false);
 	const setSelectedImage = useCardStore((state) => state.setSelectedImage);
 	const hasUnsavedChanges = useRef(false);
 
 	const navigationType = useRef<"back" | "header" | null>(null);
-
-	const [shouldFixButtons, setShouldFixButtons] = useState(false);
 	const controlsRef = useRef<HTMLDivElement>(null);
+	const [isEraser, setIsEraser] = useState(false);
 
 	const handlePanelClose = () => {
 		setIsPanelOpen(false);
-		if (canvas && activeComponent !== "brush") {
-			canvas.isDrawingMode = false;
-		}
 	};
 
 	useEffect(() => {
 		if (!isPanelOpen) {
-			setShouldFixButtons(false);
+			setShouldFixControls(false);
+			return;
 		}
-	}, [isPanelOpen]);
 
-	useEffect(() => {
-		if (!isPanelOpen) return;
-
-		const handleScroll = () => {
+		const checkPosition = () => {
 			if (controlsRef.current) {
-				const controlsBottom = controlsRef.current.getBoundingClientRect().bottom;
+				const controlsRect = controlsRef.current.getBoundingClientRect();
 				const windowHeight = window.innerHeight;
-				const panelHeight = 300;
+				const panelHeight = 320;
 
-				setShouldFixButtons(controlsBottom > windowHeight - panelHeight);
+				setShouldFixControls(controlsRect.bottom > windowHeight - panelHeight);
 			}
 		};
 
-		window.addEventListener("scroll", handleScroll);
-		handleScroll();
+		checkPosition();
+		window.addEventListener("resize", checkPosition);
 
 		return () => {
-			window.removeEventListener("scroll", handleScroll);
+			window.removeEventListener("resize", checkPosition);
 		};
 	}, [isPanelOpen]);
+
+	useEffect(() => {
+		if (canvas) {
+			const handleCanvasClick = () => {
+				if (isPanelOpen) {
+					handlePanelClose();
+				}
+			};
+
+			canvas.on("mouse:down", handleCanvasClick);
+			canvas.on("mouse:down:before", handleCanvasClick);
+
+			return () => {
+				canvas.off("mouse:down", handleCanvasClick);
+				canvas.off("mouse:down:before", handleCanvasClick);
+			};
+		}
+	}, [canvas, isPanelOpen]);
 
 	useEffect(() => {
 		const handleHeaderNavigation = (e: MouseEvent) => {
@@ -272,7 +284,6 @@ const CreateFront = () => {
 				canvas.isDrawingMode = false;
 			}
 			canvas.selection = true;
-			canvas.off("mouse:down");
 		}
 	}, [activeComponent, canvas]);
 
@@ -309,12 +320,6 @@ const CreateFront = () => {
 		}
 	};
 
-	const handleExit = () => {
-		hasUnsavedChanges.current = false;
-		setShowExitConfirm(false);
-		router.back();
-	};
-
 	const handleComponentClick = (value: string) => {
 		if (value === activeComponent) {
 			setIsPanelOpen(!isPanelOpen);
@@ -331,9 +336,20 @@ const CreateFront = () => {
 			case "sticker":
 				return <StickerComponent canvas={canvas} />;
 			case "text":
-				return <TextComponent canvas={canvas} />;
+				return (
+					<TextComponent
+						canvas={canvas}
+						onPanelClose={handlePanelClose}
+					/>
+				);
 			case "brush":
-				return <BrushComponent canvas={canvas} />;
+				return (
+					<BrushComponent
+						canvas={canvas}
+						isEraser={isEraser}
+						setIsEraser={setIsEraser}
+					/>
+				);
 			case "border":
 				return <BorderComponent canvas={canvas} />;
 			case "character":
@@ -347,15 +363,13 @@ const CreateFront = () => {
 		<div className="relative flex flex-col items-center w-full h-full">
 			<canvas
 				id="canvas"
-				className="rounded-lg"
+				className="rounded-lg relative z-20"
 			/>
 
 			<div
 				ref={controlsRef}
-				className={`w-full max-w-[480px] mt-2 mx-auto ${isPanelOpen ? "duration-300 ease-in-out" : ""} ${
-					shouldFixButtons && isPanelOpen
-						? "fixed bottom-0 left-0 right-0 translate-y-[-320px] z-50"
-						: "translate-y-0"
+				className={`w-full max-w-[480px] mt-2 mx-auto z-30 bg-transparent ${
+					shouldFixControls && isPanelOpen ? "fixed bottom-[320px] left-1/2 -translate-x-1/2" : ""
 				}`}
 			>
 				<div className="mx-auto flex w-[320px] place-content-between items-center">
@@ -380,7 +394,7 @@ const CreateFront = () => {
 					<div>
 						<button
 							onClick={() => setShowClearConfirm(true)}
-							className="p-2 rounded-lg bg-white h-[33px] flex justify-center items-center border border-black "
+							className="p-2 rounded-lg bg-white h-[33px] flex justify-center items-center border border-black"
 						>
 							<Trash
 								size={16}
@@ -393,17 +407,20 @@ const CreateFront = () => {
 
 			{isPanelOpen && (
 				<div
-					className="fixed inset-0 pointer-events-none"
-					onClick={handlePanelClose}
-				>
-					<div
-						className="absolute inset-0 pointer-events-auto"
-						style={{ bottom: "300px" }}
-					/>
-				</div>
+					className="fixed inset-0"
+					style={{ bottom: "320px", zIndex: 10 }}
+					onClick={(e) => {
+						const target = e.target as HTMLElement;
+						const canvas = document.getElementById("canvas");
+						if (!canvas?.contains(target)) {
+							handlePanelClose();
+						}
+					}}
+				/>
 			)}
+
 			<div
-				className={`fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg  duration-300 ease-in-out ${
+				className={`panel-content fixed left-1/2 transform -translate-x-1/2 bottom-0 bg-white rounded-t-lg duration-300 ease-in-out ${
 					isPanelOpen ? "translate-y-0" : "translate-y-full"
 				}`}
 				style={{
@@ -413,19 +430,16 @@ const CreateFront = () => {
 					boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
 					zIndex: 40,
 				}}
+				onClick={(e) => e.stopPropagation()}
 			>
-				<div
-					className="relative w-full h-full flex justify-center items-center"
-					onClick={(e) => e.stopPropagation()}
-				>
-					{/* <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" /> */}
+				<div className="relative w-full h-full flex justify-center items-center">
 					<button
 						className="absolute top-4 right-4 text-gray-500"
 						onClick={handlePanelClose}
 					>
 						✕
 					</button>
-					<div className=" px-4 flex flex-col justify-center items-center w-full ">
+					<div className="px-4 flex flex-col justify-center items-center w-full">
 						{renderActiveComponent()}
 					</div>
 				</div>
@@ -468,7 +482,6 @@ const CreateFront = () => {
 					</div>
 				</Modal>
 			)}
-
 			{showNextConfirm && (
 				<Modal>
 					<h3 className="text-lg font-nexonBold mb-4">앞면 꾸미기 완료</h3>

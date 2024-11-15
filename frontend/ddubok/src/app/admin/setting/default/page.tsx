@@ -15,24 +15,23 @@ import toast from "react-hot-toast";
 
 const SettingDefault = () => {
 	const router = useRouter();
-    const { isTokenReady } = useAuthToken();
-    const [seasonDefault, setSeasonDefault] = useState<ISeasonDefaultProps>({
-		seasonDescription: ""
-	});    
-    const [images, setImages] = useState<File[]>([]);
+	const { isTokenReady } = useAuthToken();
+	const [seasonDefault, setSeasonDefault] = useState<ISeasonDefaultProps>({
+		seasonDescription: "",
+	});
+	const [images, setImages] = useState<File[]>([]);
 	const [previewImages, setPreviewImages] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-	
-    const isPageReady = !isLoading && isTokenReady;
+	const [isLoading, setIsLoading] = useState(true);
 
-    const getSeasonDefault = async () => {
-        setIsLoading(true);
+	const isPageReady = !isLoading && isTokenReady;
+
+	const getSeasonDefault = async () => {
+		setIsLoading(true);
 		try {
 			const response = await selectSeasonDefault();
-			console.log(response.data.data);
 			let season = response.data.data;
 			setSeasonDefault({ seasonDescription: season.seasonDescription });
-            setPreviewImages(season.path);
+			setPreviewImages(season.path);
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -40,7 +39,7 @@ const SettingDefault = () => {
 		}
 	};
 
-    useEffect(() => {
+	useEffect(() => {
 		if (isTokenReady) getSeasonDefault();
 	}, [isTokenReady]);
 
@@ -61,7 +60,7 @@ const SettingDefault = () => {
 		setPreviewImages(files.map((file) => URL.createObjectURL(file)));
 	};
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
 		setSeasonDefault((prev) => ({
 			...prev,
@@ -69,7 +68,7 @@ const SettingDefault = () => {
 		}));
 	};
 
-    return (
+	return (
 		<div id="setting-detail">
 			{!isPageReady ? (
 				<div className="flex w-full h-screen items-center justify-center">
@@ -80,13 +79,13 @@ const SettingDefault = () => {
 					<div className="mb-4">
 						<h2 className="font-nexonBold text-white mb-2">기본 안내문 설정</h2>
 						<div className="flex flex-col gap-2">
-							<input
-								type="text"
+							<textarea
 								name="seasonDescription"
 								placeholder="기본 안내문을 입력하세요"
 								className="font-nexonRegular text-sm p-2 rounded-lg"
 								value={seasonDefault.seasonDescription}
 								onChange={handleInputChange}
+								rows={3}
 							/>
 						</div>
 					</div>

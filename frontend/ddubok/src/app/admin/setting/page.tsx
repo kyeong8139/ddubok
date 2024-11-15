@@ -20,7 +20,6 @@ const Setting = () => {
 	const getSeasonList = async () => {
 		try {
 			const response = await selectSeasonList();
-			console.log(response.data.data);
 			let seasons = response.data.data;
 			setSeasonList(seasons);
 		} catch (error) {
@@ -36,7 +35,7 @@ const Setting = () => {
 
 	const handleDefaultClick = () => {
 		router.push(`/admin/setting/default`);
-	}
+	};
 
 	const handleDetailClick = (seasonId: number) => {
 		router.push(`/admin/setting/${seasonId}`);
@@ -77,15 +76,13 @@ const Setting = () => {
 											<td className="px-1 py-[10px]">{season.id}</td>
 											<td className="px-2 py-[10px]">
 												<span
-														className={
-															season.isActiveSeason
-																? "text-green-400 font-nexonBold"
-																: ""
-														}
-													>
-														{season.name}
-														{season.isActiveSeason && " (활성)"}
-													</span>
+													className={
+														season.isActiveSeason ? "text-green-400 font-nexonBold" : ""
+													}
+												>
+													{season.name}
+													{season.isActiveSeason && " (활성)"}
+												</span>
 											</td>
 											<td className="px-1 py-[10px]">
 												<button

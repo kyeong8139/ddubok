@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCardStore } from "@store/card-store";
@@ -11,6 +11,8 @@ import Button from "@components/button/button";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { ICardImageProps } from "@interface/components/card";
+import { selectMainInfo } from "@lib/api/main-api";
 
 const Create = () => {
 	const router = useRouter();
@@ -25,48 +27,40 @@ const Create = () => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
+	const [isFocused, setIsFocused] = useState(false);
 
-	const cardImages = useMemo(
-		() => [
-			{ image: "", effect: 0 },
-			// { image: "/assets/template/kkm-card.png", effect: 0 },
-			// { image: "/assets/template/psh-card.jpg", effect: 0 },
-			// { image: "/assets/template/kkm-card-2.png", effect: 0 },
-			// { image: "/assets/template/lbk-card.png", effect: 0 },
-			// { image: "/assets/template/kkm-card-3.png", effect: 0 },
-			// { image: "/assets/template/kde-card.jpg", effect: 0 },
-			// { image: "/assets/template/kde-card-2.jpg", effect: 0 },
-			{ image: "/assets/template/template (1).png", effect: 0 },
-			{ image: "/assets/template/template (2).png", effect: 0 },
-			{ image: "/assets/template/template (3).png", effect: 0 },
-			{ image: "/assets/template/template (4).png", effect: 0 },
-			{ image: "/assets/template/template (5).png", effect: 0 },
-			{ image: "/assets/template/template (6).png", effect: 0 },
-		],
-		[],
-	);
+	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
+		{ image: "", effect: 0 },
+		{ image: "/assets/template/template (1).png", effect: 0 },
+		{ image: "/assets/template/template (2).png", effect: 0 },
+		{ image: "/assets/template/template (3).png", effect: 0 },
+		{ image: "/assets/template/template (4).png", effect: 0 },
+		{ image: "/assets/template/template (5).png", effect: 0 },
+		{ image: "/assets/template/template (6).png", effect: 0 },
+	]);
 
 	useEffect(() => {
-		const imgElements = cardImages.map((card) => {
-			if (card.image) {
-				const img = new Image();
-				img.src = card.image;
-				return img;
+		const getMainInfo = async () => {
+			try {
+				const response = await selectMainInfo();
+				const path = response.data.data.path;
+				const updatedCardImages = [
+					{ image: "", effect: 0 },
+					...path.map((imagePath: string) => ({ image: imagePath, effect: 0 })),
+				];
+				setCardImages(updatedCardImages);
+				setIsLoading(false);
+			} catch (error) {
+				console.error(error);
+				setIsLoading(false);
 			}
-			return null;
-		});
+		};
 
-		Promise.all(imgElements.map((img) => img?.decode())).then(() => {
-			setIsLoading(false);
-		});
-	}, [cardImages]);
+		getMainInfo();
+	}, []);
 
-	// 슬라이더 변경 시 input 포커스 해제
 	const handleSlideChange = (current: number) => {
 		setCurrentSlide(current);
-		if (inputRef.current) {
-			inputRef.current.blur();
-		}
 	};
 
 	const sanitizeInput = (input: string): string => {
@@ -103,6 +97,11 @@ const Create = () => {
 	};
 
 	const handleCardClick = (index: number) => {
+		if (inputRef.current) {
+			inputRef.current.blur();
+			setIsFocused(false);
+		}
+
 		const currentIndex = currentSlide;
 		const totalSlides = cardImages.length;
 
@@ -123,6 +122,7 @@ const Create = () => {
 				setTimeout(() => {
 					if (inputRef.current) {
 						inputRef.current.focus();
+						setIsFocused(true);
 						inputRef.current.scrollIntoView({
 							behavior: "smooth",
 							block: "center",
@@ -133,29 +133,21 @@ const Create = () => {
 		}
 	};
 
-	// 터치 이벤트 핸들러 추가
 	const handleTouchStart = (e: React.TouchEvent) => {
 		touchStartRef.current = e.touches[0].clientX;
 		if (inputRef.current) {
 			inputRef.current.blur();
+			setIsFocused(false);
 		}
 	};
 
 	const handleTouchEnd = (e: React.TouchEvent) => {
 		if (touchStartRef.current === null) return;
-
-		const touchEnd = e.changedTouches[0].clientX;
-		const diff = touchEnd - touchStartRef.current;
-
-		// 터치 이동이 있었을 경우에만 포커스 해제
-		if (Math.abs(diff) > 5) {
-			if (inputRef.current) {
-				inputRef.current.blur();
-			}
-		}
-
 		touchStartRef.current = null;
 	};
+
+	const handleFocus = () => setIsFocused(true);
+	const handleBlur = () => setIsFocused(false);
 
 	const settings = {
 		dots: false,
@@ -215,15 +207,22 @@ const Create = () => {
 
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
-						<input
-							ref={inputRef}
-							type="text"
-							placeholder="익명 (최대 11글자)"
-							value={userName}
-							onChange={handleNameChange}
-							maxLength={11}
-							className="border-b border-white bg-transparent font-nexonRegular text-white text-center outline-none"
-						/>
+						<div className="h-12 flex items-center">
+							<input
+								ref={inputRef}
+								type="text"
+								placeholder="익명 (최대 11글자)"
+								value={userName}
+								onChange={handleNameChange}
+								onFocus={handleFocus}
+								onBlur={handleBlur}
+								maxLength={11}
+								className={`bg-transparent font-nexonRegular text-white text-center outline-none px-4 py-2 
+        border-b border-white transform-gpu
+        ${isFocused ? "animate-[focusEffect_0.8s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]" : ""}`}
+								style={{ transformOrigin: "center bottom" }}
+							/>
+						</div>
 					</div>
 					<div className="mt-10 mb-10 w-full flex justify-center">
 						<Button
