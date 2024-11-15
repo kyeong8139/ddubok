@@ -30,6 +30,7 @@ const Create = () => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
+		{ image: "", effect: 0 },
 		{ image: "/assets/template/template (1).png", effect: 0 },
 		{ image: "/assets/template/template (2).png", effect: 0 },
 		{ image: "/assets/template/template (3).png", effect: 0 },
