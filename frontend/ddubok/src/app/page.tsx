@@ -2,7 +2,7 @@
 
 import NextImage from "next/image";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ModalContext } from "@context/modal-context";
 import Button from "@components/button/button";
@@ -61,17 +61,11 @@ const Home = () => {
 		const getMainInfo = async () => {
 			try {
 				const response = await selectMainInfo();
-				console.log(response);
-				console.log(response.data.data);
 				const seasonDescription = response.data.data.seasonDescription;
 				const path = response.data.data.path;
 
 				setDescription(seasonDescription);
 				setCardImages(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
-
-				console.log(description);
-				console.log(cardImages);
-
 				setIsLoading(false);
 			} catch (error) {
 				console.error(error);
@@ -81,18 +75,6 @@ const Home = () => {
 
 		getMainInfo();
 	}, []);
-
-	// const cardImages = useMemo(
-	// 	() => [
-	// 		{ image: "/assets/template/template (1).png", effect: 0 },
-	// 		{ image: "/assets/template/template (2).png", effect: 0 },
-	// 		{ image: "/assets/template/template (3).png", effect: 0 },
-	// 		{ image: "/assets/template/template (4).png", effect: 0 },
-	// 		{ image: "/assets/template/template (5).png", effect: 0 },
-	// 		{ image: "/assets/template/template (6).png", effect: 0 },
-	// 	],
-	// 	[],
-	// );
 
 	useEffect(() => {
 		const getUser = async () => {
