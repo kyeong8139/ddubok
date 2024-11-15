@@ -1,3 +1,4 @@
 export interface ITextComponentProps {
-	canvas?: fabric.Canvas | null;
+	canvas: fabric.Canvas | null;
+	onPanelClose: () => void;
 }

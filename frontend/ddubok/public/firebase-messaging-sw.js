@@ -19,25 +19,8 @@ messaging.onBackgroundMessage((payload) => {
 	const notificationTitle = payload.notification.title;
 	const notificationOptions = {
 		body: payload.notification.body,
-		icon: "/assets/push.png",
+		// icon: "/assets/push.png",
 	};
 
-	self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-self.addEventListener("notificationClick", (event) => {
-	event.notification.close();
-
-	const link = event.notification.data.link;
-	if (link) {
-		event.waitUntil(
-			clients.matchAll({ type: "window" }).then((windowClients) => {
-				for (let client of windowClients) {
-					if (client.url === link && "focus" in client) return client.focus();
-				}
-
-				if (clients.openWindow) return clients.openWindow(link);
-			}),
-		);
-	}
+	// self.registration.showNotification(notificationTitle, notificationOptions);
 });

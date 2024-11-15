@@ -9,7 +9,6 @@ public class CreateCardReqDto {
 
     private String content;
     private String writerName;
-    private Boolean isCustom;
     private Long seasonId;
     private String path;
     private Long memberId;
