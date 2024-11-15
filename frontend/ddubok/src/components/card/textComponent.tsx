@@ -24,6 +24,13 @@ function TextComponent({ canvas, onPanelClose }: ITextComponentProps) {
 		{ id: 2, name: "PyeongChangPeace-Bold", label: "화이팅" },
 		{ id: 3, name: "CookieRun-Regular", label: "화이팅" },
 		{ id: 4, name: "GumiRomanceTTF", label: "화이팅" },
+		{ id: 5, name: "UhBeeSe_hyun", label: "화이팅" },
+		{ id: 6, name: "omyu_pretty", label: "화이팅" },
+		{ id: 7, name: "kdg_Medium", label: "화이팅" },
+		{ id: 8, name: "KCC-Ganpan", label: "화이팅" },
+		{ id: 9, name: "SDSamliphopangche_Outline", label: "화이팅" },
+		{ id: 10, name: "YClover-Bold", label: "화이팅" },
+		{ id: 11, name: "Giants-Inline", label: "화이팅" },
 	];
 
 	const colors = [

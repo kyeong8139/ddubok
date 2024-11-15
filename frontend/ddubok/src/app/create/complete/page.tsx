@@ -216,9 +216,13 @@ const CardDetail = () => {
 			setIsLoading(true);
 			await saveCard(cardId);
 			toast.success("카드가 보관되었습니다.");
-		} catch (error) {
+		} catch (error: any) {
 			console.error("카드 보관 중 오류 발생:", error);
-			toast.error("카드 보관에 실패했습니다");
+			if (error.response?.data?.code === "703") {
+				toast.error("이미 받은 카드입니다");
+			} else {
+				toast.error("카드 보관에 실패했습니다");
+			}
 		} finally {
 			setIsLoading(false);
 		}
