@@ -23,12 +23,6 @@ export const requestPermission = async () => {
 			scope: "/",
 		});
 
-		console.log("Service Worker 등록 성공:", registration);
-
-		navigator.serviceWorker.ready.then((readyRegistration) => {
-			console.log("Service Worker 준비 완료:", readyRegistration);
-		});
-
 		getToken(messaging, {
 			vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
 			serviceWorkerRegistration: registration,
