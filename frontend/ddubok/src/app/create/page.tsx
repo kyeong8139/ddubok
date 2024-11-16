@@ -28,6 +28,8 @@ const Create = () => {
 	const [userName, setLocalUserName] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [isFocused, setIsFocused] = useState(false);
+	const [showWarning, setShowWarning] = useState(false);
+	const warningTimeoutRef = useRef<NodeJS.Timeout>();
 
 	const [cardImages, setCardImages] = useState<ICardImageProps[]>([
 		{ image: "", effect: 0 },
@@ -57,6 +59,12 @@ const Create = () => {
 		};
 
 		getMainInfo();
+
+		return () => {
+			if (warningTimeoutRef.current) {
+				clearTimeout(warningTimeoutRef.current);
+			}
+		};
 	}, []);
 
 	const handleSlideChange = (current: number) => {
@@ -71,7 +79,18 @@ const Create = () => {
 			.replace(/on\w+=/gi, "")
 			.replace(/data:/gi, "");
 
-		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+		const hasSpecialChars = /[^ㄱ-ㅎㅏ-ㅣ가-힣ㆍa-zA-Z0-9\s_-]/.test(input);
+		if (hasSpecialChars) {
+			setShowWarning(true);
+			if (warningTimeoutRef.current) {
+				clearTimeout(warningTimeoutRef.current);
+			}
+			warningTimeoutRef.current = setTimeout(() => {
+				setShowWarning(false);
+			}, 3000);
+		}
+
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣ㆍa-zA-Z0-9\s_-]/g, "");
 	};
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,7 +226,7 @@ const Create = () => {
 
 					<div className="w-9/12 flex flex-col items-center mt-10">
 						<label className="text-white font-nexonRegular mb-4">받는 이에게 보낼 이름을 쓰세요</label>
-						<div className="h-12 flex items-center">
+						<div className="h-12 flex items-center relative">
 							<input
 								ref={inputRef}
 								type="text"
@@ -222,6 +241,11 @@ const Create = () => {
         ${isFocused ? "animate-[focusEffect_0.8s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]" : ""}`}
 								style={{ transformOrigin: "center bottom" }}
 							/>
+							{showWarning && (
+								<div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-[#FF6B6B] text-xs font-nexonRegular whitespace-nowrap">
+									특수문자는 입력할 수 없습니다
+								</div>
+							)}
 						</div>
 					</div>
 					<div className="mt-10 mb-10 w-full flex justify-center">

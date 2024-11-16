@@ -44,7 +44,7 @@ const Mypage = () => {
 			.replace(/on\w+=/gi, "")
 			.replace(/data:/gi, "");
 
-		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣ㆍa-zA-Z0-9\s_-]/g, "");
 	};
 
 	useEffect(() => {
