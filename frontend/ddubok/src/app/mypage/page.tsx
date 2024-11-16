@@ -44,7 +44,7 @@ const Mypage = () => {
 			.replace(/on\w+=/gi, "")
 			.replace(/data:/gi, "");
 
-		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s_-]/g, "");
+		return sanitized.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣ㆍa-zA-Z0-9\s_-]/g, "");
 	};
 
 	useEffect(() => {
@@ -219,13 +219,13 @@ const Mypage = () => {
 			</div>
 			<div className="flex justify-center gap-12 pt-12 pb-16 absolute left-1/2 bottom-0 -translate-x-1/2">
 				<p
-					className="text-white border-b border-white border-solid font-nexonLight text-sm"
+					className="text-white border-b border-white border-solid font-nexonLight text-sm cursor-pointer"
 					onClick={handleLogout}
 				>
 					로그아웃
 				</p>
 				<p
-					className="text-white border-b border-white border-solid font-nexonLight text-sm"
+					className="text-white border-b border-white border-solid font-nexonLight text-sm cursor-pointer"
 					onClick={openModal}
 				>
 					회원탈퇴

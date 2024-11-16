@@ -13,13 +13,13 @@ declare module "fabric" {
 	}
 }
 
-function BrushComponent({ canvas }: IBrushComponentProps) {
+function BrushComponent({ canvas, isEraser, setIsEraser }: IBrushComponentProps) {
 	const [brushColor, setBrushColor] = useState("#000000");
 	const [brushSize, setBrushSize] = useState(5);
 	const [customColor, setCustomColor] = useState(
 		"linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3)",
 	);
-	const [isEraser, setIsEraser] = useState(false);
+
 	const colorSliderRef = useRef<HTMLDivElement>(null);
 	const [isDragging, setIsDragging] = useState(false);
 	const [startX, setStartX] = useState(0);
@@ -240,7 +240,17 @@ function BrushComponent({ canvas }: IBrushComponentProps) {
 	};
 
 	const toggleEraser = () => {
-		setIsEraser(!isEraser);
+		const newEraserState = !isEraser;
+		setIsEraser(newEraserState);
+		if (canvas) {
+			if (newEraserState) {
+				canvas.isDrawingMode = false;
+				canvas.defaultCursor = "crosshair";
+			} else {
+				canvas.isDrawingMode = true;
+				canvas.defaultCursor = "default";
+			}
+		}
 	};
 
 	const sizes = [2, 5, 8, 12, 16];

@@ -48,6 +48,46 @@ const config: Config = {
 				nexonRegular: ["var(--font-nexon-gothic-regular)", "sans-serif"],
 				nexonBold: ["var(--font-nexon-gothic-bold)", "sans-serif"],
 			},
+			keyframes: {
+				focusEffect: {
+					"0%": {
+						transform: "scaleX(0.95)",
+						borderBottomColor: "white",
+						borderBottomWidth: "1px",
+						boxShadow: "0 2px 0 -1px rgba(110, 255, 191, 0)",
+					},
+					"25%": {
+						// 30%에서 25%로 변경
+						transform: "scaleX(1.05)",
+						borderBottomColor: "#6EFFBF",
+						borderBottomWidth: "2px",
+						boxShadow: "0 4px 0 -1px rgba(110, 255, 191, 0.6)",
+					},
+					"50%": {
+						// 60%에서 50%로 변경
+						transform: "scaleX(0.98)",
+						borderBottomColor: "#6EFFBF",
+						borderBottomWidth: "2px",
+						boxShadow: "0 4px 0 -1px rgba(110, 255, 191, 0.4)",
+					},
+					"75%": {
+						// 새로운 키프레임 추가
+						transform: "scaleX(1.02)",
+						borderBottomColor: "#6EFFBF",
+						borderBottomWidth: "2px",
+						boxShadow: "0 3px 0 -1px rgba(110, 255, 191, 0.35)",
+					},
+					"100%": {
+						transform: "scaleX(1)",
+						borderBottomColor: "#6EFFBF",
+						borderBottomWidth: "2px",
+						boxShadow: "0 2px 0 -1px rgba(110, 255, 191, 0.3)",
+					},
+				},
+			},
+			animation: {
+				focusEffect: "focusEffect 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards", // 0.6s에서 0.8s로 변경
+			},
 		},
 	},
 	plugins: [],

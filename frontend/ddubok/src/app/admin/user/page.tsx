@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 
 import Modal from "@components/common/modal";
 import Button from "@components/button/button";
-import Loading from "@components/common/loading";
 import { ModalContext } from "@context/modal-context";
 import { IUserProps } from "@interface/components/user";
 import { selectMember, selectMemberList, updateMemberRole, updateMemberState } from "@lib/api/admin-api";
@@ -20,18 +19,26 @@ const User = () => {
 	const [userList, setUserList] = useState<IUserProps[]>([]);
 	const [selectedUser, setSelectedUser] = useState<IUserProps | null>(null);
 	const [searchName, setSearchName] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
+	const [page, setPage] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 
 	const isPageReady = isLoading || !isTokenReady;
 
 	const getMemberList = async () => {
+		if (isLoading || !hasMore) return;
+
 		setIsLoading(true);
 		try {
 			const state = selected === 1 ? "활성" : selected === 2 ? "비활성" : selected === 3 ? "차단" : null;
-			const response = await selectMemberList(state, searchName);
-			console.log(response.data.data);
+			const response = await selectMemberList(state, page, 50, searchName);
 			let users = response.data.data;
-			setUserList(users);
+
+			if (users.length === 0) {
+				setHasMore(false);
+			} else {
+				setUserList((prevUsers) => [...prevUsers, ...users]);
+			}
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -40,17 +47,33 @@ const User = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenReady) getMemberList();
-	}, [isTokenReady, selected, searchName]);
+		if (isTokenReady && !isLoading && hasMore) getMemberList();
+	}, [isTokenReady, selected, page, searchName]);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (isLoading || !hasMore) return;
+
+			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+			if (scrollTop + clientHeight >= scrollHeight - 5) {
+				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [isLoading, hasMore]);
 
 	const handleClick = (index: number) => {
 		setSelected(index);
+		setPage(0);
+		setUserList([]);
+		setHasMore(true);
 	};
 
 	const handleDetailClick = async (memberId: number) => {
 		try {
 			const response = await selectMember(memberId);
-			console.log(response.data.data);
 			setSelectedUser(response.data.data);
 			openModal();
 		} catch (error) {
@@ -63,6 +86,9 @@ const User = () => {
 		try {
 			await updateMemberState(selectedUser.memberId);
 			toast.success("회원 상태가 변경되었습니다.");
+			setPage(0);
+			setUserList([]);
+			setHasMore(true);
 			getMemberList();
 			closeModal();
 		} catch (error) {
@@ -77,6 +103,9 @@ const User = () => {
 		try {
 			await updateMemberRole(selectedUser.memberId);
 			toast.success("회원 등급이 변경되었습니다.");
+			setPage(0);
+			setUserList([]);
+			setHasMore(true);
 			getMemberList();
 			closeModal();
 		} catch (error) {
@@ -89,9 +118,7 @@ const User = () => {
 	return (
 		<div id="admin-user">
 			{isPageReady ? (
-				<div className="flex w-full h-screen items-center justify-center">
-					<Loading />
-				</div>
+				<div className="flex w-full h-screen items-center justify-center">{/* <Loading /> */}</div>
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">

@@ -5,7 +5,7 @@ import { ITextComponentProps } from "@interface/components/text";
 import { fabric } from "fabric";
 import { TextAlignCenter, TextAlignLeft, TextAlignRight } from "@phosphor-icons/react";
 
-function TextComponent({ canvas }: ITextComponentProps) {
+function TextComponent({ canvas, onPanelClose }: ITextComponentProps) {
 	const [fontFamily, setFontFamily] = useState("Arial");
 	const [textColor, setTextColor] = useState("#000000");
 	const [textAlign, setTextAlign] = useState("center");
@@ -24,6 +24,13 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		{ id: 2, name: "PyeongChangPeace-Bold", label: "화이팅" },
 		{ id: 3, name: "CookieRun-Regular", label: "화이팅" },
 		{ id: 4, name: "GumiRomanceTTF", label: "화이팅" },
+		{ id: 5, name: "UhBeeSe_hyun", label: "화이팅" },
+		{ id: 6, name: "omyu_pretty", label: "화이팅" },
+		{ id: 7, name: "kdg_Medium", label: "화이팅" },
+		{ id: 8, name: "KCC-Ganpan", label: "화이팅" },
+		{ id: 9, name: "SDSamliphopangche_Outline", label: "화이팅" },
+		{ id: 10, name: "YClover-Bold", label: "화이팅" },
+		{ id: 11, name: "Giants-Inline", label: "화이팅" },
 	];
 
 	const colors = [
@@ -81,6 +88,7 @@ function TextComponent({ canvas }: ITextComponentProps) {
 		} else {
 			addText(newFont, label);
 		}
+		onPanelClose();
 	};
 
 	const handleColorChange = (newColor: string) => {

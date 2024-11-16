@@ -10,13 +10,13 @@ const Notification = () => {
 		if (typeof window !== "undefined" && "Notification" in window) {
 			(async () => {
 				try {
-					await onMessageListener().then((payload) => {
+					onMessageListener().then((payload) => {
 						const message = payload as MessagePayload;
 
 						const notificationTitle = message.notification?.title ?? "알림";
 						const notificationOptions = {
 							body: message.notification?.body ?? "새로운 알림이 있습니다.",
-							icon: "/assets/push.png",
+							// icon: "/assets/push.png",
 						};
 
 						new window.Notification(notificationTitle, notificationOptions);

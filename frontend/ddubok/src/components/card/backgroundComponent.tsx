@@ -25,7 +25,7 @@ type BackgroundImageItem = {
 
 type BackgroundItem = BackgroundUploadItem | BackgroundWhiteItem | BackgroundImageItem;
 
-const backgroundImages = Array.from({ length: 14 }, (_, index) => `/assets/background/background (${index + 1}).JPG`);
+const backgroundImages = Array.from({ length: 27 }, (_, index) => `/assets/background/background (${index + 1}).JPG`);
 
 function BackgroundComponent({ canvas }: IBackgroundComponentProps) {
 	const [mounted, setMounted] = useState(false);

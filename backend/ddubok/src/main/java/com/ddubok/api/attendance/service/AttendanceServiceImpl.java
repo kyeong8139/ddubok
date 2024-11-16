@@ -125,7 +125,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         return FortuneRes.builder()
             .sentence(sentence)
-            .score(100)
+            .score(score)
             .build();
     }
 }

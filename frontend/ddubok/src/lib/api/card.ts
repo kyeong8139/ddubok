@@ -13,26 +13,26 @@ export const sendCard = async (
 	try {
 		const formData = new FormData();
 
-		formData.append(
-			"req",
-			new Blob(
-				[
-					JSON.stringify({
-						content: content,
-						writerName: writerName,
-						...(seasonId !== null ? { seasonId: seasonId } : {}),
-						...(memberId ? { memberId: memberId } : {}),
-					}),
-				],
-				{
-					type: "application/json",
-				},
-			),
-		);
-
 		if (image) {
 			try {
 				if (image.startsWith("data:image")) {
+					formData.append(
+						"req",
+						new Blob(
+							[
+								JSON.stringify({
+									content: content,
+									writerName: writerName,
+									...(seasonId !== null ? { seasonId: seasonId } : {}),
+									...(memberId ? { memberId: memberId } : {}),
+								}),
+							],
+							{
+								type: "application/json",
+							},
+						),
+					);
+
 					if (!image.includes("base64,")) {
 						throw new Error("Invalid base64 image format");
 					}
@@ -56,17 +56,24 @@ export const sendCard = async (
 					const imageFile = new File([imageBlob], "card-image.png", { type: "image/png" });
 
 					formData.append("image", imageFile);
-				} else {
-					try {
-						const response = await fetch(image);
-						if (!response.ok) throw new Error("Failed to fetch image");
-						const blob = await response.blob();
-						const imageFile = new File([blob], "card-image.png", { type: blob.type });
-						formData.append("image", imageFile);
-					} catch (fetchError) {
-						console.error("이미지 가져오기 실패:", fetchError);
-						throw new Error("이미지 가져오기에 실패했습니다.");
-					}
+				} else if (image.startsWith("http")) {
+					formData.append(
+						"req",
+						new Blob(
+							[
+								JSON.stringify({
+									content: content,
+									writerName: writerName,
+									...(seasonId !== null ? { seasonId: seasonId } : {}),
+									...(memberId ? { memberId: memberId } : {}),
+									imageUrl: image,
+								}),
+							],
+							{
+								type: "application/json",
+							},
+						),
+					);
 				}
 			} catch (imageError) {
 				console.error("이미지 처리 중 오류:", imageError);
@@ -75,7 +82,6 @@ export const sendCard = async (
 		}
 
 		const response = await axios.post(`${baseURL2}/cards`, formData, {
-			// V2.1 수정
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},

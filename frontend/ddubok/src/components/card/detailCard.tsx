@@ -10,7 +10,7 @@ import { deleteCard } from "@lib/api/card-load-api";
 import { DotsThreeCircleVertical, Star } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
-const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCardDto) => {
+const DetailCard = ({ id, writerName, state, content, path, effect, openedAt }: IDetailCardDto) => {
 	const router = useRouter();
 	const { closeModal } = useContext(ModalContext);
 	const [tempState, setTempState] = useState<{ [key: number]: string }>({});
@@ -116,6 +116,7 @@ const DetailCard = ({ id, writerName, state, content, path, effect }: IDetailCar
 					content={content}
 					state={id !== undefined ? tempState[id] : "FILTERED"}
 					effect={effect}
+					openedAt={openedAt}
 					flip={true}
 				/>
 				<p className="font-nexonRegular text-xs text-white text-center my-4">
