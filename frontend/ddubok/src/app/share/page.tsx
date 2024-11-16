@@ -10,9 +10,11 @@ import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
 import { selectPreviewList } from "@lib/api/card-load-api";
 import { decryptCardId } from "@lib/utils/crypto";
+import useAuthToken from "@lib/utils/tokenUtils";
+import { selectMainInfo } from "@lib/api/main-api";
+import { ICardImageProps } from "@interface/components/card";
 
 import Slider from "react-slick";
-import useAuthToken from "@lib/utils/tokenUtils";
 
 const Share = () => {
 	const router = useRouter();
@@ -23,6 +25,7 @@ const Share = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [nickname, setNickname] = useState("");
 	const [imageArray, setImageArray] = useState<string[]>([]);
+	const [defaultArray, setDefaultArray] = useState<ICardImageProps[]>([]);
 
 	const settings = {
 		infinite: true,
@@ -59,16 +62,26 @@ const Share = () => {
 		loadPriveiwImages();
 	}, []);
 
+	useEffect(() => {
+		const getMainInfo = async () => {
+			try {
+				const response = await selectMainInfo();
+				const path = response.data.data.path;
+
+				setDefaultArray(path.map((imagePath: string) => ({ image: imagePath, effect: 0 })));
+				setIsLoading(false);
+			} catch (error) {
+				console.error(error);
+				setIsLoading(false);
+			}
+		};
+
+		getMainInfo();
+	}, []);
+
 	const cardImages = useMemo(() => {
-		return imageArray.length >= 3
-			? imageArray.map((image) => ({ image, effect: 0 }))
-			: [
-					{ image: "/assets/template/template (1).png", effect: 0 },
-					{ image: "/assets/template/template (2).png", effect: 0 },
-					{ image: "/assets/template/template (5).png", effect: 0 },
-					{ image: "/assets/template/template (6).png", effect: 0 },
-			  ];
-	}, [imageArray]);
+		return imageArray.length >= 3 ? imageArray.map((image) => ({ image, effect: 0 })) : defaultArray;
+	}, [imageArray, defaultArray]);
 
 	return (
 		<div id="request">

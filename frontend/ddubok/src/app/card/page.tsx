@@ -12,15 +12,7 @@ import Loading from "@components/common/loading";
 import Modal from "@components/common/modal";
 import { ModalContext } from "@context/modal-context";
 import useAuthToken from "@lib/utils/tokenUtils";
-
-interface CardData {
-	id: number;
-	content: string;
-	openedAt: string;
-	path: string;
-	state: string;
-	writerName: string;
-}
+import { ICardDto } from "@interface/components/card";
 
 const SharedCard = () => {
 	const router = useRouter();
@@ -28,7 +20,7 @@ const SharedCard = () => {
 	const encryptedId = searchParams?.get("id");
 	const cardId = encryptedId ? decryptCardId(encryptedId) : null;
 	const { accessToken } = useAuthToken();
-	const [cardData, setCardData] = useState<CardData | null>(null);
+	const [cardData, setCardData] = useState<ICardDto | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const { isModalOpen, openModal, closeModal } = useContext(ModalContext);
 	const [isTallScreen, setIsTallScreen] = useState(false);
@@ -67,9 +59,13 @@ const SharedCard = () => {
 			setIsLoading(true);
 			await saveCard(cardId);
 			toast.success("카드가 보관되었습니다.");
-		} catch (error) {
+		} catch (error: any) {
 			console.error("카드 보관 중 오류 발생:", error);
-			toast.error("카드 보관에 실패했습니다");
+			if (error.response?.data?.code === "703") {
+				toast.error("이미 받은 카드입니다");
+			} else {
+				toast.error("카드 보관에 실패했습니다");
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -132,6 +128,8 @@ const SharedCard = () => {
 					height={cardSize.height}
 					path={cardData?.path || ""}
 					content={cardData?.content || ""}
+					state={cardData?.state}
+					openedAt={cardData?.openedAt}
 					effect={0}
 					flip={true}
 				/>
