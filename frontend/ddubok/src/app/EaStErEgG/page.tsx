@@ -423,22 +423,22 @@ const EasterEgg: React.FC = () => {
 							<div className="text-white text-2xl mb-6 font-nexonRegular">최종 점수: {score}점</div>
 							<div className="w-full flex justify-center items-center gap-2 p-4">
 								<Button
-									text="다시하기"
+									text="설명보기"
 									color="purple"
 									size="long"
 									font="bold"
 									shadow="purple"
-									onClick={startGame}
+									onClick={() => {
+										window.location.reload();
+									}}
 								/>
 								<Button
-									text="홈으로"
+									text="다시하기"
 									color="green"
 									size="long"
 									font="bold"
 									shadow="green"
-									onClick={() => {
-										router.push("/");
-									}}
+									onClick={startGame}
 								/>
 							</div>
 						</div>
