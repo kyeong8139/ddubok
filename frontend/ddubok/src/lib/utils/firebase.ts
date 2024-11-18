@@ -1,4 +1,3 @@
-// firebase.ts
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, Messaging, onMessage } from "firebase/messaging";
 

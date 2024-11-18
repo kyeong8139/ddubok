@@ -248,9 +248,6 @@ const Home = () => {
 								height={136}
 								className="pt-2"
 							/>
-							{/* <p className="font-nexonLight text-sm mb-2">
-								수능 이벤트 기간: <span>11.06 - 11.13</span>
-							</p> */}
 							<p
 								className="font-nexonLight text-xs text-center mb-2"
 								style={{ whiteSpace: "pre-line" }}
@@ -431,7 +428,6 @@ const Home = () => {
 						</ul>
 					</div>
 
-					{/* 모달 */}
 					{isModalOpen && accessToken && (
 						<Modal>
 							<div className="flex flex-col items-center max-w-[360px] w-full">

@@ -1,4 +1,3 @@
-// components/common/custom-toaster.tsx
 import { Toaster } from "react-hot-toast";
 
 const CustomToaster = () => {

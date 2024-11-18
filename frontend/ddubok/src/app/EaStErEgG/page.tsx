@@ -40,6 +40,12 @@ const EasterEgg: React.FC = () => {
 	const spiralTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const slowMotionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			setMousePosition({ x: 0, y: window.innerHeight - 100 });
+		}
+	}, []);
+
 	// 게임 영역 너비 설정
 	useEffect(() => {
 		if (gameAreaRef.current) {
@@ -56,7 +62,6 @@ const EasterEgg: React.FC = () => {
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
 
-	// 마우스/터치 위치 추적
 	useEffect(() => {
 		const handlePointerMove = (e: MouseEvent | TouchEvent) => {
 			if (!gameAreaRef.current) return;
@@ -103,7 +108,6 @@ const EasterEgg: React.FC = () => {
 		};
 	}, []);
 
-	// 효과 초기화 함수
 	const clearEffects = (excludeSlowMotion = false) => {
 		setIsBouncing(false);
 		setIsSpiral(false);
@@ -117,7 +121,7 @@ const EasterEgg: React.FC = () => {
 		}
 	};
 
-	// 아이템 효과 적용 함수
+	// 아이템 효과 적용
 	const applyItemEffect = (type: string) => {
 		if (type === "⚡") {
 			setGameOver(true);
@@ -164,7 +168,7 @@ const EasterEgg: React.FC = () => {
 		}
 	};
 
-	// 여러 개의 아이템 생성
+	// 아이템 확률
 	const createItems = () => {
 		const itemCount = isBonus ? Math.floor(Math.random() * 5) + 10 : Math.floor(Math.random() * 5) + 3;
 		const newItems: Item[] = [];
@@ -323,6 +327,13 @@ const EasterEgg: React.FC = () => {
 		setItems([]);
 		setIsBonus(false);
 		clearEffects();
+		if (gameAreaRef.current) {
+			const rect = gameAreaRef.current.getBoundingClientRect();
+			setMousePosition({
+				x: rect.width / 2,
+				y: rect.height - 100,
+			});
+		}
 	};
 
 	return (

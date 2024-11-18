@@ -55,7 +55,7 @@ const Report = () => {
 
 			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
-				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+				setPage((prevPage) => prevPage + 1);
 			}
 		};
 
@@ -99,7 +99,7 @@ const Report = () => {
 	return (
 		<div id="admin-report">
 			{isPageReady ? (
-				<div className="flex w-full h-screen items-center justify-center">{/* <Loading /> */}</div>
+				<div className="flex w-full h-screen items-center justify-center"></div>
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">
