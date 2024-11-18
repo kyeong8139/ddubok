@@ -240,10 +240,12 @@ public class SeasonServiceImpl implements SeasonService {
         }
 
         Duration ttl = Duration.between(now, nextSeason.getEndedAt());
+        ArrayList<String> seasonPath = new ArrayList<>(nextSeason.getPath());
+
         SaveSeasonReq saveSeasonReq = SaveSeasonReq.builder()
             .seasonId(nextSeason.getId())
             .seasonDescription(nextSeason.getDescription())
-            .path(nextSeason.getPath())
+            .path(seasonPath)
             .build();
         redisTemplate.opsForValue().set(SEASON_START_DATE_KEY, seasonStartDate, ttl);
         redisTemplate.opsForValue().set(ACTIVE_SEASON_KEY, saveSeasonReq, ttl);
