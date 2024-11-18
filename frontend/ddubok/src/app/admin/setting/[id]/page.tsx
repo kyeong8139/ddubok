@@ -36,7 +36,6 @@ const SettingDetail = () => {
 		try {
 			const response = await selectSeason(Number(id));
 			const data = response.data.data;
-			console.log(data);
 			setSeasonData({
 				name: data.name,
 				seasonDescription: data.seasonDescription,
