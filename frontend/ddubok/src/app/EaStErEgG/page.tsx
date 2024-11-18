@@ -28,7 +28,7 @@ const EasterEgg: React.FC = () => {
 	const [score, setScore] = useState<number>(0);
 	const [gameOver, setGameOver] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
-	const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: window.innerHeight - 100 });
+	const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 });
 	const [gameWidth, setGameWidth] = useState<number>(480);
 	const [isBonus, setIsBonus] = useState<boolean>(false);
 	const [isBouncing, setIsBouncing] = useState<boolean>(false);
@@ -39,6 +39,12 @@ const EasterEgg: React.FC = () => {
 	const bounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const spiralTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const slowMotionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			setMousePosition({ x: 0, y: window.innerHeight - 100 });
+		}
+	}, []);
 
 	// 게임 영역 너비 설정
 	useEffect(() => {
