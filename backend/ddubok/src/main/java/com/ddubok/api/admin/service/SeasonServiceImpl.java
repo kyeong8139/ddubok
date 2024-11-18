@@ -56,7 +56,7 @@ public class SeasonServiceImpl implements SeasonService {
             .openedAt(createSeasonReqDto.getOpenedAt())
             .build()
         );
-        updateNextSeasonDate(season.getStartedAt(), season.getEndedAt());
+        updateNextSeasonDate();
         setExpirationForNotification(season);
         return CreateSeasonRes.builder()
             .id(season.getId())
@@ -112,7 +112,7 @@ public class SeasonServiceImpl implements SeasonService {
             .endedAt(updateSeasonReqDto.getEndedAt())
             .openedAt(updateSeasonReqDto.getOpenedAt())
             .build());
-        updateNextSeasonDate(season.getStartedAt(), season.getEndedAt());
+        updateNextSeasonDate();
         setExpirationForNotification(updateSeason);
         return UpdateSeasonRes.builder()
             .id(updateSeason.getId())
@@ -150,7 +150,7 @@ public class SeasonServiceImpl implements SeasonService {
     public MainSeasonRes getActiveSeason() {
         LocalDateTime seasonStartDate = getRedisValue(SEASON_START_DATE_KEY, LocalDateTime.class);
         if (seasonStartDate == null) {
-            seasonStartDate = updateNextSeasonDate(null, null);
+            seasonStartDate = updateNextSeasonDate();
         }
 
         SaveSeasonReq saveSeasonReq = getRedisValue(DEFAULT_SEASON_KEY, SaveSeasonReq.class);
@@ -213,17 +213,12 @@ public class SeasonServiceImpl implements SeasonService {
     /**
      * 다음에 시작될 시즌 정보를 갱신하는 메서드
      *
-     * @param seasonStartDate 업데이트된 시즌의 시작 일자 (nullable)
-     * @param seasonEndDate 업데이트된 시즌의 종료 일자 (nullable)
-     *
      * @return 다음에 시작될 시즌의 시작 일자
      */
-    private LocalDateTime updateNextSeasonDate(LocalDateTime seasonStartDate, LocalDateTime seasonEndDate) {
+    private LocalDateTime updateNextSeasonDate() {
         List<Season> seasonList = seasonRepository.findAll();
         LocalDateTime now = LocalDateTime.now();
-        if (seasonStartDate == null || (seasonEndDate != null && seasonEndDate.isBefore(now))) {
-            seasonStartDate = LocalDateTime.MAX;
-        }
+        LocalDateTime seasonStartDate = LocalDateTime.MAX;
 
         Season nextSeason = null;
         for (Season season : seasonList) {
