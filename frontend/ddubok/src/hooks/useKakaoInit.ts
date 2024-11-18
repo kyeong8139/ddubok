@@ -1,4 +1,3 @@
-// src/hooks/useKakaoInit.ts
 import { useEffect, useState } from "react";
 
 declare global {
@@ -33,7 +32,6 @@ const useKakaoInit = () => {
 			}
 		};
 
-		// Script 로드 확인을 위한 인터벌
 		const checkAndInitialize = setInterval(() => {
 			if (window.Kakao) {
 				initializeKakao();
@@ -41,7 +39,6 @@ const useKakaoInit = () => {
 			}
 		}, 100);
 
-		// 컴포넌트 언마운트 시 인터벌 제거
 		return () => clearInterval(checkAndInitialize);
 	}, []);
 
