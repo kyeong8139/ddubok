@@ -59,7 +59,7 @@ const SettingDetail = () => {
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = Array.from(event.target.files || []);
 		setImages(files);
-		setPreviewImages(files.map((file) => URL.createObjectURL(file))); // 미리보기 이미지 업데이트
+		setPreviewImages(files.map((file) => URL.createObjectURL(file)));
 	};
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
