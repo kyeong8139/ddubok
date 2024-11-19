@@ -1,8 +1,8 @@
 .scrollbar-hide::-webkit-scrollbar {
-	display: none; /* 크롬, 사파리, 엣지 */
+	display: none;
 }
 
 .scrollbar-hide {
-	-ms-overflow-style: none; /* IE, Edge */
-	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
