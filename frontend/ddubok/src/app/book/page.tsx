@@ -62,11 +62,6 @@ const Book = () => {
 		loadCardList();
 	}, [selected, currentPage, isTokenReady]);
 
-	// const handleClick = (index: number) => {
-	// 	setSelected(index);
-	// 	setCurrentPage(0);
-	// };
-
 	const handleCardClick = async (cardId: number) => {
 		try {
 			const response = await selectCardDetail(cardId);

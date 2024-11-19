@@ -126,68 +126,6 @@ const CardDetail = () => {
 		height: isTallScreen ? 478 : 396,
 	};
 
-	// const handleShareInstagram = () => {
-	// 	// const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-	// 	// window.open(shareUrl, "_blank", "width=600,height=400");
-	// 	if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-	// 		const shareUrl = getShareUrl();
-	// 		const instagramUrl = `instagram://story-camera`;
-
-	// 		window.location.href = instagramUrl;
-	// 	} else {
-	// 		toast.error("인스타그램은 모바일에서만 가능합니다");
-	// 	}
-	// };
-
-	// const handleShareInstagram = async () => {
-	// 	const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-	// 	if (!isMobile) {
-	// 		toast.error("인스타그램 스토리 공유는 모바일에서만 가능합니다");
-	// 		return;
-	// 	}
-
-	// 	try {
-	// 		const response = await fetch(cardImage);
-	// 		const blob = await response.blob();
-
-	// 		const shareData = {
-	// 			files: [
-	// 				new File([blob], "fortune-card.png", {
-	// 					type: "image/png",
-	// 				}),
-	// 			],
-	// 		};
-
-	// 		if (navigator.canShare && navigator.canShare(shareData)) {
-	// 			try {
-	// 				await navigator.share(shareData);
-	// 				toast.success("인스타그램 스토리에 공유할 수 있습니다");
-	// 			} catch (err) {
-	// 				if (err instanceof Error) {
-	// 					if (err.name === "AbortError") {
-	// 						return;
-	// 					}
-	// 					throw err;
-	// 				}
-	// 				throw new Error("Unknown error occurred");
-	// 			}
-	// 		} else {
-	// 			const instagramUrl = `instagram://story-camera`;
-
-	// 			const shareUrl = getShareUrl();
-	// 			await navigator.clipboard.writeText(shareUrl);
-
-	// 			window.location.href = instagramUrl;
-	// 			toast.success("인스타그램이 열립니다. 카메라에서 최근 저장된 이미지를 선택해주세요");
-	// 		}
-	// 	} catch (err) {
-	// 		const error = err instanceof Error ? err : new Error("Unknown error occurred");
-	// 		console.error("인스타그램 공유 중 오류 발생:", error);
-	// 		toast.error("인스타그램 공유에 실패했습니다");
-	// 	}
-	// };
-
 	const handleShareX = () => {
 		const shareUrl = getShareUrl();
 		const text = `행운카드가 도착했어요! 접속해서 받아가세요🍀`;
@@ -228,39 +166,6 @@ const CardDetail = () => {
 		}
 	};
 
-	// const handleDownloadImage = () => {
-	// 	if (!cardImage) return;
-
-	// 	if (cardImage.startsWith("data:image")) {
-	// 		const link = document.createElement("a");
-	// 		link.href = cardImage;
-	// 		link.download = "fortune-card.png";
-	// 		document.body.appendChild(link);
-	// 		link.click();
-	// 		document.body.removeChild(link);
-	// 		toast.success("이미지 다운에 성공하였습니다.");
-	// 	} else {
-	// 		fetch(cardImage)
-	// 			.then((response) => response.blob())
-	// 			.then((blob) => {
-	// 				const url = window.URL.createObjectURL(blob);
-	// 				const link = document.createElement("a");
-	// 				link.href = url;
-	// 				link.download = "fortune-card.png";
-	// 				document.body.appendChild(link);
-	// 				link.click();
-	// 				window.URL.revokeObjectURL(url);
-	// 				document.body.removeChild(link);
-	// 				toast.success("이미지 다운에 성공하였습니다.");
-	// 			})
-
-	// 			.catch((error) => {
-	// 				console.error("이미지 다운로드 중 오류 발생:", error);
-	// 				toast.error("이미지 다운로드에 실패했습니다");
-	// 			});
-	// 	}
-	// };
-
 	const handleLoginClick = () => {
 		const currentPath = window.location.pathname + window.location.search;
 		localStorage.setItem("redirectAfterLogin", currentPath);
@@ -287,12 +192,6 @@ const CardDetail = () => {
 						flag={true}
 					/>
 				</div>
-				{/* <button
-					onClick={handleDownloadImage}
-					className="mt-2 text-white font-nexonLight text-lg hover:underline cursor-pointer"
-				>
-					이미지 저장
-				</button> */}
 
 				<div className="mt-6 flex flex-row gap-4 w-full justify-center mb-6">
 					{type === "normal" ? (
@@ -318,14 +217,6 @@ const CardDetail = () => {
 					) : (
 						type === "require" && (
 							<>
-								{/* <Button
-									text="홈으로"
-									color="gradient"
-									size="long"
-									font="regular"
-									shadow="gradient"
-									onClick={() => router.push("/")}
-								/> */}
 								<Button
 									text="행운카드<br/>보관하기"
 									color="purple"
@@ -376,20 +267,6 @@ const CardDetail = () => {
 									</div>
 									<span className="text-black font-nexonLight text-sm sm:text-base">카카오톡</span>
 								</button>
-								{/* <button
-									onClick={handleShareInstagram}
-									className="flex flex-col items-center"
-								>
-									<div className="w-10 sm:w-12 h-10 sm:h-12 relative mb-2">
-										<Image
-											src="/assets/insta-circle.png"
-											alt="Instagram"
-											fill
-											className="rounded-full"
-										/>
-									</div>
-									<span className="text-black font-nexonLight text-sm sm:text-base">인스타그램</span>
-								</button> */}
 								<button
 									onClick={handleShareX}
 									className="flex flex-col items-center"
