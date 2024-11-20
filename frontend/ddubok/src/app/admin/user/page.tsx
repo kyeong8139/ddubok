@@ -56,7 +56,7 @@ const User = () => {
 
 			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
-				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+				setPage((prevPage) => prevPage + 1);
 			}
 		};
 
@@ -122,7 +122,7 @@ const User = () => {
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">
-						<h1 className="font-nexonBold text-xl mb-2">사용자 관리</h1>
+						<h1 className="font-nexonBold text-xl mb-2">🛠 사용자 관리</h1>
 						<p className="font-nexonRegular text-sm">가입된 사용자의 정보를 확인할 수 있어요</p>
 					</div>
 					<div className="flex justify-center pt-4">
@@ -157,9 +157,9 @@ const User = () => {
 						/>
 					</div>
 					<div>
-						<table className="text-white  font-nexonRegular w-[calc(100%-64px)] mx-auto">
+						<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
 							<thead>
-								<tr className="text-xs border-b-2 border-solid border-white">
+								<tr className="border-b-2 border-solid border-white">
 									<th className="px-2 py-[10px]">번호</th>
 									<th className="px-2 py-[10px]">닉네임</th>
 									<th className="px-2 py-[10px]">상세</th>
@@ -170,7 +170,7 @@ const User = () => {
 									userList.map((user) => (
 										<tr
 											key={user.memberId}
-											className="text-center text-xs border-b-[1px] border-solid border-white"
+											className="text-center border-b-[1px] border-solid border-white"
 										>
 											<td className="px-2 py-[10px]">{user.memberId}</td>
 											<td className="px-2 py-[10px]">{user.nickname}</td>

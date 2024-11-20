@@ -55,7 +55,7 @@ const Report = () => {
 
 			const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 			if (scrollTop + clientHeight >= scrollHeight - 5) {
-				setPage((prevPage) => prevPage + 1); // 페이지 수 증가
+				setPage((prevPage) => prevPage + 1);
 			}
 		};
 
@@ -103,7 +103,7 @@ const Report = () => {
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center">
-						<h1 className="font-nexonBold text-xl mb-2">신고 관리</h1>
+						<h1 className="font-nexonBold text-xl mb-2">🛠 신고 관리</h1>
 						<p className="font-nexonRegular text-sm">신고된 게시물 정보를 확인할 수 있어요</p>
 					</div>
 					<div className="flex justify-center pt-4 pb-6">
@@ -124,7 +124,7 @@ const Report = () => {
 					<div>
 						<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
 							<thead>
-								<tr className="text-xs border-y-2 border-solid border-white">
+								<tr className="border-y-2 border-solid border-white">
 									<th className="px-1 py-[10px]">글번호</th>
 									<th className="px-2 py-[10px]">제목</th>
 									<th className="px-2 py-[10px]">상태</th>
@@ -136,7 +136,7 @@ const Report = () => {
 									reportList.map((report) => (
 										<tr
 											key={report.id}
-											className="text-center text-xs border-b-[1px] border-solid border-white"
+											className="text-center border-b-[1px] border-solid border-white"
 										>
 											<td className="px-1 py-[10px]">{report.id}</td>
 											<td className="px-2 py-[10px]">{report.title}</td>

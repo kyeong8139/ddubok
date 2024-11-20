@@ -54,13 +54,13 @@ const Setting = () => {
 			) : (
 				<div className="py-6">
 					<div className="text-white flex flex-col items-center mb-8">
-						<h1 className="font-nexonBold text-xl mb-2">메인 설정</h1>
-						<p className="font-nexonRegular text-sm">이벤트마다 메인의 설정을 변경할 수 있어요</p>
+						<h1 className="font-nexonBold text-xl mb-2">🛠 메인 설정</h1>
+						<p className="font-nexonRegular">이벤트마다 메인의 설정을 변경할 수 있어요</p>
 					</div>
 					<div className="flex-grow overflow-y-auto">
-						<table className="text-white  font-nexonRegular w-[calc(100%-64px)] mx-auto">
+						<table className="text-white font-nexonRegular w-[calc(100%-64px)] mx-auto">
 							<thead>
-								<tr className="text-xs border-y-2 border-solid border-white">
+								<tr className="border-y-2 border-solid border-white">
 									<th className="px-1 py-[10px]">글번호</th>
 									<th className="px-2 py-[10px]">제목</th>
 									<th className="px-1 py-[10px]">상세보기</th>
@@ -71,7 +71,7 @@ const Setting = () => {
 									seasonList.map((season) => (
 										<tr
 											key={season.id}
-											className="text-center text-xs border-b-[1px] border-solid border-white"
+											className="text-center border-b-[1px] border-solid border-white"
 										>
 											<td className="px-1 py-[10px]">{season.id}</td>
 											<td className="px-2 py-[10px]">
