@@ -116,7 +116,9 @@
 ## 프로젝트 발표자료
 
 [중간발표.pdf](https://lab.ssafy.com/s11-final/S11P31A209/-/blob/master/docs/A209_%EB%9A%9C%EB%B3%B5_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_%EC%A4%91%EA%B0%84%ED%8F%89%EA%B0%80.pdf)
+
 [최종발표.pdf](https://lab.ssafy.com/s11-final/S11P31A209/-/blob/master/docs/A209_%EB%9A%9C%EB%B3%B5_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_%EC%B5%9C%EC%A2%85%ED%8F%89%EA%B0%80.pdf)
+
 [영상 포트폴리오.mp4](https://lab.ssafy.com/s11-final/S11P31A209/-/blob/master/docs/A209_%EB%9A%9C%EB%B3%B5_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_%EC%98%81%EC%83%81_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.mp4)
 
 ## Author
