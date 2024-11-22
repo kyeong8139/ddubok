@@ -1,11 +1,12 @@
 <h1 align="center">뚜복 : 당신을 위한 행운 배달부</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-2.2.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version"  src="https://img.shields.io/badge/version-2.2.0-blue.svg?cacheSeconds=2592000" />
 </p>
 
 <div align="center">
   
-![ddubok](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUyVf9%2FbtsKL1HfI5v%2FKHa06ewqiKD6O6amly0lKK%2Fimg.png)
+  <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUyVf9%2FbtsKL1HfI5v%2FKHa06ewqiKD6O6amly0lKK%2Fimg.png" alt="ddubok" width="300">
+
 
 ### 뚜복 DDUBOK : 익명 응원 서비스
 
@@ -13,7 +14,7 @@
 
 ## 시작하기
 
-https://ddubok.com
+[뚜복 바로가기](https://ddubok.com)
 
 ## 기술 스택
 
